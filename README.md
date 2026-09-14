@@ -1,63 +1,79 @@
-# Travel Planner Agent
+# Travel Planner Agent ✈️
 
-> 人机协作的行程规划 + 出发前自动优化 Agent 工具。从一个真实的 12 天印尼巴厘岛行程(20+ 轮人工反馈迭代)中提炼方法论。
+> 和 AI 一起规划旅行:你说想去哪,它来算路线、比方案、盯风险、盯签证,最后给你一张能直接发给同伴的行程单。
 
 [English intro below]
 
-## 这是什么
+## 使用流程
 
-一个「行程规划 Agent」的完整实践项目,包含三部分:
+**你只需要做一件事:像聊天一样,把想去的地方告诉它。**
 
-```
-travel-planner/
-├── README.md                          # 本文件:项目介绍
-├── case-study/
-│   ├── bali-2026-iteration-log.md     # 案例1:12天印尼行程,28+ 轮人工反馈迭代
-│   └── beijing-grassland-2026-iteration-log.md  # 案例2:草原自驾,实时天气驱动的方向重规划
-├── itinerary/
-│   └── bali-2026/index.html           # 最终行程交付物(响应式 HTML,可外发/打印)
-└── agent/
-    ├── SKILL.md                       # trip-planner skill:可复用的规划指令(接入 Claude Code)
-    └── OPTIMIZER.md                   # 出发前自动优化器:就绪度检查 + 事件触发重规划
-```
+![flow](docs/flow-overview.png)
 
-## 核心方法论(从两个真实案例提炼)
+三步,每步你拿到什么:
 
-**长周期规划(巴厘岛案例)**
+| 步 | 你说什么 | 你拿到什么 |
+|---|---|---|
+| 1️⃣ 比方案 | "十一想去日本,候选大阪/北海道,2人,想泡温泉" | 2–3 版方案对比表(强度/在途时间/成本),你拍板 |
+| 2️⃣ 细化 | "方案二,细化" + 随时反馈("太赶了""想少搬酒店") | 逐日时间轴/住宿/交通/必订清单/预算,全表格化 |
+| 3️⃣ 出发前 | "帮我看看准备得怎么样了" | 三行就绪度报告:🔴逾期 🟠临期 🟡待退 |
 
-1. **约束优先**:先锁定硬约束(已订包车/酒店/机票、人数、体力、证件等级),再展开规划
-2. **多方案对比**:不确定时给 2–3 版方案 + 对比表(强度/在途时间/体验/成本),让用户拍板,不替用户决定
-3. **在途时间显式化**:每一段标交通方式 + 纯在途耗时,累计在途是决策关键指标
-4. **预订状态机**:所有项目标 `✓已订 / 建议预订 / 待退`,形成事实上的就绪度仪表盘
-5. **风险预案**:行程依赖项(天气/火山/航变)给 A/B 双预案 + 明确决策时间点
-6. **交付即外发**:产出单文件响应式 HTML(零依赖、兼容旧内核浏览器),可打印/可托管
-7. **简洁 + 可靠来源**:每轮输出控制信息密度;事实性信息(签证/口岸/票价区间)标注来源与时效
+**对话即操作,表格即答案。** 突发情况(航变/景点关闭/台风)时,它会只重排受影响段、列好退订清单、给 A/B 方案。
 
-**短周期/实时决策(草原自驾案例)**
+## 你会拿到什么
 
-8. **单约束即设计变量**:用户只给一个约束(如「单人驾驶」)时,把它转成全行程的结构性参数(每日驾驶≤2h、中途住宿拆解)
-9. **实时数据横向对比**:天气/开放状态按候选方向拉取同一指标对比,让「换方向」决策有据
-10. **诚实反馈优于硬排**:方案物理不可行时直说(「2天只能打卡」),给出可行性边界
-11. **风险时序化**:把风险嵌进时间轴(雨夜只开 1.5h、晴天才走山路),不只是「去/不去」
+| 产物 | 长什么样 | 什么时候有 |
+|---|---|---|
+| **方案对比表** | 2–3 版行程,强度/在途时间/成本并排比 | 第 1–2 轮对话后 |
+| **行程单 HTML** | 单文件网页:每日时间轴、住宿、交通、预算、必订清单;手机变卡片、电脑变表格,打印友好 | 你选定方案后 |
+| **就绪度报告** | 三行式检查单,逾期/临期/待退一目了然 | 出发前,随时问 |
+| **风险预案** | 火山关闭/台风/航变发生时,A/B 方案+决策时间点 | 出状况时 |
+
+> 行程单效果(桌面表格 ↔ 手机卡片同一文件自适应):
+
+![deliverable](docs/deliverable-preview.png)
 
 ## 快速开始(接入 Claude Code)
 
 ```bash
-# 1. 安装 skill
+git clone https://github.com/<you>/travel-planner.git
+cd travel-planner
+
+# 安装 skill(一行)
 mkdir -p ~/.claude/skills/trip-planner
 cp agent/SKILL.md ~/.claude/skills/trip-planner/SKILL.md
-
-# 2. 在任意目录对话
-#    "帮我规划 10.1–10.7 的日本行程,候选地:大阪/北海道,2人,喜欢潜水和温泉"
 ```
 
-规划的完整流程、输出格式、迭代协议都写在 [agent/SKILL.md](agent/SKILL.md) 中。
+然后打开 Claude Code,像平时聊天一样:
 
-出发前的就绪度检查与自动优化,见 [agent/OPTIMIZER.md](agent/OPTIMIZER.md)。
+```
+帮我规划十一的日本行程,候选大阪/北海道,2 人,想泡温泉,预算人均 1 万
+```
+
+完整的规划指令(它内部怎么想)在 [agent/SKILL.md](agent/SKILL.md);出发前的就绪度检查设计在 [agent/OPTIMIZER.md](agent/OPTIMIZER.md)。
+
+## 两个真实案例
+
+| | 🏝️ 巴厘岛 12 天 | 🌾 草原自驾 2 天 |
+|---|---|---|
+| 展示什么 | 28 轮反馈迭代、航变重规划、火山关闭应对 | 5 轮搞定、实时天气驱动的换方向 |
+| 亮点 | 砍科莫多的取舍逻辑、预订状态机、风险决策点 | 「单人驾驶」一个约束撑起整个设计 |
+| 复盘 | [bali-2026-iteration-log.md](case-study/bali-2026-iteration-log.md) | [beijing-grassland-2026-iteration-log.md](case-study/beijing-grassland-2026-iteration-log.md) |
+
+(案例中的日期、酒店名等个人信息已脱敏)
+
+## 方法论(它为什么好用)
+
+提炼自上述案例,共 11 条,全文见 [agent/SKILL.md](agent/SKILL.md),几条最核心的:
+
+- **约束优先**:已订的机票酒店是不可变量,先提取再规划;你只给一个约束(如"单人开车"),它就把它变成全行程的结构参数
+- **在途时间是第一指标**:每段交通都标耗时,累计值超过阈值主动预警——行程质量的瓶颈往往不是"玩得不够多",而是"喘不过气"
+- **诚实反馈**:方案物理上不可行时直说"2 天只能打卡",不硬塞时间表
+- **事件驱动重规划**:航变/景点关闭/酒店变动 → 只重排受影响段,列退订清单,给 2 方案对比
 
 ## English Intro
 
-A human-in-the-loop travel planning agent distilled from two real trips: a 12-day Indonesia journey (28+ feedback iterations, flight-change & volcanic-eruption replanning) and a 48-hour Beijing grassland roadtrip (real-time weather-driven destination switching). Includes: iteration case studies, the final responsive-HTML deliverable, a reusable Claude Code skill encoding the planning methodology, and a pre-departure readiness optimizer design.
+A human-in-the-loop travel planning agent distilled from two real trips: a 12-day Indonesia journey (28+ feedback iterations, flight-change & volcanic-eruption replanning) and a 48-hour grassland roadtrip (real-time weather-driven destination switching). Talk to it like a friend, get comparison tables, a single-file responsive HTML itinerary, and pre-departure readiness checks.
 
 ## License
 
