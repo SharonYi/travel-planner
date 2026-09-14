@@ -103,18 +103,22 @@
     header h1 { font-size: 26px; }
     section { padding: 24px 28px; margin-bottom: 24px; }
     h2 { font-size: 19px; }
-    table { display: table; font-size: 13.5px; }
+    table { display: table; font-size: 13.5px; table-layout: fixed; }
     thead { display: table-header-group; }
     tbody { display: table-row-group; }
     tr { display: table-row; background: none; border: none; border-radius: 0; padding: 0; margin: 0; }
     tr:nth-child(even) td { background: #faf8f4; }
     tr:hover td { background: #f0ebe1; }
-    td { display: table-cell; padding: 10px 12px; border-bottom: 1px solid #e0d9cf; padding-left: 12px; min-height: 0; vertical-align: top; }
+    td { display: table-cell; padding: 8px 10px; border-bottom: 1px solid #e0d9cf; padding-left: 10px; min-height: 0; vertical-align: top; line-height: 1.55; }
     td::before { display: none; }
-    td[data-label="日"], td[data-label="状态"], td[data-label="费用/人"], td[data-label="价位/晚"], td[data-label="红叶指数"] { white-space: nowrap; width: 1%; }
+    /* 短列收缩到内容宽,长内容列(时间轴/要点/备注)吃满剩余 */
+    td[data-label="日"], td[data-label="状态"], td[data-label="费用/人"], td[data-label="价位/晚"], td[data-label="红叶指数"], td[data-label="晚数"], td[data-label="提前量"] { white-space: nowrap; width: 1%; }
+    /* 路线列适度收窄,时间轴列拿大头 */
+    td[data-label="路线"], td[data-label="落点"], td[data-label="段"], td[data-label="项目"], td[data-label="类别"], td[data-label="方式"], td[data-label="区域"] { width: 16%; }
+    td[data-label="时间轴"], td[data-label="要点"], td[data-label="备注"], td[data-label="说明"] { width: auto; }
     th {
       display: table-cell; background: #8c3a2e; color: #fff;
-      padding: 10px 12px; text-align: left; font-weight: 500;
+      padding: 8px 10px; text-align: left; font-weight: 500;
     }
     .day-cell, .route-cell { white-space: nowrap; }
     ul { padding-left: 20px; }

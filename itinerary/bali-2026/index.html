@@ -129,22 +129,24 @@
     header h1 { font-size: 26px; }
     section { padding: 24px 28px; margin-bottom: 24px; }
     h2 { font-size: 19px; }
-    table { display: table; font-size: 13.5px; }
+    table { display: table; font-size: 13.5px; table-layout: fixed; }
     thead { display: table-header-group; }
     tbody { display: table-row-group; }
     tr { display: table-row; background: none; border: none; border-radius: 0; padding: 0; margin: 0; }
     tr:nth-child(even) td { background: #faf8f4; }
     tr:hover td { background: #f0ebe1; }
-    td { display: table-cell; padding: 10px 12px; border-bottom: 1px solid #e0d9cf; padding-left: 12px; min-height: 0; vertical-align: top; }
+    td { display: table-cell; padding: 8px 10px; border-bottom: 1px solid #e0d9cf; padding-left: 10px; min-height: 0; vertical-align: top; line-height: 1.55; }
     td::before { display: none; }
     /* 短文本列不换行并收缩到内容宽度，长内容列吃满剩余空间，避免日期列被拉宽 */
     td[data-label="日期"], td[data-label="状态"], td[data-label="价格"], td[data-label="时段"], td[data-label="晚数"], td[data-label="预订时间"] { white-space: nowrap; width: 1%; }
+    td[data-label="路线"], td[data-label="落点"], td[data-label="段落"], td[data-label="项目"], td[data-label="类别"], td[data-label="方式"], td[data-label="区域"] { width: 16%; }
+    td[data-label="当日安排"], td[data-label="要点"], td[data-label="备注"], td[data-label="说明"], td[data-label="交通方式"] { width: auto; }
     td[data-label="人均RMB"] { white-space: nowrap; text-align: right; width: 1%; }
     th {
       display: table-cell;
       background: #2c5f6f;
       color: #fff;
-      padding: 10px 12px;
+      padding: 8px 10px;
       text-align: left;
       font-weight: 500;
     }
