@@ -93,6 +93,19 @@
   .transport.gray { background: #6b7280; }
   .status-done { color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
   .status-todo { color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 4px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+  /* ── 顶部时间轴总览 ── */
+  .tl-row { margin-bottom: 7px; }
+  .tl-day { font-size: 12.5px; font-weight: 700; color: #2c5f6f; }
+  .tl-track { margin-top: 3px; background: #f0ebe1; border-radius: 8px; padding: 4px; }
+  .tl-seg { display: inline-block; padding: 4px 6px; border-radius: 5px; margin: 1px 3px 1px 0; font-size: 11.5px; color: #fff; line-height: 1.3; vertical-align: top; }
+  .tl-seg.transit { background: #8a9ba8; }
+  .tl-seg.nature { background: #5b8c5a; }
+  .tl-seg.activity { background: #2c5f6f; }
+  .tl-seg.relax { background: #d4a76a; }
+  .tl-seg.flight { background: #b0578d; }
+  .tl-legend { margin-top: 10px; font-size: 12px; color: #6b7280; }
+  .tl-legend span { display: inline-block; margin-right: 14px; }
+  .tl-dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
   ul { padding-left: 18px; margin: 8px 0; }
   li { margin-bottom: 6px; font-size: 14px; }
   .alert {
@@ -154,6 +167,43 @@
   <div class="subtitle">Safari + Tumpak Sewu 瀑布 + Bromo 火山 + 佩妮达 1.5 天 + 巴厘岛 + 河内中转</div>
   <div class="meta">D1 – D12 ｜ 4 人小团 ｜ A 城进 →（飞）巴厘岛 → 中转城 → 回国</div>
 </header>
+
+<section>
+  <h2>🗺️ 行程总览(一屏看完)</h2>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-day">D1</div><div class="tl-track">
+      <span class="tl-seg transit">车程 5h</span><span class="tl-seg activity">Safari Park</span><span class="tl-seg relax">入住山脚</span></div></div>
+    <div class="tl-row"><div class="tl-day">D2</div><div class="tl-track">
+      <span class="tl-seg nature">Sewu 瀑布</span><span class="tl-seg transit">车程 3h</span><span class="tl-seg relax">上火山村</span></div></div>
+    <div class="tl-row"><div class="tl-day">D3</div><div class="tl-track">
+      <span class="tl-seg nature">🌋 Bromo 日出</span><span class="tl-seg transit">车程 3.5h</span><span class="tl-seg flight">✈️ 飞巴厘岛</span><span class="tl-seg relax">住库塔</span></div></div>
+    <div class="tl-row"><div class="tl-day">D4</div><div class="tl-track">
+      <span class="tl-seg relax">库塔海滩放松</span><span class="tl-seg transit">Grab 40min</span><span class="tl-seg relax">Sanur 入住</span></div></div>
+    <div class="tl-row"><div class="tl-day">D5</div><div class="tl-track">
+      <span class="tl-seg transit">快船 40min</span><span class="tl-seg nature">佩妮达西线·悬崖海景</span><span class="tl-seg relax">住岛上</span></div></div>
+    <div class="tl-row"><div class="tl-day">D6</div><div class="tl-track">
+      <span class="tl-seg nature">佩妮达东线</span><span class="tl-seg activity">浮潜 Manta</span><span class="tl-seg transit">快船回程</span><span class="tl-seg relax">Sanur</span></div></div>
+    <div class="tl-row"><div class="tl-day">D7</div><div class="tl-track">
+      <span class="tl-seg transit">车程 3h</span><span class="tl-seg activity">🤿 DSD 体验潜</span><span class="tl-seg relax">Amed 海边</span></div></div>
+    <div class="tl-row"><div class="tl-day">D8</div><div class="tl-track">
+      <span class="tl-seg nature">水宫+梯田</span><span class="tl-seg transit">车程 3h</span><span class="tl-seg relax">乌布</span></div></div>
+    <div class="tl-row"><div class="tl-day">D9</div><div class="tl-track">
+      <span class="tl-seg nature">海神庙+悬崖</span><span class="tl-seg activity">Kecak 舞</span><span class="tl-seg relax">Jimbaran 海鲜→Seminyak</span></div></div>
+    <div class="tl-row"><div class="tl-day">D10</div><div class="tl-track">
+      <span class="tl-seg relax">Seminyak 逛街</span><span class="tl-seg activity">Canggu beach club</span><span class="tl-seg relax">看日落</span></div></div>
+    <div class="tl-row"><div class="tl-day">D11</div><div class="tl-track">
+      <span class="tl-seg transit">赴机场</span><span class="tl-seg flight">✈️ 飞中转城</span><span class="tl-seg relax">入住</span></div></div>
+    <div class="tl-row"><div class="tl-day">D12</div><div class="tl-track">
+      <span class="tl-seg activity">中转城老城一日游</span><span class="tl-seg flight">✈️ 晚班机回国</span></div></div>
+    <div class="tl-legend">
+      <span><i class="tl-dot" style="background:#5b8c5a"></i>自然观光</span>
+      <span><i class="tl-dot" style="background:#2c5f6f"></i>体验活动</span>
+      <span><i class="tl-dot" style="background:#d4a76a"></i>休闲/住宿</span>
+      <span><i class="tl-dot" style="background:#8a9ba8"></i>在途</span>
+      <span><i class="tl-dot" style="background:#b0578d"></i>飞行</span>
+    </div>
+  </div>
+</section>
 
 <section>
   <h2>📅 每日行程总表</h2>
