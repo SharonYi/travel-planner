@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关西红叶季 5 日 · 京都深度 V1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f7f4ef;
+    color: #2d3436;
+    line-height: 1.7;
+    padding: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+    -webkit-text-size-adjust: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  header {
+    text-align: center;
+    padding: 24px 16px 22px;
+    background: linear-gradient(135deg, #8c3a2e, #b0573a);
+    color: #fff;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  header h1 { font-size: 21px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  header .subtitle { font-size: 14px; opacity: 0.95; }
+  header .meta { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+  section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  h2 {
+    font-size: 18px;
+    color: #8c3a2e;
+    border-left: 4px solid #d4a76a;
+    padding-left: 10px;
+    margin-bottom: 14px;
+  }
+  h3 { font-size: 15px; color: #8c3a2e; margin-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 8px; display: block; }
+  thead { display: none; }
+  tbody, tr, td { display: block; width: 100%; }
+  tr {
+    background: #faf8f4;
+    border: 1px solid #e0d9cf;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  td { padding: 6px 0; border: none; position: relative; padding-left: 90px; min-height: 24px; }
+  td::before {
+    content: attr(data-label);
+    position: absolute; left: 0; top: 6px; width: 82px;
+    font-weight: 600; color: #8c3a2e; font-size: 13px;
+  }
+  .day-cell { font-weight: 700; color: #8c3a2e; }
+  .route-cell { font-weight: 500; }
+  .transport {
+    display: inline-block; background: #d4a76a; color: #fff;
+    padding: 3px 9px; border-radius: 4px; font-size: 12.5px; margin: 2px 2px 2px 0;
+  }
+  .transport.blue { background: #8c3a2e; }
+  .transport.gray { background: #6b7280; }
+  .koyo { color: #b0573a; font-size: 12.5px; }
+  ul { padding-left: 18px; margin: 8px 0; }
+  li { margin-bottom: 6px; font-size: 14px; }
+  .alert {
+    background: #fff7ed; border-left: 4px solid #d4a76a;
+    padding: 12px 14px; border-radius: 6px; margin: 10px 0; font-size: 14px;
+  }
+  .alert strong { color: #c2410c; }
+  .alt {
+    background: #f0f7ff; border-left: 4px solid #5b7fa8;
+    padding: 12px 14px; border-radius: 6px; margin: 10px 0; font-size: 14px;
+  }
+  .alt strong { color: #2c5f6f; }
+  .status-done { color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 4px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+  .status-todo { color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 4px; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+  /* ── 时间轴总览 ── */
+  .tl-row { margin-bottom: 7px; }
+  .tl-day { font-size: 12.5px; font-weight: 700; color: #8c3a2e; }
+  .tl-track { margin-top: 3px; background: #f0ebe1; border-radius: 8px; padding: 4px; }
+  .tl-seg { display: inline-block; padding: 4px 6px; border-radius: 5px; margin: 1px 3px 1px 0; font-size: 11.5px; color: #fff; line-height: 1.3; vertical-align: top; }
+  .tl-seg.transit { background: #8a9ba8; }
+  .tl-seg.nature { background: #b0573a; }
+  .tl-seg.activity { background: #8c3a2e; }
+  .tl-seg.relax { background: #d4a76a; }
+  .tl-seg.flight { background: #7a5b8c; }
+  .tl-legend { margin-top: 10px; font-size: 12px; color: #6b7280; }
+  .tl-legend span { display: inline-block; margin-right: 14px; }
+  .tl-dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+  footer { text-align: center; color: #6b7280; font-size: 12px; padding: 16px 8px; }
+  @media (min-width: 768px) {
+    body { padding: 24px; }
+    header { padding: 32px 20px 28px; }
+    header h1 { font-size: 26px; }
+    section { padding: 24px 28px; margin-bottom: 24px; }
+    h2 { font-size: 19px; }
+    table { display: table; font-size: 13.5px; }
+    thead { display: table-header-group; }
+    tbody { display: table-row-group; }
+    tr { display: table-row; background: none; border: none; border-radius: 0; padding: 0; margin: 0; }
+    tr:nth-child(even) td { background: #faf8f4; }
+    tr:hover td { background: #f0ebe1; }
+    td { display: table-cell; padding: 10px 12px; border-bottom: 1px solid #e0d9cf; padding-left: 12px; min-height: 0; vertical-align: top; }
+    td::before { display: none; }
+    td[data-label="日"], td[data-label="状态"], td[data-label="费用/人"], td[data-label="价位/晚"], td[data-label="红叶指数"] { white-space: nowrap; width: 1%; }
+    th {
+      display: table-cell; background: #8c3a2e; color: #fff;
+      padding: 10px 12px; text-align: left; font-weight: 500;
+    }
+    .day-cell, .route-cell { white-space: nowrap; }
+    ul { padding-left: 20px; }
+    .alert, .alt { font-size: 13.5px; }
+  }
+  @media print {
+    body { padding: 0; background: #fff; }
+    section { box-shadow: none; page-break-inside: avoid; }
+    header { background: #8c3a2e !important; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🍁 关西红叶季 5 日 · 京都深度</h1>
+  <div class="subtitle">方案 V1:京都 3 晚 + 大阪 2 晚 ｜ 自然红叶为主 + 设计小店购物</div>
+  <div class="meta">D1–D5 ｜ 2 人小团 ｜ KIX 进出 ｜ 红叶前中期(11 月上中旬)</div>
+</header>
+
+<section>
+  <h2>🗺️ 行程总览(一屏看完)</h2>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-day">D1</div><div class="tl-track">
+      <span class="tl-seg flight">✈️ 抵达 KIX</span><span class="tl-seg transit">HARUKA 75min</span><span class="tl-seg relax">入住京都</span><span class="tl-seg relax">只园夜散步</span></div></div>
+    <div class="tl-row"><div class="tl-day">D2</div><div class="tl-track">
+      <span class="tl-seg transit">JR 20min</span><span class="tl-seg nature">🍁 岚山·竹林·天龙寺</span><span class="tl-seg nature">🍁 保津川小火车</span><span class="tl-seg relax">鸭川晚餐</span></div></div>
+    <div class="tl-row"><div class="tl-day">D3</div><div class="tl-track">
+      <span class="tl-seg nature">🍁 东福寺(开园即入)</span><span class="tl-seg nature">🍁 伏见稻荷</span><span class="tl-seg relax">午后回血</span><span class="tl-seg nature">🍁 永观堂+夜枫</span></div></div>
+    <div class="tl-row"><div class="tl-day">D4</div><div class="tl-track">
+      <span class="tl-seg nature">🍁 鞍马→贵船徒步</span><span class="tl-seg activity">川床午餐</span><span class="tl-seg transit">JR 转大阪</span><span class="tl-seg relax">梅田夜景+小店</span></div></div>
+    <div class="tl-row"><div class="tl-day">D5</div><div class="tl-track">
+      <span class="tl-seg activity">🛍️ 中崎町·设计小店</span><span class="tl-seg activity">堀江·难波公园</span><span class="tl-seg transit">南海 45min</span><span class="tl-seg flight">✈️ KIX 返程</span></div></div>
+    <div class="tl-legend">
+      <span><i class="tl-dot" style="background:#b0573a"></i>自然红叶</span>
+      <span><i class="tl-dot" style="background:#8c3a2e"></i>体验/购物</span>
+      <span><i class="tl-dot" style="background:#d4a76a"></i>休闲/住宿</span>
+      <span><i class="tl-dot" style="background:#8a9ba8"></i>在途</span>
+      <span><i class="tl-dot" style="background:#7a5b8c"></i>飞行</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>📅 每日行程</h2>
+  <table>
+    <thead>
+      <tr><th>日</th><th>路线</th><th>时间轴</th><th>交通</th><th>红叶指数</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="day-cell" data-label="日">D1</td>
+        <td class="route-cell" data-label="路线">抵达→京都东山</td>
+        <td data-label="时间轴">上午直飞(约3h) → 14:00 落地 KIX → <strong>HARUKA 特快 75min</strong> 直达京都 → 16:00 入住 → 17:00–20:00 只园白川散步 + 花见小路 + 先斗町晚餐(轻量开场)</td>
+        <td data-label="交通"><span class="transport blue">HARUKA</span> ~2900円</td>
+        <td data-label="红叶指数" class="koyo">⭐⭐</td>
+      </tr>
+      <tr>
+        <td class="day-cell" data-label="日">D2</td>
+        <td class="route-cell" data-label="路线">岚山一整天(西线)</td>
+        <td data-label="时间轴">07:30 出发 → 08:00 <strong>竹林小径(8点前避团客)</strong> → 天龙寺庭园 → 常寂光寺(苔庭隐藏款) → 11:30 渡月桥+午餐(豆腐料理/%咖啡) → 13:30 <strong>嵯峨野小火车</strong>(枫叶隧道)或保津川游船 → 17:00 回市区鸭川晚餐</td>
+        <td data-label="交通"><span class="transport">JR 嵯峨野线</span> 单程 240円</td>
+        <td data-label="红叶指数" class="koyo">⭐⭐⭐⭐</td>
+      </tr>
+      <tr>
+        <td class="day-cell" data-label="日">D3</td>
+        <td class="route-cell" data-label="路线">东福寺—伏见—永观堂</td>
+        <td data-label="时间轴">08:30 出发 → 09:00 <strong>东福寺通天桥(开园即入,京都红叶天花板)</strong> → 11:30 伏见稻荷千本鸟居(爬到四辻约40min) → 14:30 回市区午餐+<strong>午后留白回血</strong> → 16:30 永观堂 → 南禅寺水路阁 → 傍晚哲学之道 → 晚间夜枫(条件分支)</td>
+        <td data-label="交通"><span class="transport">JR 奈良线</span> 1站 + 巴士/地铁</td>
+        <td data-label="红叶指数" class="koyo">⭐⭐⭐⭐⭐</td>
+      </tr>
+      <tr>
+        <td class="day-cell" data-label="日">D4</td>
+        <td class="route-cell" data-label="路线">鞍马·贵船(北线)→大阪</td>
+        <td data-label="时间轴">08:00 出町柳乘<strong>叡山电车(红叶隧道区间)</strong> → 鞍马寺 → <strong>徒步翻山约2h(山中红叶)</strong> → 12:00 贵船神社+川床「錦秋床」午餐 → 14:30 叡电返程取行李 → 15:30 JR 赴大阪入住 → 17:30 梅田蓝天大厦夜景 + NU茶屋町/中崎町小店首刷</td>
+        <td data-label="交通"><span class="transport">叡电</span> 470円 + <span class="transport">JR</span> ~580円</td>
+        <td data-label="红叶指数" class="koyo">⭐⭐⭐⭐</td>
+      </tr>
+      <tr>
+        <td class="day-cell" data-label="日">D5</td>
+        <td class="route-cell" data-label="路线">大阪设计小店日→返程</td>
+        <td data-label="时间轴">09:30 <strong>中崎町深度</strong>(昭和老街设计/杂货/咖啡聚落) → 12:00 堀江(欧美系设计店) → 14:00 难波公园空中花园 or 大阪城西之丸红叶园 → 17:00 南海 Rapi:t 赴 KIX → 晚班机返程</td>
+        <td data-label="交通"><span class="transport blue">南海 Rapi:t</span> ~1450円</td>
+        <td data-label="红叶指数" class="koyo">⭐⭐</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🔀 两个备选分支</h2>
+  <div class="alt"><strong>备选 A · 奈良半日(仅当「想看鹿」执念存在时)</strong><br>
+  把 D3 下午的回血留白改成:13:30 东福寺+伏见稻荷结束后,近铁 45min 去奈良 → 傍晚奈良公园(黄昏鹿群最活跃、游客散去)→ 春日大社参道暮色(石灯笼+杉林,奈良秋景天花板)→ 20:00 近铁回京都。<br>
+  <strong>代价:</strong>永观堂+南禅寺+哲学之道整个让出,D3 变 12h 暴走日。红叶浓度让位给鹿+古社氛围,不推荐但可行。</div>
+  <div class="alt"><strong>备选 B · D3 夜枫条件分支(自动选择)</strong><br>
+  若永观堂夜间特别拝观开放 → 选永观堂(人少一半);若未开而清水寺夜枫开放 → 改清水寺夜枫(夜场人流可控,灯光枫叶震撼);都未开 → 哲学之道夜景收尾。出发前一周查两家官网确认。</div>
+</section>
+
+<section>
+  <h2>🚃 交通方案(人均 ~8000円 ≈ 400 RMB,无需 JR Pass)</h2>
+  <table>
+    <thead><tr><th>段</th><th>方式</th><th>费用/人</th><th>要点</th></tr></thead>
+    <tbody>
+      <tr><td data-label="段">KIX → 京都</td><td data-label="方式">HARUKA 特快</td><td data-label="费用/人">~2900円</td><td data-label="要点">75min 直达,ICOCA 直接进站</td></tr>
+      <tr><td data-label="段">京都 3 天</td><td data-label="方式">巴士一日券×2 + JR/叡电按次</td><td data-label="费用/人">~3000円</td><td data-label="要点">红叶季巴士挤爆,能坐 JR/地铁就别等巴士</td></tr>
+      <tr><td data-label="段">京都 → 大阪</td><td data-label="方式">JR 京都线</td><td data-label="费用/人">~580円</td><td data-label="要点">30–45min</td></tr>
+      <tr><td data-label="段">大阪市内</td><td data-label="方式">地铁 1–2 日券</td><td data-label="费用/人">~600–1200円</td><td data-label="要点">设计小店均地铁沿线</td></tr>
+      <tr><td data-label="段">大阪 → KIX</td><td data-label="方式">南海 Rapi:t 特急</td><td data-label="费用/人">~1450円</td><td data-label="要点">45min</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>🏨 住宿(2 人 1 间,红叶季提前订)</h2>
+  <table>
+    <thead><tr><th>落点</th><th>晚数</th><th>区域</th><th>价位/晚</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td data-label="落点">京都</td><td data-label="晚数">3</td><td data-label="区域">京都站南 / 七条</td><td data-label="价位/晚">500–900 RMB</td><td data-label="说明">交通枢纽,岚山/东福寺/叡电全顺;预算足上四条河原町</td></tr>
+      <tr><td data-label="落点">大阪</td><td data-label="晚数">2</td><td data-label="区域">梅田 / 中崎町侧</td><td data-label="价位/晚">400–800 RMB</td><td data-label="说明">去中崎町步行 10min;别住难波(吵)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>📝 必订清单</h2>
+  <table>
+    <thead><tr><th>项目</th><th>状态</th><th>提前量</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><td data-label="项目">北京↔KIX 机票</td><td data-label="状态"><span class="status-todo">🔴 尽快</span></td><td data-label="提前量">2 周内</td><td data-label="备注">去程早班+回程晚班,航班时刻决定 5 天有效时长</td></tr>
+      <tr><td data-label="项目">京都酒店 3 晚</td><td data-label="状态"><span class="status-todo">🔴 尽快</span></td><td data-label="提前量">红叶季紧张</td><td data-label="备注">京都站南/七条优先</td></tr>
+      <tr><td data-label="项目">大阪酒店 2 晚</td><td data-label="状态"><span class="status-todo">🔴 尽快</span></td><td data-label="提前量">同期</td><td data-label="备注">梅田侧</td></tr>
+      <tr><td data-label="项目">嵯峨野小火车</td><td data-label="状态"><span class="status-todo">🟠 提前订</span></td><td data-label="提前量">官网提前 10 天开售</td><td data-label="备注">红叶季当天基本无票</td></tr>
+      <tr><td data-label="项目">贵船川床午餐</td><td data-label="状态"><span class="status-todo">🟠 建议预订</span></td><td data-label="提前量">1 周前</td><td data-label="备注">錦秋床,当天排队 1h+</td></tr>
+      <tr><td data-label="项目">寺庙门票</td><td data-label="状态"><span class="status-done">🟢 现场</span></td><td data-label="提前量">—</td><td data-label="备注">备 1000 円级现金</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>💰 人均预算(不含国际机票)</h2>
+  <table>
+    <thead><tr><th>类别</th><th>人均 RMB</th></tr></thead>
+    <tbody>
+      <tr><td data-label="类别">住宿(4 晚分摊)</td><td data-label="人均RMB">1500–2500</td></tr>
+      <tr><td data-label="类别">市内交通</td><td data-label="人均RMB">~400</td></tr>
+      <tr><td data-label="类别">餐饮(含川床/豆腐料理)</td><td data-label="人均RMB">1200–2000</td></tr>
+      <tr><td data-label="类别">门票+小火车+游船</td><td data-label="人均RMB">300–500</td></tr>
+      <tr><td data-label="类别">购物基金</td><td data-label="人均RMB">自定</td></tr>
+      <tr style="font-weight:600; background:#fff7ed;"><td data-label="类别">合计</td><td data-label="人均RMB">3400–5400 + 购物</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>⚠️ 关键提醒</h2>
+  <div class="alert"><strong>1. 早起是分水岭:</strong>竹林 8:00 前、东福寺 9:00 前入场,晚到 1 小时人流翻 3 倍。</div>
+  <div class="alert"><strong>2. 红叶实时预报:</strong>出发前一周查日本气象协会「红叶最前线」,若峰期提前/延后,D2–D4 点位整体平移。</div>
+  <div class="alert"><strong>3. 航班时刻即行程时长:</strong>去程早班(保 D1 傍晚东山)+ 回程晚班(保 D5 下午),选票时优先时刻再看价。</div>
+  <div class="alert"><strong>4. D4 体力说明:</strong>鞍马→贵船徒步约 2h 缓坡,正常体力没问题;不想徒步则叡电直达贵船,备选路径。</div>
+</section>
+
+<footer>
+  关西红叶季 5 日 · 京都深度 V1 · 红叶前中期 · 2 人小团
+</footer>
+
+</body>
+</html>
