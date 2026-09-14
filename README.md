@@ -52,13 +52,13 @@ cp agent/SKILL.md ~/.claude/skills/trip-planner/SKILL.md
 
 完整的规划指令(它内部怎么想)在 [agent/SKILL.md](agent/SKILL.md);出发前的就绪度检查设计在 [agent/OPTIMIZER.md](agent/OPTIMIZER.md)。
 
-## 两个真实案例
+## 三个真实案例
 
-| | 🏝️ 巴厘岛 12 天 | 🌾 草原自驾 2 天 |
-|---|---|---|
-| 展示什么 | 28 轮反馈迭代、航变重规划、火山关闭应对 | 5 轮搞定、实时天气驱动的换方向 |
-| 亮点 | 砍科莫多的取舍逻辑、预订状态机、风险决策点 | 「单人驾驶」一个约束撑起整个设计 |
-| 复盘 | [bali-2026-iteration-log.md](case-study/bali-2026-iteration-log.md) | [beijing-grassland-2026-iteration-log.md](case-study/beijing-grassland-2026-iteration-log.md) |
+| | 🏝️ 巴厘岛 12 天 | 🌾 草原自驾 2 天 | 🍁 关西红叶 5 天 |
+|---|---|---|---|
+| 展示什么 | 28 轮反馈迭代、航变重规划、火山关闭应对 | 5 轮搞定、实时天气驱动的换方向 | skill 装配后首次实测,2 轮定方案 |
+| 亮点 | 砍科莫多的取舍逻辑、预订状态机、风险决策点 | 「单人驾驶」一个约束撑起整个设计 | 时间窗口优先、外部数据降级策略 |
+| 复盘 | [bali-iteration-log](case-study/bali-2026-iteration-log.md) | [grassland-iteration-log](case-study/beijing-grassland-2026-iteration-log.md) | [kansai-iteration-log](case-study/kansai-koyo-2026-iteration-log.md) |
 
 (案例中的日期、酒店名等个人信息已脱敏)
 
