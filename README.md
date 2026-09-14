@@ -12,7 +12,8 @@
 travel-planner/
 ├── README.md                          # 本文件:项目介绍
 ├── case-study/
-│   └── bali-2026-iteration-log.md     # 真实案例:20+ 轮人工反馈的完整迭代日志
+│   ├── bali-2026-iteration-log.md     # 案例1:12天印尼行程,28+ 轮人工反馈迭代
+│   └── beijing-grassland-2026-iteration-log.md  # 案例2:草原自驾,实时天气驱动的方向重规划
 ├── itinerary/
 │   └── bali-2026/index.html           # 最终行程交付物(响应式 HTML,可外发/打印)
 └── agent/
@@ -20,7 +21,9 @@ travel-planner/
     └── OPTIMIZER.md                   # 出发前自动优化器:就绪度检查 + 事件触发重规划
 ```
 
-## 核心方法论(从真实案例提炼)
+## 核心方法论(从两个真实案例提炼)
+
+**长周期规划(巴厘岛案例)**
 
 1. **约束优先**:先锁定硬约束(已订包车/酒店/机票、人数、体力、证件等级),再展开规划
 2. **多方案对比**:不确定时给 2–3 版方案 + 对比表(强度/在途时间/体验/成本),让用户拍板,不替用户决定
@@ -29,6 +32,13 @@ travel-planner/
 5. **风险预案**:行程依赖项(天气/火山/航变)给 A/B 双预案 + 明确决策时间点
 6. **交付即外发**:产出单文件响应式 HTML(零依赖、兼容旧内核浏览器),可打印/可托管
 7. **简洁 + 可靠来源**:每轮输出控制信息密度;事实性信息(签证/口岸/票价区间)标注来源与时效
+
+**短周期/实时决策(草原自驾案例)**
+
+8. **单约束即设计变量**:用户只给一个约束(如「单人驾驶」)时,把它转成全行程的结构性参数(每日驾驶≤2h、中途住宿拆解)
+9. **实时数据横向对比**:天气/开放状态按候选方向拉取同一指标对比,让「换方向」决策有据
+10. **诚实反馈优于硬排**:方案物理不可行时直说(「2天只能打卡」),给出可行性边界
+11. **风险时序化**:把风险嵌进时间轴(雨夜只开 1.5h、晴天才走山路),不只是「去/不去」
 
 ## 快速开始(接入 Claude Code)
 
@@ -47,7 +57,7 @@ cp agent/SKILL.md ~/.claude/skills/trip-planner/SKILL.md
 
 ## English Intro
 
-A human-in-the-loop travel planning agent distilled from a real 12-day Indonesia trip (Bali + volcanoes + Hanoi transit) that went through 20+ feedback iterations. Includes: full iteration case study, the final responsive-HTML deliverable, a reusable Claude Code skill encoding the planning methodology, and a pre-departure readiness optimizer design.
+A human-in-the-loop travel planning agent distilled from two real trips: a 12-day Indonesia journey (28+ feedback iterations, flight-change & volcanic-eruption replanning) and a 48-hour Beijing grassland roadtrip (real-time weather-driven destination switching). Includes: iteration case studies, the final responsive-HTML deliverable, a reusable Claude Code skill encoding the planning methodology, and a pre-departure readiness optimizer design.
 
 ## License
 
