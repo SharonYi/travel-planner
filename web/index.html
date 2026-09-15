@@ -6,406 +6,426 @@
 <title>Trip Compass · 说走就走,帮你排好</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background: #f7f4ef; color: #2d3436; line-height: 1.7;
-    padding: 12px; max-width: 1080px; margin: 0 auto;
-    -webkit-text-size-adjust: 100%; word-wrap: break-word; overflow-wrap: break-word;
-  }
-  header { text-align: center; padding: 26px 16px 22px; background: linear-gradient(135deg,#2c5f6f,#3a7a8c); color: #fff; border-radius: 12px; margin-bottom: 18px; }
-  header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f7f4ef; color: #2d3436; line-height: 1.7; padding: 12px; max-width: 900px; margin: 0 auto; -webkit-text-size-adjust: 100%; word-wrap: break-word; overflow-wrap: break-word; }
+  header { text-align: center; padding: 24px 16px 20px; background: linear-gradient(135deg,#2c5f6f,#3a7a8c); color: #fff; border-radius: 12px; margin-bottom: 14px; }
+  header h1 { font-size: 21px; font-weight: 600; margin-bottom: 5px; }
   header .sub { font-size: 13px; opacity: .9; }
-  .tabs { text-align: center; margin-bottom: 16px; }
-  .tabs button { background: #fff; border: 1px solid #e0d9cf; color: #2c5f6f; padding: 7px 16px; margin: 0 3px 6px; border-radius: 20px; font-size: 14px; cursor: pointer; font-family: inherit; }
-  .tabs button.on { background: #2c5f6f; color: #fff; border-color: #2c5f6f; }
-  section.pane { display: none; background: #fff; border-radius: 12px; padding: 18px 16px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-  section.pane.on { display: block; }
-  h2 { font-size: 17px; color: #2c5f6f; border-left: 4px solid #e8a87c; padding-left: 10px; margin-bottom: 12px; }
-  h3 { font-size: 15px; color: #2c5f6f; margin: 12px 0 6px; }
-  .btn { background: #2c5f6f; color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 14px; cursor: pointer; margin: 6px 6px 6px 0; font-family: inherit; }
+  .mode-bar { text-align: center; margin-bottom: 12px; font-size: 12.5px; color: #6b7280; }
+  .mode-bar b { color: #2c5f6f; }
+  .mode-bar a { color: #2c5f6f; text-decoration: underline; cursor: pointer; }
+
+  #chat { background: #fff; border-radius: 12px; padding: 16px 14px; min-height: 320px; box-shadow: 0 2px 8px rgba(0,0,0,.05); margin-bottom: 14px; }
+  .msg { margin-bottom: 14px; }
+  .msg .who { font-size: 11.5px; font-weight: 700; margin-bottom: 3px; }
+  .msg.user .who { color: #c2410c; }
+  .msg.ai .who { color: #2c5f6f; }
+  .bubble { border-radius: 10px; padding: 10px 13px; font-size: 14px; }
+  .msg.user .bubble { background: #fff7ed; border: 1px solid #f3d9bf; }
+  .msg.ai .bubble { background: #f4f8f9; border: 1px solid #dce8eb; }
+  .bubble p { margin-bottom: 8px; }
+  .bubble table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 8px 0; }
+  .bubble th { background: #2c5f6f; color: #fff; padding: 5px 8px; text-align: left; }
+  .bubble td { padding: 5px 8px; border-bottom: 1px solid #e0d9cf; vertical-align: top; }
+  .bubble tr:nth-child(even) td { background: #faf8f4; }
+  .bubble .day-h { font-weight: 700; color: #2c5f6f; margin-top: 8px; }
+  .seg { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; color: #fff; margin: 1px 3px 1px 0; }
+  .choice-btn { display: block; width: 100%; text-align: left; background: #fff; border: 1.5px solid #c9a87c; color: #2d3436; border-radius: 8px; padding: 10px 14px; margin: 6px 0; cursor: pointer; font-family: inherit; font-size: 14px; }
+  .choice-btn:hover { background: #faf8f4; }
+  .choice-btn b { color: #2c5f6f; }
+  .typing { color: #8a9ba8; font-size: 12.5px; font-style: italic; }
+  .hint-chips { margin: 8px 0 0; }
+  .hint-chips button { background: #f0ebe1; border: none; border-radius: 14px; color: #6b4f3a; font-size: 12px; padding: 4px 12px; margin: 2px 4px 2px 0; cursor: pointer; font-family: inherit; }
+
+  #inputBar { background: #fff; border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  #inputBar textarea { width: 100%; border: 1px solid #e0d9cf; border-radius: 8px; padding: 9px 12px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 56px; background: #faf8f4; }
+  .input-row { margin-top: 8px; text-align: right; }
+  .btn { background: #2c5f6f; color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-size: 14px; cursor: pointer; font-family: inherit; margin-left: 8px; }
   .btn.ghost { background: #fff; color: #2c5f6f; border: 1px solid #c9a87c; }
-  .btn.warn { background: #c2410c; }
-  input, textarea, select { width: 100%; padding: 8px 10px; border: 1px solid #e0d9cf; border-radius: 6px; font-size: 14px; font-family: inherit; background: #fff; }
-  textarea { min-height: 64px; resize: vertical; }
-  label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 10px 0 3px; }
-  form.add, .panel-form { background: #faf8f4; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
-  .grid2 { display: table; width: 100%; border-spacing: 8px 0; margin: 0 -8px; }
-  .grid2 > div { display: table-cell; width: 50%; vertical-align: top; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
 
-  .trip-card { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
-  .trip-card:hover { background: #f0ebe1; }
-  .trip-card .t { font-size: 15px; font-weight: 700; color: #2c5f6f; }
-  .trip-card .m { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
-
-  /* 时间轴 */
-  .tl-row { margin-bottom: 7px; }
-  .tl-day { font-size: 12.5px; font-weight: 700; color: #2c5f6f; }
-  .tl-track { margin-top: 3px; background: #f0ebe1; border-radius: 8px; padding: 4px; }
-  .tl-seg { display: inline-block; padding: 4px 6px; border-radius: 5px; margin: 1px 3px 1px 0; font-size: 11.5px; color: #fff; line-height: 1.3; vertical-align: top; }
-  .tl-seg.nature { background: #5b8c5a; } .tl-seg.activity { background: #2c5f6f; }
-  .tl-seg.relax { background: #d4a76a; } .tl-seg.transit { background: #8a9ba8; }
-  .tl-seg.flight { background: #b0578d; }
-  .tl-legend { margin-top: 10px; font-size: 12px; color: #6b7280; }
-  .tl-legend span { display: inline-block; margin-right: 14px; }
-  .tl-dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
-
-  .day-card { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
-  .day-card .dh { font-size: 14.5px; font-weight: 700; color: #2c5f6f; margin-bottom: 6px; }
-  .day-card .row { font-size: 13px; margin-bottom: 4px; }
-  .day-card .row b { color: #8c6a4f; font-weight: 600; }
-  .seg-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11.5px; color: #fff; margin-right: 4px; }
-
-  .book-item { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
-  .book-item .n { font-weight: 600; }
-  .status { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
-  .status.done { color: #15803d; background: #dcfce7; }
-  .status.todo { color: #c2410c; background: #ffedd5; }
-  .bar { background: #f0ebe1; border-radius: 8px; padding: 4px; margin: 8px 0; }
-  .bar .fill { background: #5b8c5a; border-radius: 8px; padding: 5px 12px; color: #fff; font-size: 12.5px; font-weight: 600; }
-
-  .empty { text-align: center; color: #b8a89a; font-size: 13.5px; padding: 26px 0; }
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #2d3436; color: #fff; padding: 9px 20px; border-radius: 20px; font-size: 13.5px; display: none; z-index: 12; }
+  /* 设置弹层 */
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10; }
   .modal-bg.on { display: block; }
-  .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 12px; padding: 22px 20px; width: min(500px, 92vw); max-height: 85vh; overflow-y: auto; z-index: 11; box-shadow: 0 8px 30px rgba(0,0,0,.2); }
+  .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 12px; padding: 22px 20px; width: min(520px, 92vw); max-height: 85vh; overflow-y: auto; z-index: 11; box-shadow: 0 8px 30px rgba(0,0,0,.2); }
   .modal.on { display: block; }
-  footer { text-align: center; color: #b8a89a; font-size: 12px; padding: 14px; }
-  @media (max-width: 767px) { .grid2 { display: block; margin: 0; } .grid2 > div { display: block; width: 100%; } }
+  .modal h4 { color: #2c5f6f; font-size: 16px; margin-bottom: 8px; }
+  .modal label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 10px 0 3px; }
+  .modal input, .modal select { width: 100%; padding: 8px 10px; border: 1px solid #e0d9cf; border-radius: 6px; font-size: 14px; font-family: inherit; }
+  .modal .note { font-size: 12px; color: #6b7280; margin-top: 8px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #2d3436; color: #fff; padding: 9px 20px; border-radius: 20px; font-size: 13.5px; display: none; z-index: 12; }
+  footer { text-align: center; color: #b8a89a; font-size: 12px; padding: 12px; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>🧭 Trip Compass</h1>
-  <div class="sub">说走就走,帮你排好 —— 零登录 · 零安装 · 数据在你自己浏览器里</div>
+  <div class="sub">告诉我目的地和时间,我来出方案、排行程、盯细节</div>
 </header>
 
-<div class="tabs">
-  <button id="tab-home" class="on" onclick="switchTab('home')">🏠 我的行程</button>
-  <button id="tab-plan" onclick="switchTab('plan')">📝 行程规划</button>
-  <button id="tab-book" onclick="switchTab('book')">📋 必订清单</button>
-  <button id="tab-export" onclick="switchTab('export')">📤 导出分享</button>
+<div class="mode-bar">
+  当前模式:<b id="modeLabel">离线规划(内置目的地)</b> · <a onclick="openSettings()">切换到 AI 模式 / 设置</a>
 </div>
 
-<!-- ═══ 我的行程 ═══ -->
-<section id="pane-home" class="pane on">
-  <h2>我的行程</h2>
-  <div class="panel-form">
-    <h3>新建一个行程</h3>
-    <label>行程名称 *</label><input id="ntName" placeholder="例:关西红叶 5 日">
-    <div class="grid2">
-      <div><label>目的地 *</label><input id="ntDest" placeholder="例:日本关西(京都+大阪)"></div>
-      <div><label>天数 *</label><input id="ntDays" type="number" value="5" min="1" max="30"></div>
-    </div>
-    <div class="grid2">
-      <div><label>人数</label><input id="ntPeople" type="number" value="2" min="1" max="20"></div>
-      <div><label>出发日期(可选)</label><input id="ntDate" type="date"></div>
-    </div>
-    <label>偏好/约束(想玩什么、已订了什么、体力如何…)</label><textarea id="ntNote" placeholder="例:自然风光为主+逛设计小店;无潜水证;已订国际机票"></textarea>
-    <button class="btn" onclick="createTrip()">创建行程 ✨</button>
+<div id="chat"></div>
+
+<div id="inputBar">
+  <textarea id="userInput" placeholder="例:十一想去日本关西看红叶,大概 5 天,2 个人,想逛设计小店…"></textarea>
+  <div class="hint-chips">
+    <button onclick="fillInput('十一想去日本关西看红叶,5天左右,2人,自然为主+设计小店')">🍁 关西红叶 5 天</button>
+    <button onclick="fillInput('想去巴厘岛+双火山,10天左右,4个女生,想体验潜')">🌋 巴厘岛双火山</button>
+    <button onclick="fillInput('北京周边草原自驾两日,单人开车,单次别开太久')">🌾 草原自驾</button>
   </div>
-  <h3>已有行程</h3>
-  <div id="tripList"></div>
-</section>
-
-<!-- ═══ 行程规划 ═══ -->
-<section id="pane-plan" class="pane">
-  <h2 id="planTitle">行程规划</h2>
-  <div id="timelineBox">
-    <h3>🗺️ 时间轴总览</h3>
-    <div id="tlWrap"></div>
-    <div class="tl-legend">
-      <span><i class="tl-dot" style="background:#5b8c5a"></i>自然观光</span>
-      <span><i class="tl-dot" style="background:#2c5f6f"></i>体验活动</span>
-      <span><i class="tl-dot" style="background:#d4a76a"></i>休闲/住宿</span>
-      <span><i class="tl-dot" style="background:#8a9ba8"></i>在途</span>
-      <span><i class="tl-dot" style="background:#b0578d"></i>飞行</span>
-    </div>
+  <div class="input-row">
+    <button class="btn ghost" onclick="exportHTML()">📤 导出行程单</button>
+    <button class="btn" onclick="send()">发送 ➤</button>
   </div>
-  <h3>📅 逐日安排(点击任意一天编辑)</h3>
-  <div id="dayList"></div>
-  <button class="btn ghost" onclick="addDay()">+ 加一天</button>
-</section>
+</div>
 
-<!-- ═══ 必订清单 ═══ -->
-<section id="pane-book" class="pane">
-  <h2>必订清单 · 就绪度</h2>
-  <div id="readyBar"></div>
-  <div class="panel-form">
-    <h3>添加待办</h3>
-    <div class="grid2">
-      <div><label>事项 *</label><input id="bkName" placeholder="例:北京↔KIX 机票"></div>
-      <div><label>提前量</label>
-        <select id="bkLead"><option value="">选提前量…</option><option>T-30d 核对机票</option><option>T-21d 签证提交</option><option>T-14d 酒店/快船</option><option>T-7d 包车/潜水/保险</option><option>T-3d 打印证件/查天气</option></select></div>
-    </div>
-    <button class="btn" onclick="addBooking()">加入清单 📋</button>
-  </div>
-  <div id="bookList"></div>
-</section>
-
-<!-- ═══ 导出分享 ═══ -->
-<section id="pane-export" class="pane">
-  <h2>导出与分享</h2>
-  <p style="font-size:13.5px;color:#6b7280;margin-bottom:10px;">导出的单文件 HTML:手机电脑自适应、零依赖,直接发给同伴或拖到 Netlify/GitHub Pages 生成链接。</p>
-  <button class="btn" onclick="exportHTML()">📤 导出行程单 HTML</button>
-  <button class="btn ghost" onclick="window.print()">🖨️ 打印 / 存 PDF</button>
-  <h3 style="margin-top:18px;">数据备份</h3>
-  <p style="font-size:13.5px;color:#6b7280;">数据存在本浏览器。换设备前请导出 JSON,到新设备导入。</p>
-  <button class="btn ghost" onclick="exportJSON()">导出数据 JSON</button>
-  <button class="btn ghost" onclick="document.getElementById('impFile').click()">导入数据 JSON</button>
-  <input type="file" id="impFile" accept=".json" style="display:none" onchange="importJSON(this)">
-</section>
-
-<!-- 编辑弹层 -->
+<!-- 设置弹层 -->
 <div class="modal-bg" id="modalBg" onclick="closeModal()"></div>
 <div class="modal" id="modal">
-  <h4 id="mTitle" style="color:#2c5f6f;font-size:16px;margin-bottom:10px;"></h4>
-  <div id="mBody"></div>
-  <button class="btn" onclick="saveDayModal()">保存</button>
-  <button class="btn warn" onclick="delDayModal()">删除这天</button>
-  <button class="btn ghost" onclick="closeModal()">取消</button>
+  <h4>⚙️ 模式与设置</h4>
+  <label>规划模式</label>
+  <select id="setMode">
+    <option value="offline">离线模式——内置目的地知识库(关西/巴厘岛/北京周边),无需任何配置</option>
+    <option value="ai">AI 模式——填入你自己的 Claude API Key,任意目的地实时规划</option>
+  </select>
+  <label>Claude API Key(仅 AI 模式需要)</label>
+  <input id="setKey" type="password" placeholder="sk-ant-...">
+  <label>模型</label>
+  <select id="setModel">
+    <option value="claude-sonnet-4-6">claude-sonnet-4-6(推荐,快且便宜)</option>
+    <option value="claude-opus-4-8">claude-opus-4-8(最强)</option>
+  </select>
+  <div class="note">· Key 只存在<b>你自己的浏览器</b>里(localStorage),不上传任何服务器<br>· 在 console.anthropic.com 申请<br>· AI 模式直连 Anthropic API,页面保持纯静态</div>
+  <div style="margin-top:14px;">
+    <button class="btn" onclick="saveSettings()">保存</button>
+    <button class="btn ghost" onclick="closeModal()">取消</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
-<footer>Trip Compass · 开源项目 github.com/SharonYi/travel-planner · 数据仅存本地浏览器</footer>
+<footer>Trip Compass · <a href="https://github.com/SharonYi/travel-planner" target="_blank" style="color:#8c6a4f;">GitHub 开源</a> · 数据仅存本地浏览器</footer>
 
 <script>
-// ══════════ 数据层 ══════════
-var LS = 'tripCompass.trips';
-function loadTrips() { try { return JSON.parse(localStorage.getItem(LS)) || []; } catch(e) { return []; } }
-function saveTrips(v) { localStorage.setItem(LS, JSON.stringify(v)); }
-var cur = -1; // 当前行程索引
+// ══════════ 状态 ══════════
+var LS_MODE = 'tripCompass.mode', LS_KEY = 'tripCompass.key', LS_MODEL = 'tripCompass.model';
+var LS_TRIP = 'tripCompass.currentTrip';
+function lsGet(k, d) { try { return localStorage.getItem(k) || d; } catch(e) { return d; } }
+var mode = lsGet(LS_MODE, 'offline');
+var apiKey = lsGet(LS_KEY, '');
+var model = lsGet(LS_MODEL, 'claude-sonnet-4-6');
+var state = null;          // {dest, days, people, prefs, phase: candidates|chosen|refined, plan[], chosenV, history[]}
+var busy = false;
 
-function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2200); }
+function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2400); }
 function esc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fillInput(t) { document.getElementById('userInput').value = t; document.getElementById('userInput').focus(); }
 
-// ══════════ Tab ══════════
-function switchTab(name) {
-  ['home','plan','book','export'].forEach(function(n){
-    document.getElementById('tab-'+n).className = (n===name) ? 'on' : '';
-    document.getElementById('pane-'+n).className = 'pane' + (n===name ? ' on' : '');
-  });
-  renderPlan(); renderBook();
+function addMsg(who, html) {
+  var chat = document.getElementById('chat');
+  var d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.innerHTML = '<div class="who">' + (who==='user'?'👤 你':'🧭 Trip Compass') + '</div><div class="bubble">' + html + '</div>';
+  chat.appendChild(d);
+  window.scrollTo(0, document.body.scrollHeight);
+  return d;
 }
-
-// ══════════ 行程管理 ══════════
-function createTrip() {
-  var name = document.getElementById('ntName').value.trim();
-  var dest = document.getElementById('ntDest').value.trim();
-  var days = +document.getElementById('ntDays').value || 1;
-  if (!name || !dest) { toast('名称和目的地要填哦'); return; }
-  var t = {
-    name: name, dest: dest, days: days,
-    people: +document.getElementById('ntPeople').value || 2,
-    date: document.getElementById('ntDate').value,
-    note: document.getElementById('ntNote').value.trim(),
-    plan: [], bookings: [], created: new Date().toLocaleDateString()
-  };
-  for (var i=0;i<days;i++) t.plan.push(newDay(i+1));
-  var arr = loadTrips(); arr.unshift(t); saveTrips(arr);
-  cur = 0;
-  document.getElementById('ntName').value=''; document.getElementById('ntDest').value='';
-  document.getElementById('ntNote').value='';
-  renderHome(); switchTab('plan');
-  toast('《'+name+'》已创建,开始排行程 ✨');
-}
-function newDay(n) {
-  return { n:n, title:'', acts:'', transport:'', hotel:'', morning:'', afternoon:'', evening:'' };
-}
-function openTrip(i) { cur = i; switchTab('plan'); renderPlan(); }
-function delTrip(i) {
-  if (!confirm('确定删除这个行程?')) return;
-  var arr = loadTrips(); arr.splice(i,1); saveTrips(arr);
-  if (cur === i) cur = -1;
-  renderHome(); toast('已删除');
-}
-function trip() { var a = loadTrips(); return (cur>=0 && a[cur]) ? a[cur] : null; }
-function saveTrip(t) { var a = loadTrips(); if (a[cur]) a[cur] = t; saveTrips(a); }
-
-function renderHome() {
-  var arr = loadTrips();
-  var el = document.getElementById('tripList');
-  if (!arr.length) { el.innerHTML = '<div class="empty">还没有行程,上面创建第一个吧 🧭</div>'; return; }
-  el.innerHTML = arr.map(function(t,i){
-    return '<div class="trip-card" onclick="openTrip('+i+')">' +
-      '<div class="t">'+esc(t.name)+' <span style="font-weight:400;font-size:12.5px;color:#8c6a4f;">· '+esc(t.dest)+'</span></div>' +
-      '<div class="m">'+t.days+' 天 · '+t.people+' 人'+(t.date?' · '+t.date:'')+' · '+t.created+' 创建</div>' +
-      '<div style="margin-top:4px;"><a onclick="event.stopPropagation();delTrip('+i+')" style="color:#c2410c;font-size:12px;">删除</a></div>' +
-    '</div>';
-  }).join('');
+function addTyping() {
+  var chat = document.getElementById('chat');
+  var d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = '<div class="who">🧭 Trip Compass</div><div class="bubble"><span class="typing">正在规划…(本地引擎)</span></div>';
+  chat.appendChild(d);
+  window.scrollTo(0, document.body.scrollHeight);
+  return d;
 }
 
-// ══════════ 规划 ══════════
-var TYPES = {nature:'自然观光', activity:'体验活动', relax:'休闲/住宿', transit:'在途', flight:'飞行'};
-function renderPlan() {
-  var t = trip();
-  var tl = document.getElementById('tlWrap'), dl = document.getElementById('dayList');
-  if (!t) {
-    document.getElementById('planTitle').textContent = '行程规划(先在「我的行程」里创建/选择一个)';
-    tl.innerHTML = ''; dl.innerHTML = '<div class="empty">先创建或选择一个行程 🧭</div>'; return;
+// ══════════ 离线知识库 ══════════
+// 每个目的地:关键词匹配、候选方案生成器(沿用真实案例的方法论)
+var LIB = [
+  {
+    keys: ['关西','京都','大阪','日本','红叶','岚山','奈良'],
+    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
+    intro: '关西红叶窗口:峰期 11 月中下旬(人多+贵),**前中期(11 月上中旬)体验最佳**。',
+    variants: [
+      { name:'V1 · 京都深度', dist:'京都3晚+大阪2晚', hl:'岚山+东福寺+永观堂+鞍马贵船,红叶满配', hotel:'换1次', cost:'4500–6500', why:'红叶季的京都=目的地本身;你的自然+小店偏好它三者全占' },
+      { name:'V2 · 京都+奈良', dist:'京都2.5+奈良0.5+大阪2', hl:'京都略减+小鹿+春日大社秋色', hotel:'换1次', cost:'4500–6500', why:'有「看鹿」执念时选;代价是挤掉一处京都红叶名所' },
+      { name:'V3 · 京都+神户', dist:'京都2+神户1+大阪2', hl:'京都砍贵船线+六甲山红叶+有马温泉', hotel:'换2次', cost:'5000–7000', why:'想泡温泉选;代价是多搬一次酒店' }
+    ],
+    plan: [
+      {t:'抵达→京都东山', acts:[['flight','落地 KIX'],['transit','HARUKA 75min'],['relax','只园白川夜散步']], hotel:'京都站南', trans:'HARUKA ~¥2900'},
+      {t:'岚山一整天', acts:[['nature','竹林(8点前)+天龙寺+常寂光寺'],['activity','保津川小火车'],['relax','鸭川晚餐']], hotel:'京都站南', trans:'JR 嵯峨野线'},
+      {t:'东福寺—伏见—永观堂', acts:[['nature','东福寺通天桥(开园即入)'],['nature','伏见稻荷千本鸟居'],['nature','永观堂+南禅寺夜枫']], hotel:'京都站南', trans:'JR+巴士'},
+      {t:'鞍马→贵船→大阪', acts:[['nature','叡电红叶隧道+鞍马徒步2h'],['activity','川床錦秋床午餐'],['relax','梅田夜景+中崎町小店']], hotel:'梅田', trans:'叡电+JR'},
+      {t:'大阪设计小店日', acts:[['activity','中崎町深度+堀江'],['relax','难波公园/大阪城红叶'],['flight','南海 Rapi:t 赴 KIX']], hotel:'', trans:'南海 Rapi:t ~¥1450'}
+    ]
+  },
+  {
+    keys: ['巴厘岛','bali','火山','布罗莫','bromo','sewu','印尼'],
+    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
+    intro: '巴厘岛+双火山:旱季(4–10月)最佳;瀑布+火山+海岛的经典三段式。',
+    variants: [
+      { name:'V1 · 双火山+佩妮达', dist:'Safari+Sewu+Bromo 3天+巴厘岛 6天', hl:'瀑布+火山日出+悬崖海景+体验潜', hotel:'多次', cost:'7000–10000', why:'打卡最全;体力要求高(两晚凌晨起)' },
+      { name:'V2 · 纯巴厘岛', dist:'Sanur 3+图蓝本潜水+Amed+乌布', hl:'跳过爪哇火山,纯海岛度假', hotel:'3次', cost:'5000–7000', why:'不想起夜赶路选这个;节奏舒服' },
+      { name:'V3 · 双火山+科莫多', dist:'火山2天+飞Labuan Bajo船宿2天', hl:'加科莫多龙+Manta 浮潜', hotel:'多次', cost:'9000–13000', why:'有潜水证选;无证不划算' }
+    ],
+    plan: [
+      {t:'Safari+进山', acts:[['activity','Prigen Safari Park'],['transit','车程5h'],['relax','Semeru 山脚民宿']], hotel:'山脚', trans:'包车'},
+      {t:'Tumpak Sewu→Bromo', acts:[['nature','Sewu 瀑布下峡谷2h'],['transit','经 Malang 上山3h']], hotel:'Bromo 火山村', trans:'包车'},
+      {t:'Bromo 日出→飞巴厘岛', acts:[['nature','凌晨2点起·日出+火山口'],['flight','午后赴 SUB→DPS'],['relax','库塔入住']], hotel:'库塔', trans:'包车+航班'},
+      {t:'佩妮达西线', acts:[['transit','快船40min'],['nature','Kelingking+Broken Beach 日落']], hotel:'岛上', trans:'快船+皮卡'},
+      {t:'佩妮达东线+浮潜', acts:[['nature','Diamond Beach'],['activity','浮潜 Manta Point']], hotel:'Sanur', trans:'快船'},
+      {t:'图蓝本体验潜', acts:[['activity','DSD 自由号沉船(岸潜)'],['relax','Amed 海边日落']], hotel:'Amed', trans:'包车'},
+      {t:'水宫+梯田→乌布', acts:[['nature','Tirta Gangga+Tegalalang'],['relax','乌布市场+SPA']], hotel:'乌布', trans:'包车'},
+      {t:'南部悬崖+海鲜', acts:[['nature','海神庙+Uluwatu'],['activity','黄昏 Kecak 舞'],['relax','Jimbaran 海鲜']], hotel:'Seminyak', trans:'包车'}
+    ]
+  },
+  {
+    keys: ['草原','坝上','张北','承德','北京周边','自驾','雾灵山','天路'],
+    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
+    intro: '北京周边草原:7–8月草最绿;看红叶则是 9 月下–10 月中(雾灵山/坝上)。',
+    variants: [
+      { name:'V1 · 张北草原天路', dist:'周五晚出发中途住+周六天路+周日回', hl:'全程高速,单次驾驶≤2h', hotel:'中途+张北', cost:'1000–1500', why:'单人驾驶友好;8月正季' },
+      { name:'V2 · 承德+坝上环线', dist:'周五晚直达承德+周六坝上+周日回', hl:'避暑山庄+京北第一草原', hotel:'承德+坝上蒙古包', cost:'1200–1800', why:'天气不稳时的稳妥选择(承德方向晴天率高)' },
+      { name:'V3 · 雾灵山红叶', dist:'周六主峰+民宿过夜+周日晨雾日出', hl:'华北秋色天花板(10月中)', hotel:'山下民宿/阿那亚', cost:'800–1500', why:'秋季专属;11月中旬后封山' }
+    ],
+    plan: [
+      {t:'出发日', acts:[['transit','京藏/京承高速'],['relax','中途镇晚餐休整']], hotel:'中途镇', trans:'自驾 1.5–2h'},
+      {t:'主景区日', acts:[['nature','核心景观(早到避人流)'],['activity','骑马/徒步/拍照'],['relax','日落']], hotel:'景区附近', trans:'自驾+索道'},
+      {t:'返程日', acts:[['nature','晨雾/日出(可选早场)'],['transit','返程']], hotel:'', trans:'自驾 2–4h'}
+    ]
   }
-  document.getElementById('planTitle').textContent = '《' + esc(t.name) + '》 · ' + esc(t.dest) + ' · ' + t.days + ' 天';
-  // 时间轴:解析每天的活动段落(形如 "[自然]xxx" 或默认 activity)
-  tl.innerHTML = t.plan.map(function(d){
-    var segs = parseSegs(d);
-    var segHtml = segs.map(function(s){ return '<span class="tl-seg '+s.type+'">'+esc(s.text)+'</span>'; }).join('');
-    return '<div class="tl-row"><div class="tl-day">D'+d.n+(d.title?' · '+esc(d.title):'')+'</div><div class="tl-track">'+(segHtml||'<span style="color:#b8a89a;font-size:11.5px;">(待安排)</span>')+'</div></div>';
-  }).join('');
-  // 逐日卡片
-  dl.innerHTML = t.plan.map(function(d, i){
-    var segs = parseSegs(d);
-    var segTags = segs.map(function(s){ return '<span class="seg-tag" style="background:' + ({nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'}[s.type]) + '">'+esc(s.text)+'</span>'; }).join(' ');
-    return '<div class="day-card" onclick="editDay('+i+')">' +
-      '<div class="dh">D'+d.n+(d.title?' · '+esc(d.title):'')+'</div>' +
-      (segs.length ? '<div class="row">'+segTags+'</div>' : '<div class="row" style="color:#b8a89a;">(点这里安排这一天)</div>') +
-      (d.morning?'<div class="row"><b>上午</b> '+esc(d.morning)+'</div>':'') +
-      (d.afternoon?'<div class="row"><b>下午</b> '+esc(d.afternoon)+'</div>':'') +
-      (d.evening?'<div class="row"><b>晚上</b> '+esc(d.evening)+'</div>':'') +
-      (d.transport?'<div class="row"><b>交通</b> '+esc(d.transport)+'</div>':'') +
-      (d.hotel?'<div class="row"><b>住宿</b> '+esc(d.hotel)+'</div>':'') +
-    '</div>';
-  }).join('');
+];
+
+function matchLib(text) {
+  for (var i=0;i<LIB.length;i++) if (LIB[i].match(text)) return LIB[i];
+  return null;
 }
-// 把 acts 按行拆成段落;支持 "[自然]竹林" 前缀语法
-function parseSegs(d) {
-  var out = [];
-  var acts = String(d.acts||'').split(/\n|;/).map(function(x){return x.trim();}).filter(Boolean);
-  acts.forEach(function(a){
-    var m = a.match(/^\[(自然|活动|休闲|在途|飞行|nature|activity|relax|transit|flight)\](.*)$/);
-    var type = 'activity', text = a;
-    if (m) { text = m[2]; var k = m[1]; type = ({nature:'nature',activity:'activity',relax:'relax',transit:'transit',flight:'flight'}[k]) || 'activity'; }
-    if (text) out.push({type:type, text:text});
+
+// ══════════ 意图解析(轻量) ══════════
+function parseReq(text) {
+  var days = (text.match(/(\d+)\s*天/) || [0,0])[1];
+  var people = (text.match(/(\d+)\s*(个人|人|个女生|个男生)/) || [0,0])[1];
+  return { days: +days || 0, people: +people || 0, raw: text };
+}
+
+// ══════════ 对话流 ══════════
+function send() {
+  if (busy) { toast('它在想,稍等~'); return; }
+  var text = document.getElementById('userInput').value.trim();
+  if (!text) { toast('说点什么吧'); return; }
+  document.getElementById('userInput').value = '';
+  addMsg('user', esc(text));
+  busy = true;
+  if (mode === 'ai' && apiKey) { aiSend(text); }
+  else { setTimeout(function(){ offlineReply(text); }, 500); }
+}
+
+function offlineReply(text) {
+  var t = addTyping();
+  setTimeout(function() {
+    t.remove();
+    if (!state) {
+      // 第一轮:解析需求 → 匹配知识库 → 候选方案
+      var lib = matchLib(text);
+      var req = parseReq(text);
+      if (!lib) {
+        addMsg('ai', '<p>这个目的地我(离线模式)还没学过 🌱</p><p>两个选择:</p>' +
+          '<button class="choice-btn" onclick="openSettings()"><b>① 切到 AI 模式</b>——填你自己的 Claude API Key,任意目的地都能规划</button>' +
+          '<button class="choice-btn" onclick="fillInput(\'十一想去日本关西看红羊,5天左右,2人,自然为主+设计小店\')"><b>② 试试内置的</b>——关西红叶 / 巴厘岛双火山 / 北京草原自驾</button>');
+        busy = false; return;
+      }
+      state = { lib: lib, days: req.days || 5, people: req.people || 2, raw: text, phase: 'candidates', plan: null };
+      renderCandidates();
+    } else if (state.phase === 'candidates') {
+      // 候选阶段的反馈:重新对比/换条件
+      var v = matchChoice(text);
+      if (v) { chooseVariant(v); }
+      else {
+        state.raw += ' ' + text;
+        addMsg('ai', '<p>收到你的补充 ✍️ 我重新对比一下——</p>');
+        renderCandidates(true);
+      }
+    } else if (state.phase === 'chosen' || state.phase === 'refined') {
+      refine(text);
+    }
+    busy = false;
+  }, 700);
+}
+
+function matchChoice(text) {
+  if (/V?[123]/.test(text)) {
+    var m = text.match(/V?([123])/);
+    if (m) { var idx = +m[1]-1; if (state.lib.variants[idx]) return state.lib.variants[idx]; }
+  }
+  if (text.indexOf('京都深度')>-1) return state.lib.variants[0];
+  if (text.indexOf('奈良')>-1) return state.lib.variants[1];
+  if (text.indexOf('神户')>-1) return state.lib.variants[2];
+  return null;
+}
+
+function segHtml(s) {
+  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
+  return '<span class="seg" style="background:' + colors[s[0]] + ';">' + esc(s[1]) + '</span>';
+}
+
+function renderCandidates(isRerender) {
+  var lib = state.lib;
+  var rows = lib.variants.map(function(v, i){
+    return '<tr><td><b>V'+(i+1)+'</b></td><td>'+esc(v.name.replace(/^V\d · /,''))+'</td><td>'+esc(v.dist)+'</td><td>'+esc(v.hl)+'</td><td>'+esc(v.hotel)+'</td><td>'+esc(v.cost)+'</td></tr>';
+  }).join('');
+  var btns = lib.variants.map(function(v, i){
+    return '<button class="choice-btn" onclick="chooseVariant(LIB['+libIdx(lib)+'].variants['+i+'])"><b>'+esc(v.name)+'</b><br><span style="font-size:12px;color:#6b7280;">'+esc(v.why)+'</span></button>';
+  }).join('');
+  addMsg('ai', (isRerender?'':'<p>'+lib.intro.replace(/\*\*/g,'')+'</p><p>按你的需求('+state.days+'天·'+state.people+'人),给你三版方案:</p>') +
+    '<table><tr><th></th><th>方案</th><th>分布</th><th>亮点</th><th>换酒店</th><th>人均¥</th></tr>'+rows+'</table>' +
+    '<p style="font-size:12px;color:#6b7280;">在下方回复「V1/V2/V3」选择,或继续提要求(例:想加奈良 / 少换酒店)</p>' + btns);
+}
+function libIdx(lib) { for (var i=0;i<LIB.length;i++) if (LIB[i]===lib) return i; return 0; }
+
+function chooseVariant(v) {
+  state.phase = 'chosen';
+  state.chosenV = v;
+  var lib = state.lib;
+  // 按 v 的分布截取/适配 plan
+  state.plan = lib.plan.slice(0, Math.min(state.days, lib.plan.length));
+  addMsg('ai', '<p>好选择 ✨ <b>'+esc(v.name)+'</b></p><p>下面是逐日细化,你可以直接反馈修改(例:D2 太赶 / 想加 XX / 换掉 XX):</p>' + planHtml());
+}
+
+function planHtml() {
+  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
+  return state.plan.map(function(d, i){
+    var segs = d.acts.map(function(s){ return '<span class="seg" style="background:'+colors[s[0]]+';">'+esc(s[1])+'</span>'; }).join(' ');
+    return '<div class="day-h">D'+(i+1)+' · '+esc(d.t)+'</div><div>'+segs+'</div>' +
+      (d.hotel?'<div style="font-size:12px;color:#6b7280;">🏨 '+esc(d.hotel)+(d.trans?' · 🚃 '+esc(d.trans):'')+'</div>':'');
+  }).join('') + '<div style="font-size:11.5px;color:#8a9ba8;margin-top:6px;"><span class="seg" style="background:#5b8c5a">自然</span><span class="seg" style="background:#2c5f6f">活动</span><span class="seg" style="background:#d4a76a">休闲</span><span class="seg" style="background:#8a9ba8">在途</span><span class="seg" style="background:#b0578d">飞行</span></div>';
+}
+
+function refine(text) {
+  var t = addTyping();
+  setTimeout(function() {
+    t.remove();
+    state.phase = 'refined';
+    // 轻量规则:常见反馈就地改
+    var changed = [];
+    if (/太赶|太累|松一点|放松/.test(text)) {
+      // 砍掉最后一个纯活动日的内容密度
+      var last = state.plan[state.plan.length-1];
+      if (last) { last.acts = last.acts.slice(0,2); changed.push('已给最后一天减负'); }
+    }
+    if (/加一天|多一天/.test(text) && state.plan.length < 10) {
+      state.plan.push({t:'机动日', acts:[['relax','自由安排/补漏']], hotel:'', trans:''});
+      changed.push('已加一天机动日');
+    }
+    if (/早一点|日出|早起/.test(text)) changed.push('提醒:D1 起记得调作息,早场点位提前 1h 到');
+    if (/预算|多少钱/.test(text)) changed.push('预算参考:本方案 '+state.chosenV.cost+' RMB/人(不含国际机票)');
+    var msg = changed.length ? '<p>收到 ✍️ '+changed.join(';')+'</p>' : '<p>收到你的反馈:「'+esc(text)+'」</p><p style="font-size:12.5px;color:#6b7280;">离线引擎的能力有限,这类调整我在 AI 模式下能做得更细。当前方案:</p>';
+    addMsg('ai', msg + planHtml() + '<p style="font-size:12px;color:#6b7280;margin-top:8px;">继续反馈可再改;满意了点下方「导出行程单」👇</p>');
+  }, 600);
+}
+
+// ══════════ AI 模式(直连 Anthropic,纯前端) ══════════
+var SYS_PROMPT = '你是 Trip Compass,一个人机协作的旅行规划助手。方法论:\
+1)先问清关键约束(具体日期/人数/证件等级/已订事项/预算),一次问完;\
+2)给2-3版候选方案,用表格对比(分布/亮点/换酒店次数/人均成本/推荐理由),量化在途时间——在途时间是第一决策指标,单日超6h要预警;\
+3)用户选定后逐日细化:每天给主题、活动段落(标注类型:自然/活动/休闲/在途/飞行)、交通方式+耗时、住宿;\
+4)用户反馈后只调整受影响部分,逐轮收敛,不推翻全局;\
+5)诚实反馈:方案物理不可行时直说;\
+6)每次回复简洁,表格优先,最后给明确的下一步选项。\
+回复用 HTML 片段(可用<p><table><b>标签),不要用 markdown。';
+
+function aiSend(text) {
+  var t = addTyping();
+  t.querySelector('.typing').textContent = '正在规划…(AI 模式)';
+  var history = JSON.parse(lsGet('tripCompass.chatHistory', '[]'));
+  history.push({role:'user', content:text});
+  var body = JSON.stringify({
+    model: model,
+    max_tokens: 3000,
+    system: SYS_PROMPT,
+    messages: history.slice(-12)
   });
-  if (!out.length && d.hotel) out.push({type:'relax', text:d.hotel});
-  return out;
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: body
+  }).then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data) {
+    t.remove();
+    var html = (data.content && data.content[0] && data.content[0].text) || '(空回复)';
+    // 提取可能的行程结构(简单约定:AI 若输出 <plan> JSON 就解析)
+    var m = html.match(/<plan>([\s\S]*?)<\/plan>/);
+    if (m) {
+      try { state = { phase:'refined', plan: JSON.parse(m[1]) }; } catch(e) {}
+      html = html.replace(/<plan>[\s\S]*?<\/plan>/, '');
+    }
+    addMsg('ai', html);
+    history.push({role:'assistant', content: html});
+    localStorage.setItem('tripCompass.chatHistory', JSON.stringify(history.slice(-12)));
+    busy = false;
+  }).catch(function(e) {
+    t.remove();
+    addMsg('ai', '<p>AI 调用失败:'+esc(e.message)+'</p><p style="font-size:12.5px;color:#6b7280;">检查 API Key 是否有效/有余额;或切回离线模式先用着。设置里可以切换。</p>');
+    history.pop();
+    busy = false;
+  });
 }
 
-var editIdx = -1;
-function editDay(i) {
-  var t = trip(); if (!t) return;
-  editIdx = i; var d = t.plan[i];
-  document.getElementById('mTitle').textContent = 'D' + d.n + (d.title?' · '+d.title:'') + ' 编辑';
-  document.getElementById('mBody').innerHTML =
-    '<label>当日主题(例:岚山红叶一整天)</label><input id="edTitle" value="'+escAttr(d.title)+'">' +
-    '<label>活动段落(每行一段;前缀 [自然]/[活动]/[休闲]/[在途]/[飞行] 上色)</label>' +
-    '<textarea id="edActs" placeholder="例:\n[自然]竹林小径(8点前)\n[在途]JR 20min\n[休闲]鸭川晚餐">'+esc(d.acts||'')+'</textarea>' +
-    '<div class="grid2"><div><label>上午</label><input id="edMorning" value="'+escAttr(d.morning)+'"></div>' +
-    '<div><label>下午</label><input id="edAfternoon" value="'+escAttr(d.afternoon)+'"></div></div>' +
-    '<label>晚上</label><input id="edEvening" value="'+escAttr(d.evening)+'">' +
-    '<div class="grid2"><div><label>交通</label><input id="edTransport" placeholder="例:HARUKA 特快 75min ¥2900" value="'+escAttr(d.transport)+'"></div>' +
-    '<div><label>住宿</label><input id="edHotel" placeholder="例:京都站南 · 某酒店" value="'+escAttr(d.hotel)+'"></div></div>';
-  document.getElementById('modalBg').className='modal-bg on';
-  document.getElementById('modal').className='modal on';
-}
-function escAttr(s) { return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-function saveDayModal() {
-  var t = trip(); if (!t || editIdx<0) return;
-  var d = t.plan[editIdx];
-  d.title = document.getElementById('edTitle').value.trim();
-  d.acts = document.getElementById('edActs').value;
-  d.morning = document.getElementById('edMorning').value.trim();
-  d.afternoon = document.getElementById('edAfternoon').value.trim();
-  d.evening = document.getElementById('edEvening').value.trim();
-  d.transport = document.getElementById('edTransport').value.trim();
-  d.hotel = document.getElementById('edHotel').value.trim();
-  saveTrip(t); closeModal(); renderPlan(); toast('D'+d.n+' 已保存 ✅');
-}
-function delDayModal() {
-  var t = trip(); if (!t || editIdx<0) return;
-  t.plan.splice(editIdx,1); t.days = t.plan.length;
-  t.plan.forEach(function(d,i){ d.n = i+1; });
-  saveTrip(t); closeModal(); renderPlan(); toast('已删除该天');
-}
-function addDay() {
-  var t = trip(); if (!t) { toast('先创建行程'); return; }
-  t.plan.push(newDay(t.plan.length+1)); t.days = t.plan.length;
-  saveTrip(t); renderPlan(); toast('已加一天');
-}
-function closeModal() { document.getElementById('modalBg').className='modal-bg'; document.getElementById('modal').className='modal'; }
-
-// ══════════ 必订清单 ══════════
-function addBooking() {
-  var t = trip(); if (!t) { toast('先创建/选择行程'); return; }
-  var n = document.getElementById('bkName').value.trim();
-  if (!n) { toast('事项要填哦'); return; }
-  t.bookings.unshift({ name:n, lead:document.getElementById('bkLead').value, status:'todo' });
-  saveTrip(t);
-  document.getElementById('bkName').value='';
-  renderBook(); toast('已加入清单 📋');
-}
-function toggleBooking(i) {
-  var t = trip(); if (!t) return;
-  t.bookings[i].status = t.bookings[i].status === 'done' ? 'todo' : 'done';
-  saveTrip(t); renderBook();
-}
-function delBooking(i) { var t = trip(); if (!t) return; t.bookings.splice(i,1); saveTrip(t); renderBook(); }
-function renderBook() {
-  var t = trip(); var el = document.getElementById('bookList'), bar = document.getElementById('readyBar');
-  if (!t) { bar.innerHTML=''; el.innerHTML='<div class="empty">先创建/选择行程 🧭</div>'; return; }
-  var bs = t.bookings, done = bs.filter(function(b){return b.status==='done';}).length;
-  var pct = bs.length ? Math.round(done/bs.length*100) : 0;
-  bar.innerHTML = '<div class="bar"><div class="fill" style="width:'+Math.max(pct,8)+'%;">就绪度 '+pct+'% ('+done+'/'+bs.length+')</div></div>';
-  if (!bs.length) { el.innerHTML='<div class="empty">清单还空着,把要订的都加进来——机票、签证、酒店、船票… 📋</div>'; return; }
-  el.innerHTML = bs.map(function(b,i){
-    return '<div class="book-item"><span class="n">'+esc(b.name)+'</span>' +
-      (b.lead?' <span style="font-size:12px;color:#8c6a4f;">· '+esc(b.lead)+'</span>':'') +
-      ' <span class="status '+b.status+'" style="float:right;margin-top:-2px;" onclick="toggleBooking('+i+')">'+(b.status==='done'?'✅ 已订':'🟡 待办')+'</span>' +
-      ' <a onclick="delBooking('+i+')" style="float:right;margin:3px 10px 0 0;color:#c2410c;font-size:12px;">删</a></div>';
-  }).join('');
-}
-
-// ══════════ 导出 ══════════
+// ══════════ 导出行程单 ══════════
 function exportHTML() {
-  var t = trip(); if (!t) { toast('先创建/选择行程'); return; }
-  var segsAll = t.plan.map(function(d){ return parseSegs(d); });
-  var rows = t.plan.map(function(d,i){
-    var segs = segsAll[i];
-    var segHtml = segs.map(function(s){ return '<span style="display:inline-block;padding:3px 8px;border-radius:4px;margin:1px 3px 1px 0;font-size:12px;color:#fff;background:' + ({nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'}[s.type]) + ';">'+esc(s.text)+'</span>'; }).join('');
-    return '<tr><td><b>D'+d.n+'</b></td><td>'+(d.title?esc(d.title):'')+'</td>' +
-      '<td>'+segHtml+(d.morning?'<br><span style="font-size:12px;color:#6b7280;">上午:'+esc(d.morning)+'</span>':'')+(d.afternoon?'<br><span style="font-size:12px;color:#6b7280;">下午:'+esc(d.afternoon)+'</span>':'')+(d.evening?'<br><span style="font-size:12px;color:#6b7280;">晚上:'+esc(d.evening)+'</span>':'')+'</td>' +
-      '<td style="font-size:12.5px;">'+esc(d.transport||'')+'</td><td style="font-size:12.5px;">'+esc(d.hotel||'')+'</td></tr>';
+  if (!state || !state.plan || !state.plan.length) { toast('还没有行程,先聊出一个来 🧭'); return; }
+  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
+  var rows = state.plan.map(function(d, i){
+    var segs = d.acts.map(function(s){ return '<span style="display:inline-block;padding:2px 7px;border-radius:4px;margin:1px 3px 1px 0;font-size:11px;color:#fff;background:'+colors[s[0]]+';">'+esc(s[1])+'</span>'; }).join('');
+    return '<tr><td><b>D'+(i+1)+'</b></td><td>'+esc(d.t||'')+'</td><td>'+segs+'</td><td style="font-size:12px;">'+esc(d.trans||'')+'</td><td style="font-size:12px;">'+esc(d.hotel||'')+'</td></tr>';
   }).join('');
-  var bks = t.bookings.length ? t.bookings.map(function(b){
-    return '<li style="margin-bottom:4px;">'+(b.status==='done'?'✅':'🟡')+' '+esc(b.name)+(b.lead?' <span style="color:#8c6a4f;font-size:12px;">('+esc(b.lead)+')</span>':'')+'</li>';
-  }).join('') : '<li>(暂无)</li>';
-  var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>'+esc(t.name)+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f7f4ef;color:#2d3436;line-height:1.7;padding:12px;max-width:1000px;margin:0 auto}header{text-align:center;padding:24px 16px;background:#2c5f6f;color:#fff;border-radius:12px;margin-bottom:16px}h2{font-size:17px;color:#2c5f6f;border-left:4px solid #e8a87c;padding-left:10px;margin:16px 0 10px}table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:10px}th{background:#2c5f6f;color:#fff;padding:8px 10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #e0d9cf;vertical-align:top}tr:nth-child(even) td{background:#faf8f4}ul{padding-left:20px}@media print{body{padding:0}}</style></head><body>' +
-    '<header><h1 style="font-size:20px;">'+esc(t.name)+'</h1><div style="font-size:13px;opacity:.9;margin-top:4px;">'+esc(t.dest)+' · '+t.days+' 天 · '+t.people+' 人'+(t.date?' · '+t.date:'')+'</div>'+(t.note?'<div style="font-size:12px;opacity:.8;margin-top:6px;">'+esc(t.note)+'</div>':'')+'</header>' +
+  var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>行程单</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f7f4ef;color:#2d3436;line-height:1.7;padding:12px;max-width:1000px;margin:0 auto}header{text-align:center;padding:22px 16px;background:#2c5f6f;color:#fff;border-radius:12px;margin-bottom:14px}h2{font-size:16px;color:#2c5f6f;margin:14px 0 8px}table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:10px}th{background:#2c5f6f;color:#fff;padding:7px 9px;text-align:left}td{padding:7px 9px;border-bottom:1px solid #e0d9cf;vertical-align:top}@media print{body{padding:0}}</style></head><body>' +
+    '<header><h1 style="font-size:19px;">'+esc(state.lib ? state.lib.keys[0] : '行程')+(state.chosenV?' · '+esc(state.chosenV.name):'')+'</h1><div style="font-size:12.5px;opacity:.9;margin-top:4px;">'+state.days+' 天 · '+state.people+' 人</div></header>' +
     '<h2>📅 逐日行程</h2><table><tr><th>日</th><th>主题</th><th>安排</th><th>交通</th><th>住宿</th></tr>'+rows+'</table>' +
-    '<h2>📋 必订清单</h2><ul style="background:#fff;border-radius:10px;padding:14px 14px 14px 34px;">'+bks+'</ul>' +
-    '<p style="text-align:center;color:#b8a89a;font-size:11px;margin-top:16px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</p>' +
-    '</body></html>';
+    '<p style="text-align:center;color:#b8a89a;font-size:11px;margin-top:14px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</p></body></html>';
   var blob = new Blob([html], {type:'text/html'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = t.name + '-行程单.html';
+  a.download = '行程单.html';
   a.click(); URL.revokeObjectURL(a.href);
-  toast('行程单已导出,可直接发给同伴 📤');
+  toast('行程单已导出 📤');
 }
-function exportJSON() {
-  var blob = new Blob([JSON.stringify(loadTrips(), null, 2)], {type:'application/json'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'trip-compass-backup.json';
-  a.click(); URL.revokeObjectURL(a.href);
-  toast('数据已导出 💾');
+
+// ══════════ 设置 ══════════
+function openSettings() {
+  document.getElementById('setMode').value = mode;
+  document.getElementById('setKey').value = apiKey;
+  document.getElementById('setModel').value = model;
+  document.getElementById('modalBg').className='modal-bg on';
+  document.getElementById('modal').className='modal on';
 }
-function importJSON(input) {
-  var f = input.files[0]; if (!f) return;
-  var r = new FileReader();
-  r.onload = function() {
-    try {
-      var data = JSON.parse(r.result);
-      if (!Array.isArray(data)) throw new Error('格式不对');
-      saveTrips(data); cur = -1; renderHome(); renderPlan(); renderBook();
-      toast('导入成功,共 '+data.length+' 个行程 ✅');
-    } catch(e) { toast('导入失败:'+e.message); }
-  };
-  r.readAsText(f);
-  input.value = '';
+function closeModal() { document.getElementById('modalBg').className='modal-bg'; document.getElementById('modal').className='modal'; }
+function saveSettings() {
+  mode = document.getElementById('setMode').value;
+  apiKey = document.getElementById('setKey').value.trim();
+  model = document.getElementById('setModel').value;
+  localStorage.setItem(LS_MODE, mode);
+  localStorage.setItem(LS_KEY, apiKey);
+  localStorage.setItem(LS_MODEL, model);
+  document.getElementById('modeLabel').textContent = mode==='ai' ? 'AI 模式(你的 Claude Key)' : '离线规划(内置目的地)';
+  closeModal(); toast('设置已保存 ⚙️');
 }
 
 // ══════════ 启动 ══════════
-renderHome(); renderPlan(); renderBook();
+document.getElementById('modeLabel').textContent = mode==='ai' && apiKey ? 'AI 模式(你的 Claude Key)' : '离线规划(内置目的地)';
+addMsg('ai', '<p>你好 👋 我是 Trip Compass。</p><p><b>告诉我目的地和大概时间</b>,我出方案候选给你选,选定后逐日细化——你随时反馈,我们逐轮把它磨到你满意。</p><p style="font-size:12px;color:#6b7280;">试一句:十一想去关西看红叶,5 天,2 人,想逛设计小店</p>');
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+});
 </script>
 
 </body>
