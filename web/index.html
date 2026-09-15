@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trip Compass · 说走就走,帮你排好</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f7f4ef; color: #2d3436; line-height: 1.7;
+    padding: 12px; max-width: 1080px; margin: 0 auto;
+    -webkit-text-size-adjust: 100%; word-wrap: break-word; overflow-wrap: break-word;
+  }
+  header { text-align: center; padding: 26px 16px 22px; background: linear-gradient(135deg,#2c5f6f,#3a7a8c); color: #fff; border-radius: 12px; margin-bottom: 18px; }
+  header h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  header .sub { font-size: 13px; opacity: .9; }
+  .tabs { text-align: center; margin-bottom: 16px; }
+  .tabs button { background: #fff; border: 1px solid #e0d9cf; color: #2c5f6f; padding: 7px 16px; margin: 0 3px 6px; border-radius: 20px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  .tabs button.on { background: #2c5f6f; color: #fff; border-color: #2c5f6f; }
+  section.pane { display: none; background: #fff; border-radius: 12px; padding: 18px 16px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  section.pane.on { display: block; }
+  h2 { font-size: 17px; color: #2c5f6f; border-left: 4px solid #e8a87c; padding-left: 10px; margin-bottom: 12px; }
+  h3 { font-size: 15px; color: #2c5f6f; margin: 12px 0 6px; }
+  .btn { background: #2c5f6f; color: #fff; border: none; border-radius: 8px; padding: 9px 20px; font-size: 14px; cursor: pointer; margin: 6px 6px 6px 0; font-family: inherit; }
+  .btn.ghost { background: #fff; color: #2c5f6f; border: 1px solid #c9a87c; }
+  .btn.warn { background: #c2410c; }
+  input, textarea, select { width: 100%; padding: 8px 10px; border: 1px solid #e0d9cf; border-radius: 6px; font-size: 14px; font-family: inherit; background: #fff; }
+  textarea { min-height: 64px; resize: vertical; }
+  label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 10px 0 3px; }
+  form.add, .panel-form { background: #faf8f4; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .grid2 { display: table; width: 100%; border-spacing: 8px 0; margin: 0 -8px; }
+  .grid2 > div { display: table-cell; width: 50%; vertical-align: top; }
+
+  .trip-card { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+  .trip-card:hover { background: #f0ebe1; }
+  .trip-card .t { font-size: 15px; font-weight: 700; color: #2c5f6f; }
+  .trip-card .m { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+
+  /* 时间轴 */
+  .tl-row { margin-bottom: 7px; }
+  .tl-day { font-size: 12.5px; font-weight: 700; color: #2c5f6f; }
+  .tl-track { margin-top: 3px; background: #f0ebe1; border-radius: 8px; padding: 4px; }
+  .tl-seg { display: inline-block; padding: 4px 6px; border-radius: 5px; margin: 1px 3px 1px 0; font-size: 11.5px; color: #fff; line-height: 1.3; vertical-align: top; }
+  .tl-seg.nature { background: #5b8c5a; } .tl-seg.activity { background: #2c5f6f; }
+  .tl-seg.relax { background: #d4a76a; } .tl-seg.transit { background: #8a9ba8; }
+  .tl-seg.flight { background: #b0578d; }
+  .tl-legend { margin-top: 10px; font-size: 12px; color: #6b7280; }
+  .tl-legend span { display: inline-block; margin-right: 14px; }
+  .tl-dot { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+
+  .day-card { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  .day-card .dh { font-size: 14.5px; font-weight: 700; color: #2c5f6f; margin-bottom: 6px; }
+  .day-card .row { font-size: 13px; margin-bottom: 4px; }
+  .day-card .row b { color: #8c6a4f; font-weight: 600; }
+  .seg-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11.5px; color: #fff; margin-right: 4px; }
+
+  .book-item { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .book-item .n { font-weight: 600; }
+  .status { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .status.done { color: #15803d; background: #dcfce7; }
+  .status.todo { color: #c2410c; background: #ffedd5; }
+  .bar { background: #f0ebe1; border-radius: 8px; padding: 4px; margin: 8px 0; }
+  .bar .fill { background: #5b8c5a; border-radius: 8px; padding: 5px 12px; color: #fff; font-size: 12.5px; font-weight: 600; }
+
+  .empty { text-align: center; color: #b8a89a; font-size: 13.5px; padding: 26px 0; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #2d3436; color: #fff; padding: 9px 20px; border-radius: 20px; font-size: 13.5px; display: none; z-index: 12; }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10; }
+  .modal-bg.on { display: block; }
+  .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 12px; padding: 22px 20px; width: min(500px, 92vw); max-height: 85vh; overflow-y: auto; z-index: 11; box-shadow: 0 8px 30px rgba(0,0,0,.2); }
+  .modal.on { display: block; }
+  footer { text-align: center; color: #b8a89a; font-size: 12px; padding: 14px; }
+  @media (max-width: 767px) { .grid2 { display: block; margin: 0; } .grid2 > div { display: block; width: 100%; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧭 Trip Compass</h1>
+  <div class="sub">说走就走,帮你排好 —— 零登录 · 零安装 · 数据在你自己浏览器里</div>
+</header>
+
+<div class="tabs">
+  <button id="tab-home" class="on" onclick="switchTab('home')">🏠 我的行程</button>
+  <button id="tab-plan" onclick="switchTab('plan')">📝 行程规划</button>
+  <button id="tab-book" onclick="switchTab('book')">📋 必订清单</button>
+  <button id="tab-export" onclick="switchTab('export')">📤 导出分享</button>
+</div>
+
+<!-- ═══ 我的行程 ═══ -->
+<section id="pane-home" class="pane on">
+  <h2>我的行程</h2>
+  <div class="panel-form">
+    <h3>新建一个行程</h3>
+    <label>行程名称 *</label><input id="ntName" placeholder="例:关西红叶 5 日">
+    <div class="grid2">
+      <div><label>目的地 *</label><input id="ntDest" placeholder="例:日本关西(京都+大阪)"></div>
+      <div><label>天数 *</label><input id="ntDays" type="number" value="5" min="1" max="30"></div>
+    </div>
+    <div class="grid2">
+      <div><label>人数</label><input id="ntPeople" type="number" value="2" min="1" max="20"></div>
+      <div><label>出发日期(可选)</label><input id="ntDate" type="date"></div>
+    </div>
+    <label>偏好/约束(想玩什么、已订了什么、体力如何…)</label><textarea id="ntNote" placeholder="例:自然风光为主+逛设计小店;无潜水证;已订国际机票"></textarea>
+    <button class="btn" onclick="createTrip()">创建行程 ✨</button>
+  </div>
+  <h3>已有行程</h3>
+  <div id="tripList"></div>
+</section>
+
+<!-- ═══ 行程规划 ═══ -->
+<section id="pane-plan" class="pane">
+  <h2 id="planTitle">行程规划</h2>
+  <div id="timelineBox">
+    <h3>🗺️ 时间轴总览</h3>
+    <div id="tlWrap"></div>
+    <div class="tl-legend">
+      <span><i class="tl-dot" style="background:#5b8c5a"></i>自然观光</span>
+      <span><i class="tl-dot" style="background:#2c5f6f"></i>体验活动</span>
+      <span><i class="tl-dot" style="background:#d4a76a"></i>休闲/住宿</span>
+      <span><i class="tl-dot" style="background:#8a9ba8"></i>在途</span>
+      <span><i class="tl-dot" style="background:#b0578d"></i>飞行</span>
+    </div>
+  </div>
+  <h3>📅 逐日安排(点击任意一天编辑)</h3>
+  <div id="dayList"></div>
+  <button class="btn ghost" onclick="addDay()">+ 加一天</button>
+</section>
+
+<!-- ═══ 必订清单 ═══ -->
+<section id="pane-book" class="pane">
+  <h2>必订清单 · 就绪度</h2>
+  <div id="readyBar"></div>
+  <div class="panel-form">
+    <h3>添加待办</h3>
+    <div class="grid2">
+      <div><label>事项 *</label><input id="bkName" placeholder="例:北京↔KIX 机票"></div>
+      <div><label>提前量</label>
+        <select id="bkLead"><option value="">选提前量…</option><option>T-30d 核对机票</option><option>T-21d 签证提交</option><option>T-14d 酒店/快船</option><option>T-7d 包车/潜水/保险</option><option>T-3d 打印证件/查天气</option></select></div>
+    </div>
+    <button class="btn" onclick="addBooking()">加入清单 📋</button>
+  </div>
+  <div id="bookList"></div>
+</section>
+
+<!-- ═══ 导出分享 ═══ -->
+<section id="pane-export" class="pane">
+  <h2>导出与分享</h2>
+  <p style="font-size:13.5px;color:#6b7280;margin-bottom:10px;">导出的单文件 HTML:手机电脑自适应、零依赖,直接发给同伴或拖到 Netlify/GitHub Pages 生成链接。</p>
+  <button class="btn" onclick="exportHTML()">📤 导出行程单 HTML</button>
+  <button class="btn ghost" onclick="window.print()">🖨️ 打印 / 存 PDF</button>
+  <h3 style="margin-top:18px;">数据备份</h3>
+  <p style="font-size:13.5px;color:#6b7280;">数据存在本浏览器。换设备前请导出 JSON,到新设备导入。</p>
+  <button class="btn ghost" onclick="exportJSON()">导出数据 JSON</button>
+  <button class="btn ghost" onclick="document.getElementById('impFile').click()">导入数据 JSON</button>
+  <input type="file" id="impFile" accept=".json" style="display:none" onchange="importJSON(this)">
+</section>
+
+<!-- 编辑弹层 -->
+<div class="modal-bg" id="modalBg" onclick="closeModal()"></div>
+<div class="modal" id="modal">
+  <h4 id="mTitle" style="color:#2c5f6f;font-size:16px;margin-bottom:10px;"></h4>
+  <div id="mBody"></div>
+  <button class="btn" onclick="saveDayModal()">保存</button>
+  <button class="btn warn" onclick="delDayModal()">删除这天</button>
+  <button class="btn ghost" onclick="closeModal()">取消</button>
+</div>
+
+<div class="toast" id="toast"></div>
+<footer>Trip Compass · 开源项目 github.com/SharonYi/travel-planner · 数据仅存本地浏览器</footer>
+
+<script>
+// ══════════ 数据层 ══════════
+var LS = 'tripCompass.trips';
+function loadTrips() { try { return JSON.parse(localStorage.getItem(LS)) || []; } catch(e) { return []; } }
+function saveTrips(v) { localStorage.setItem(LS, JSON.stringify(v)); }
+var cur = -1; // 当前行程索引
+
+function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2200); }
+function esc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ══════════ Tab ══════════
+function switchTab(name) {
+  ['home','plan','book','export'].forEach(function(n){
+    document.getElementById('tab-'+n).className = (n===name) ? 'on' : '';
+    document.getElementById('pane-'+n).className = 'pane' + (n===name ? ' on' : '');
+  });
+  renderPlan(); renderBook();
+}
+
+// ══════════ 行程管理 ══════════
+function createTrip() {
+  var name = document.getElementById('ntName').value.trim();
+  var dest = document.getElementById('ntDest').value.trim();
+  var days = +document.getElementById('ntDays').value || 1;
+  if (!name || !dest) { toast('名称和目的地要填哦'); return; }
+  var t = {
+    name: name, dest: dest, days: days,
+    people: +document.getElementById('ntPeople').value || 2,
+    date: document.getElementById('ntDate').value,
+    note: document.getElementById('ntNote').value.trim(),
+    plan: [], bookings: [], created: new Date().toLocaleDateString()
+  };
+  for (var i=0;i<days;i++) t.plan.push(newDay(i+1));
+  var arr = loadTrips(); arr.unshift(t); saveTrips(arr);
+  cur = 0;
+  document.getElementById('ntName').value=''; document.getElementById('ntDest').value='';
+  document.getElementById('ntNote').value='';
+  renderHome(); switchTab('plan');
+  toast('《'+name+'》已创建,开始排行程 ✨');
+}
+function newDay(n) {
+  return { n:n, title:'', acts:'', transport:'', hotel:'', morning:'', afternoon:'', evening:'' };
+}
+function openTrip(i) { cur = i; switchTab('plan'); renderPlan(); }
+function delTrip(i) {
+  if (!confirm('确定删除这个行程?')) return;
+  var arr = loadTrips(); arr.splice(i,1); saveTrips(arr);
+  if (cur === i) cur = -1;
+  renderHome(); toast('已删除');
+}
+function trip() { var a = loadTrips(); return (cur>=0 && a[cur]) ? a[cur] : null; }
+function saveTrip(t) { var a = loadTrips(); if (a[cur]) a[cur] = t; saveTrips(a); }
+
+function renderHome() {
+  var arr = loadTrips();
+  var el = document.getElementById('tripList');
+  if (!arr.length) { el.innerHTML = '<div class="empty">还没有行程,上面创建第一个吧 🧭</div>'; return; }
+  el.innerHTML = arr.map(function(t,i){
+    return '<div class="trip-card" onclick="openTrip('+i+')">' +
+      '<div class="t">'+esc(t.name)+' <span style="font-weight:400;font-size:12.5px;color:#8c6a4f;">· '+esc(t.dest)+'</span></div>' +
+      '<div class="m">'+t.days+' 天 · '+t.people+' 人'+(t.date?' · '+t.date:'')+' · '+t.created+' 创建</div>' +
+      '<div style="margin-top:4px;"><a onclick="event.stopPropagation();delTrip('+i+')" style="color:#c2410c;font-size:12px;">删除</a></div>' +
+    '</div>';
+  }).join('');
+}
+
+// ══════════ 规划 ══════════
+var TYPES = {nature:'自然观光', activity:'体验活动', relax:'休闲/住宿', transit:'在途', flight:'飞行'};
+function renderPlan() {
+  var t = trip();
+  var tl = document.getElementById('tlWrap'), dl = document.getElementById('dayList');
+  if (!t) {
+    document.getElementById('planTitle').textContent = '行程规划(先在「我的行程」里创建/选择一个)';
+    tl.innerHTML = ''; dl.innerHTML = '<div class="empty">先创建或选择一个行程 🧭</div>'; return;
+  }
+  document.getElementById('planTitle').textContent = '《' + esc(t.name) + '》 · ' + esc(t.dest) + ' · ' + t.days + ' 天';
+  // 时间轴:解析每天的活动段落(形如 "[自然]xxx" 或默认 activity)
+  tl.innerHTML = t.plan.map(function(d){
+    var segs = parseSegs(d);
+    var segHtml = segs.map(function(s){ return '<span class="tl-seg '+s.type+'">'+esc(s.text)+'</span>'; }).join('');
+    return '<div class="tl-row"><div class="tl-day">D'+d.n+(d.title?' · '+esc(d.title):'')+'</div><div class="tl-track">'+(segHtml||'<span style="color:#b8a89a;font-size:11.5px;">(待安排)</span>')+'</div></div>';
+  }).join('');
+  // 逐日卡片
+  dl.innerHTML = t.plan.map(function(d, i){
+    var segs = parseSegs(d);
+    var segTags = segs.map(function(s){ return '<span class="seg-tag" style="background:' + ({nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'}[s.type]) + '">'+esc(s.text)+'</span>'; }).join(' ');
+    return '<div class="day-card" onclick="editDay('+i+')">' +
+      '<div class="dh">D'+d.n+(d.title?' · '+esc(d.title):'')+'</div>' +
+      (segs.length ? '<div class="row">'+segTags+'</div>' : '<div class="row" style="color:#b8a89a;">(点这里安排这一天)</div>') +
+      (d.morning?'<div class="row"><b>上午</b> '+esc(d.morning)+'</div>':'') +
+      (d.afternoon?'<div class="row"><b>下午</b> '+esc(d.afternoon)+'</div>':'') +
+      (d.evening?'<div class="row"><b>晚上</b> '+esc(d.evening)+'</div>':'') +
+      (d.transport?'<div class="row"><b>交通</b> '+esc(d.transport)+'</div>':'') +
+      (d.hotel?'<div class="row"><b>住宿</b> '+esc(d.hotel)+'</div>':'') +
+    '</div>';
+  }).join('');
+}
+// 把 acts 按行拆成段落;支持 "[自然]竹林" 前缀语法
+function parseSegs(d) {
+  var out = [];
+  var acts = String(d.acts||'').split(/\n|;/).map(function(x){return x.trim();}).filter(Boolean);
+  acts.forEach(function(a){
+    var m = a.match(/^\[(自然|活动|休闲|在途|飞行|nature|activity|relax|transit|flight)\](.*)$/);
+    var type = 'activity', text = a;
+    if (m) { text = m[2]; var k = m[1]; type = ({nature:'nature',activity:'activity',relax:'relax',transit:'transit',flight:'flight'}[k]) || 'activity'; }
+    if (text) out.push({type:type, text:text});
+  });
+  if (!out.length && d.hotel) out.push({type:'relax', text:d.hotel});
+  return out;
+}
+
+var editIdx = -1;
+function editDay(i) {
+  var t = trip(); if (!t) return;
+  editIdx = i; var d = t.plan[i];
+  document.getElementById('mTitle').textContent = 'D' + d.n + (d.title?' · '+d.title:'') + ' 编辑';
+  document.getElementById('mBody').innerHTML =
+    '<label>当日主题(例:岚山红叶一整天)</label><input id="edTitle" value="'+escAttr(d.title)+'">' +
+    '<label>活动段落(每行一段;前缀 [自然]/[活动]/[休闲]/[在途]/[飞行] 上色)</label>' +
+    '<textarea id="edActs" placeholder="例:\n[自然]竹林小径(8点前)\n[在途]JR 20min\n[休闲]鸭川晚餐">'+esc(d.acts||'')+'</textarea>' +
+    '<div class="grid2"><div><label>上午</label><input id="edMorning" value="'+escAttr(d.morning)+'"></div>' +
+    '<div><label>下午</label><input id="edAfternoon" value="'+escAttr(d.afternoon)+'"></div></div>' +
+    '<label>晚上</label><input id="edEvening" value="'+escAttr(d.evening)+'">' +
+    '<div class="grid2"><div><label>交通</label><input id="edTransport" placeholder="例:HARUKA 特快 75min ¥2900" value="'+escAttr(d.transport)+'"></div>' +
+    '<div><label>住宿</label><input id="edHotel" placeholder="例:京都站南 · 某酒店" value="'+escAttr(d.hotel)+'"></div></div>';
+  document.getElementById('modalBg').className='modal-bg on';
+  document.getElementById('modal').className='modal on';
+}
+function escAttr(s) { return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function saveDayModal() {
+  var t = trip(); if (!t || editIdx<0) return;
+  var d = t.plan[editIdx];
+  d.title = document.getElementById('edTitle').value.trim();
+  d.acts = document.getElementById('edActs').value;
+  d.morning = document.getElementById('edMorning').value.trim();
+  d.afternoon = document.getElementById('edAfternoon').value.trim();
+  d.evening = document.getElementById('edEvening').value.trim();
+  d.transport = document.getElementById('edTransport').value.trim();
+  d.hotel = document.getElementById('edHotel').value.trim();
+  saveTrip(t); closeModal(); renderPlan(); toast('D'+d.n+' 已保存 ✅');
+}
+function delDayModal() {
+  var t = trip(); if (!t || editIdx<0) return;
+  t.plan.splice(editIdx,1); t.days = t.plan.length;
+  t.plan.forEach(function(d,i){ d.n = i+1; });
+  saveTrip(t); closeModal(); renderPlan(); toast('已删除该天');
+}
+function addDay() {
+  var t = trip(); if (!t) { toast('先创建行程'); return; }
+  t.plan.push(newDay(t.plan.length+1)); t.days = t.plan.length;
+  saveTrip(t); renderPlan(); toast('已加一天');
+}
+function closeModal() { document.getElementById('modalBg').className='modal-bg'; document.getElementById('modal').className='modal'; }
+
+// ══════════ 必订清单 ══════════
+function addBooking() {
+  var t = trip(); if (!t) { toast('先创建/选择行程'); return; }
+  var n = document.getElementById('bkName').value.trim();
+  if (!n) { toast('事项要填哦'); return; }
+  t.bookings.unshift({ name:n, lead:document.getElementById('bkLead').value, status:'todo' });
+  saveTrip(t);
+  document.getElementById('bkName').value='';
+  renderBook(); toast('已加入清单 📋');
+}
+function toggleBooking(i) {
+  var t = trip(); if (!t) return;
+  t.bookings[i].status = t.bookings[i].status === 'done' ? 'todo' : 'done';
+  saveTrip(t); renderBook();
+}
+function delBooking(i) { var t = trip(); if (!t) return; t.bookings.splice(i,1); saveTrip(t); renderBook(); }
+function renderBook() {
+  var t = trip(); var el = document.getElementById('bookList'), bar = document.getElementById('readyBar');
+  if (!t) { bar.innerHTML=''; el.innerHTML='<div class="empty">先创建/选择行程 🧭</div>'; return; }
+  var bs = t.bookings, done = bs.filter(function(b){return b.status==='done';}).length;
+  var pct = bs.length ? Math.round(done/bs.length*100) : 0;
+  bar.innerHTML = '<div class="bar"><div class="fill" style="width:'+Math.max(pct,8)+'%;">就绪度 '+pct+'% ('+done+'/'+bs.length+')</div></div>';
+  if (!bs.length) { el.innerHTML='<div class="empty">清单还空着,把要订的都加进来——机票、签证、酒店、船票… 📋</div>'; return; }
+  el.innerHTML = bs.map(function(b,i){
+    return '<div class="book-item"><span class="n">'+esc(b.name)+'</span>' +
+      (b.lead?' <span style="font-size:12px;color:#8c6a4f;">· '+esc(b.lead)+'</span>':'') +
+      ' <span class="status '+b.status+'" style="float:right;margin-top:-2px;" onclick="toggleBooking('+i+')">'+(b.status==='done'?'✅ 已订':'🟡 待办')+'</span>' +
+      ' <a onclick="delBooking('+i+')" style="float:right;margin:3px 10px 0 0;color:#c2410c;font-size:12px;">删</a></div>';
+  }).join('');
+}
+
+// ══════════ 导出 ══════════
+function exportHTML() {
+  var t = trip(); if (!t) { toast('先创建/选择行程'); return; }
+  var segsAll = t.plan.map(function(d){ return parseSegs(d); });
+  var rows = t.plan.map(function(d,i){
+    var segs = segsAll[i];
+    var segHtml = segs.map(function(s){ return '<span style="display:inline-block;padding:3px 8px;border-radius:4px;margin:1px 3px 1px 0;font-size:12px;color:#fff;background:' + ({nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'}[s.type]) + ';">'+esc(s.text)+'</span>'; }).join('');
+    return '<tr><td><b>D'+d.n+'</b></td><td>'+(d.title?esc(d.title):'')+'</td>' +
+      '<td>'+segHtml+(d.morning?'<br><span style="font-size:12px;color:#6b7280;">上午:'+esc(d.morning)+'</span>':'')+(d.afternoon?'<br><span style="font-size:12px;color:#6b7280;">下午:'+esc(d.afternoon)+'</span>':'')+(d.evening?'<br><span style="font-size:12px;color:#6b7280;">晚上:'+esc(d.evening)+'</span>':'')+'</td>' +
+      '<td style="font-size:12.5px;">'+esc(d.transport||'')+'</td><td style="font-size:12.5px;">'+esc(d.hotel||'')+'</td></tr>';
+  }).join('');
+  var bks = t.bookings.length ? t.bookings.map(function(b){
+    return '<li style="margin-bottom:4px;">'+(b.status==='done'?'✅':'🟡')+' '+esc(b.name)+(b.lead?' <span style="color:#8c6a4f;font-size:12px;">('+esc(b.lead)+')</span>':'')+'</li>';
+  }).join('') : '<li>(暂无)</li>';
+  var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>'+esc(t.name)+'</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f7f4ef;color:#2d3436;line-height:1.7;padding:12px;max-width:1000px;margin:0 auto}header{text-align:center;padding:24px 16px;background:#2c5f6f;color:#fff;border-radius:12px;margin-bottom:16px}h2{font-size:17px;color:#2c5f6f;border-left:4px solid #e8a87c;padding-left:10px;margin:16px 0 10px}table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:10px}th{background:#2c5f6f;color:#fff;padding:8px 10px;text-align:left}td{padding:8px 10px;border-bottom:1px solid #e0d9cf;vertical-align:top}tr:nth-child(even) td{background:#faf8f4}ul{padding-left:20px}@media print{body{padding:0}}</style></head><body>' +
+    '<header><h1 style="font-size:20px;">'+esc(t.name)+'</h1><div style="font-size:13px;opacity:.9;margin-top:4px;">'+esc(t.dest)+' · '+t.days+' 天 · '+t.people+' 人'+(t.date?' · '+t.date:'')+'</div>'+(t.note?'<div style="font-size:12px;opacity:.8;margin-top:6px;">'+esc(t.note)+'</div>':'')+'</header>' +
+    '<h2>📅 逐日行程</h2><table><tr><th>日</th><th>主题</th><th>安排</th><th>交通</th><th>住宿</th></tr>'+rows+'</table>' +
+    '<h2>📋 必订清单</h2><ul style="background:#fff;border-radius:10px;padding:14px 14px 14px 34px;">'+bks+'</ul>' +
+    '<p style="text-align:center;color:#b8a89a;font-size:11px;margin-top:16px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</p>' +
+    '</body></html>';
+  var blob = new Blob([html], {type:'text/html'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = t.name + '-行程单.html';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('行程单已导出,可直接发给同伴 📤');
+}
+function exportJSON() {
+  var blob = new Blob([JSON.stringify(loadTrips(), null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'trip-compass-backup.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('数据已导出 💾');
+}
+function importJSON(input) {
+  var f = input.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function() {
+    try {
+      var data = JSON.parse(r.result);
+      if (!Array.isArray(data)) throw new Error('格式不对');
+      saveTrips(data); cur = -1; renderHome(); renderPlan(); renderBook();
+      toast('导入成功,共 '+data.length+' 个行程 ✅');
+    } catch(e) { toast('导入失败:'+e.message); }
+  };
+  r.readAsText(f);
+  input.value = '';
+}
+
+// ══════════ 启动 ══════════
+renderHome(); renderPlan(); renderBook();
+</script>
+
+</body>
+</html>
