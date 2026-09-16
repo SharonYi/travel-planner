@@ -248,13 +248,17 @@
       <button class="btn" onclick="go('readiness')">⏰ 就绪检查</button>
       <button class="btn outline" onclick="go('preview')">📄 预览行程单</button>
       <button class="btn outline" onclick="saveCurrent()">💾 存入历史</button>
+      <button class="btn outline" onclick="startNewTrip()">🧭 排新行程</button>
     </div>
   </div>
 </div>
 
 <!-- 就绪检查 -->
 <div id="page-readiness" class="page">
-  <div class="pagehead"><h2>🛫 <span class="zh-only">就绪检查</span><span class="en-only">Readiness</span></h2></div>
+  <div class="pagehead">
+    <button class="back" onclick="go('planner');plBack('detail')">← 返回修改行程</button>
+    <h2>🛫 <span class="zh-only">就绪检查</span><span class="en-only">Readiness</span></h2>
+  </div>
   <div class="card">
     <h2>倒计时时间线</h2><div class="sub">该什么时候干什么</div>
     <div class="tm-line" id="tmLine"></div>
@@ -278,6 +282,7 @@
 <!-- 行程单 -->
 <div id="page-preview" class="page">
   <div class="pagehead">
+    <button class="back" onclick="go('planner');plBack('detail')">← 返回修改行程</button>
     <h2>📄 <span class="zh-only">行程单</span><span class="en-only">Itinerary</span></h2>
     <span class="no-print" style="float:right;">
       <button class="btn outline sm" onclick="window.print()"><span class="zh-only">🖨️ 打印/存PDF</span><span class="en-only">🖨️ Print / PDF</span></button>
@@ -3595,6 +3600,10 @@ function formData() {
 function handleCompare() {
   var f = formData();
   if (!f.dates || !f.dest) { toast('填一下时间和目的地吧~'); return; }
+  // 新行程开始:刷新行程身份(旧行程的预置项/风险随之失效,已完成项留档)
+  if (!currentTrip || currentTrip.dest !== f.dest || currentTrip.dates !== f.dates) {
+    newTripId();
+  }
   currentTrip = f;
   plBack('compare');
   if (mode==='ai' && apiKey) { aiPlan('compare', f); }
@@ -3889,40 +3898,44 @@ function aiRefine(text, out) {
 // —— 自动预置:从行程内容提取待办,合并进用户清单(不覆盖用户手加的/已完成的)——
 function autoPopulateChecks() {
   if (!currentTrip) return;
+  var tid = curTripId() || newTripId();
+  currentTrip.tid = tid;
   var raw = JSON.stringify(currentTrip).slice(0, 4000);
   var pool = [];
   function need(re, name, lead) { if (re.test(raw) && !pool.some(function(x){return x.name===name;})) pool.push({name:name, lead:lead, status:'todo'}); }
-  // 国内/国际判定:国内目的地集合命中 → 不预置国际项
-  var DOMESTIC = ['长白山','北京','上海','广州','深圳','成都','重庆','西安','云南','大理','丽江','杭州','苏州','南京','厦门','青岛','三亚','海南','新疆','西藏','青海','甘肃','贵州','湖南','湖北','四川','东北','吉林','黑龙江','内蒙古','草原','坝上','张北','承德','雾灵山','阿那亚'];
+  var DOMESTIC = ['长白山','北京','上海','广州','深圳','成都','重庆','西安','云南','大理','丽江','杭州','苏州','南京','厦门','青岛','三亚','海南','新疆','西藏','青海','甘肃','贵州','湖南','湖北','四川','东北','吉林','黑龙江','内蒙古','草原','坝上','张北','承德','雾灵山','阿那亚','青海湖','甘南','西宁'];
   var isDomestic = DOMESTIC.some(function(k){ return (currentTrip.dest||'').indexOf(k) > -1; });
   if (isDomestic) {
     need(/火车|高铁|动车/, '火车票/高铁票', 'T-14 酒店/船票(旺季)');
     need(/自驾|租车/, '租车/车辆检查(胎压雨刮)', 'T-3 打印证件/查天气');
     pool.push({name:'国内交通票(去程/返程)', lead:'T-14 酒店/船票(旺季)', status:'todo'});
   } else {
-    need(/国际机票|国际航班|✈️? ?国际|入境|出境/, '国际机票(核对时刻/往返)', 'T-30 核对机票时刻');
+    need(/国际机票|国际航班|入境|出境|机场|飞行/, '国际机票(核对时刻/往返)', 'T-30 核对机票时刻');
     need(/签证|e-?visa|VOA|护照/, '签证/入境证件', 'T-21 签证提交(3-5工作日)');
   }
   need(/酒店|住宿|民宿|villa|旅馆/, '住宿预订(全程)', 'T-14 酒店/船票(旺季)');
   need(/快船|船票|船宿|渡轮/, '船票(快船/船宿)', 'T-14 酒店/船票(旺季)');
   need(/包车|司机|safari/, '包车/向导确认', 'T-7 包车/体验/保险');
   need(/潜水|DSD|浮潜/, '潜水/浮潜预约+保险(含潜水条款)', 'T-7 包车/体验/保险');
-  need(/小火车|嵯峨野|门票|门票|入园/, '热门门票/体验预约', 'T-7 包车/体验/保险');
+  need(/小火车|嵯峨野|门票|入园/, '热门门票/体验预约', 'T-7 包车/体验/保险');
   need(/火车|高铁|JR|新干线/, '火车票/JR 券种', 'T-14 酒店/船票(旺季)');
-  need(/自驾|租车|开车/, '租车/车辆检查(胎压雨刮)', 'T-3 打印证件/查天气');
   pool.push({name:'打印证件/行程单/保险单', lead:'T-3 打印证件/查天气', status:'todo'});
   pool.push({name:'现金/支付方式就绪', lead:'T-1 入境卡/现金/装备', status:'todo'});
   var arr = checks();
+  // 行程绑定:清除旧行程遗留的未完成预置项(已完成的不动,留档)
+  arr = arr.filter(function(x){ return !x.tid || x.tid === tid || x.status === 'done'; });
   var added = 0;
   pool.forEach(function(it){
-    // 同名项跳过(用户已有);不同名但含义近似的也靠 name 精确匹配兜住
-    if (!arr.some(function(x){ return x.name === it.name; })) { arr.push(it); added++; }
+    if (!arr.some(function(x){ return x.name === it.name; })) { it.tid = tid; arr.push(it); added++; }
   });
-  if (added) { saveChecks(arr); if (typeof renderReadiness === 'function') renderReadiness(); }
+  saveChecks(arr);
+  if (added && typeof renderReadiness === 'function') renderReadiness();
 }
 
-// ══════════ 就绪检查(原) ══════════
-var LS_CK='tc.checklist', LS_HIST='tc.history';
+
+var LS_CK='tc.checklist', LS_HIST='tc.history', LS_TRIPID='tc.tripId';
+function curTripId() { try { return localStorage.getItem(LS_TRIPID) || ''; } catch(e){ return ''; } }
+function newTripId() { var id = 't' + Date.now(); try { localStorage.setItem(LS_TRIPID, id); } catch(e){} return id; }
 function checks() { try { return JSON.parse(localStorage.getItem(LS_CK))||[]; } catch(e){ return []; } }
 function saveChecks(v){ localStorage.setItem(LS_CK,JSON.stringify(v)); }
 function addCheck() {
@@ -3965,6 +3978,30 @@ function renderRisks() {
     '<div id="dynRiskBox"></div>';
   fetchLiveRisks();
 }
+
+// —— 动态风险:免费天气 API(wttr.in,无 key),城市严格按当前行程目的地匹配 ——
+var WTTR_MAP = { '京都':'Kyoto','大阪':'Osaka','东京':'Tokyo','北京':'Beijing','巴厘岛':'Bali','新加坡':'Singapore','曼谷':'Bangkok','首尔':'Seoul','巴黎':'Paris','伦敦':'London','那不勒斯':'Naples','罗马':'Rome','米兰':'Milan','阿姆斯特丹':'Amsterdam','开罗':'Cairo','伊斯坦布尔':'Istanbul','雷克雅未克':'Reykjavik','奥克兰':'Auckland','皇后镇':'Queenstown','苏黎世':'Zurich','日内瓦':'Geneva','奥斯陆':'Oslo','卑尔根':'Bergen','雅典':'Athens','马德里':'Madrid','巴塞罗那':'Barcelona','西宁':'Xining','大理':'Dali','丽江':'Lijiang','拉萨':'Lhasa','成都':'Chengdu','乌鲁木齐':'Urumqi','长白山':'Changbaishan' };
+function fetchLiveRisks() {
+  var box = document.getElementById('dynRiskBox');
+  if (!box || !currentTrip) { if (box) box.innerHTML = ''; return; }
+  var dest = currentTrip.dest || '';
+  var city = null;
+  for (var k in WTTR_MAP) { if (dest.indexOf(k) > -1) { city = WTTR_MAP[k]; break; } }
+  if (!city) { box.innerHTML = ''; return; }
+  fetch('https://wttr.in/'+city+'?format=%C|%(tempC)°C|(雨天:%p,湿度:%h)&lang=zh')
+    .then(function(r){ return r.text(); })
+    .then(function(tx){
+      var parts = tx.split('|');
+      if (parts.length >= 2) {
+        var line = '🌤️ <b>'+dest.split(/[,\/、 ]/)[0]+'实况</b>: '+parts[0]+' '+parts[1];
+        if (/雨|rain|shower|drizzle/i.test(tx)) line += ' —— <b>近期有雨,户外点位留意备选</b>';
+        box.innerHTML = '<div class="risk" style="border-left-color:#5b8c5a;background:#f0f7f2;">'+line+'<div style="font-size:10.5px;color:#a8a29e;margin-top:2px;">来源 wttr.in,刷新页面更新</div></div>';
+      }
+    })
+    .catch(function(){ /* 天气拉不到就静默,不打扰 */ });
+}
+
+// ══════════ 历史 ══════════
 
 // —— 动态风险:免费天气 API(wttr.in,无 key)+ AI 模式下新闻/实况摘要 ——
 var WTTR_MAP = { '京都':'Kyoto','大阪':'Osaka','东京':'Tokyo','北京':'Beijing','巴厘岛':'Bali','新加坡':'Singapore','曼谷':'Bangkok','首尔':'Seoul','巴黎':'Paris','伦敦':'London' };
@@ -4197,6 +4234,23 @@ function i18nStatic() {
     if (CARD[t]) el.textContent = CARD[t];
   });
 }
+// ══════════ 新行程(缓存清理) ══════════
+function startNewTrip() {
+  if (!confirm(L('开始新行程?当前行程的待办会被归档(已完成项保留)','Start a new trip? Current to-dos will be archived (completed kept)'))) return;
+  newTripId();               // 旧预置项自动失效
+  currentTrip = null;
+  try {
+    localStorage.removeItem('tc.chatHistory');
+  } catch(e){}
+  // UI 复位
+  ['fDates','fDest','fPeople','fBudget','fConstraints','fPrefs','fVisa'].forEach(function(id){ if ($(id)) $(id).value=''; });
+  plBack('input');
+  $('compareBody').innerHTML = ''; $('detailBody').innerHTML = '';
+  go('planner');
+  renderReadiness(); renderPreview();
+  toast(L('已重置,开始新行程 🧭','Reset — new trip ready 🧭'));
+}
+
 // ══════════ 启动 ══════════
 document.documentElement.setAttribute('lang', LANG);
 i18nStatic();
