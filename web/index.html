@@ -1763,7 +1763,6 @@ var KB = [
   }
  }
 ,
-[
  {
   "keys": [
    "青海湖",
@@ -2241,7 +2240,12 @@ var KB = [
    "威尼斯",
    "venice",
    "米兰",
-   "amalfi"
+   "amalfi",
+   "那不勒斯",
+   "naples",
+   "napoli",
+   "庞贝",
+   "pompeii"
   ],
   "zh": {
    "name": "意大利",
@@ -2267,6 +2271,13 @@ var KB = [
      "hl": "丝柏之路+酒庄+中世纪山城",
      "cost": "¥13000–19000",
      "why": "慢节奏田园"
+    },
+    {
+     "n": "方案D · 那不勒斯+阿玛尔菲",
+     "d": "罗马2+那不勒斯2+阿玛尔菲3",
+     "hl": "庞贝+披萨发源地+波西塔诺悬崖",
+     "cost": "¥15000–22000",
+     "why": "粗粝与浪漫并存;海岸爱好者"
     }
    ],
    "days": [
@@ -2326,6 +2337,13 @@ var KB = [
      "hl": "Cypress lanes + wineries + hill towns",
      "cost": "¥13-19k",
      "why": "Slow countryside"
+    },
+    {
+     "n": "Plan D · Naples & Amalfi",
+     "d": "Rome 2 + Naples 2 + Amalfi 3",
+     "hl": "Pompeii + pizza birthplace + Positano cliffs",
+     "cost": "¥15-22k",
+     "why": "Grit + glamour; coast lovers"
     }
    ],
    "days": [
@@ -2608,7 +2626,13 @@ var KB = [
    "卢塞恩",
    "采尔马特",
    "zermatt",
-   "马特洪峰"
+   "马特洪峰",
+   "因特拉肯",
+   "interlaken",
+   "格林德瓦",
+   "grindelwald",
+   "米伦",
+   "劳特布龙嫩"
   ],
   "zh": {
    "name": "瑞士",
@@ -2622,11 +2646,11 @@ var KB = [
      "why": "火车旅行天花板"
     },
     {
-     "n": "方案B · 少女峰深度",
-     "d": "因特拉肯4-5天",
-     "hl": "格林德瓦First+米伦+文根徒步",
+     "n": "方案B · 因特拉肯基地",
+     "d": "因特拉肯连住4-5天(单基地不搬箱)",
+     "hl": "格林德瓦First悬崖步道+米伦+文根+少女峰",
      "cost": "¥15000–21000",
-     "why": "徒步爱好者"
+     "why": "徒步爱好者;一地连住"
     },
     {
      "n": "方案C · 冬季滑雪",
@@ -2681,11 +2705,11 @@ var KB = [
      "why": "Train travel ceiling"
     },
     {
-     "n": "Plan B · Jungfrau Base",
-     "d": "Interlaken 4-5d",
-     "hl": "Grindelwald First + Mürren + Wengen",
+     "n": "Plan B · Interlaken Base",
+     "d": "Interlaken 4-5d, single base",
+     "hl": "Grindelwald First cliff walk + Mürren + Wengen + Jungfraujoch",
      "cost": "¥15-21k",
-     "why": "Hikers"
+     "why": "Hikers; unpack once"
     },
     {
      "n": "Plan C · Winter Ski",
@@ -3520,7 +3544,7 @@ var KB = [
    ]
   }
  }
-]];
+];
 
 // ══════════ i18n ══════════
 var LANG = (function(){ try { return localStorage.getItem('tc.lang') || 'zh'; } catch(e){ return 'zh'; } })();
