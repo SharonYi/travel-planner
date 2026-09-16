@@ -212,7 +212,7 @@
         <div><label>几个人</label><input id="fPeople" placeholder="例:2人,体力好,有驾照"></div>
         <div><label>预算(人均)</label><input id="fBudget" placeholder="例:5K-8K RMB"></div>
       </div>
-      <label>已订了啥(硬约束)</label><textarea id="fConstraints" rows="2" placeholder="例:已订京都酒店3晚,11/15大阪入港航班"></textarea>
+      <label>已经订好的(机票/酒店等,选填)</label><textarea id="fConstraints" rows="2" placeholder="例:已订京都酒店3晚,11/15大阪入港航班"></textarea>
       <label>偏好</label><textarea id="fPrefs" rows="2" placeholder="例:红叶必看,温泉随意,不想太赶"></textarea>
       <label>签证</label><input id="fVisa" placeholder="例:日本三年签有效,护照2028年到期">
       <div style="height:16px;"></div>
@@ -3826,9 +3826,16 @@ function refineTrip() {
     plan.push({n:'D'+(plan.length+1), t:'机动日', acts:[['relax','自由安排/补漏']], hotel:'', trans:''});
     notes.push('已加一天机动日');
   }
-  if (/砍掉|去掉|删除|换掉/.test(text)) notes.push('「'+text+'」——离线模式请手动看五件套调整;AI 模式下我能直接重排');
+  if (/砍掉|去掉|删除|换掉/.test(text)) {
+    // 找到被提到的关键词在行程中的位置,标注出来
+    var kw = (text.match(/(砍掉|去掉|删除|换掉)([^,。,;\s]+)/) || [])[2];
+    var found = false;
+    plan.forEach(function(d){ (d.acts||[]).forEach(function(a){ if (kw && a[1].indexOf(kw)>-1) { found=true; a[1] = a[1] + '(待调整:' + kw + ')'; } }); });
+    notes.push(found ? '已在行程上标出「'+kw+'」待调整' : '未在行程中找到该点——描述下所在天数更好定位');
+  }
+  if (/迪士尼|环球|乐园/.test(text) && /半天/.test(text)) notes.push('乐园改半天:上午玩主项目,下午回酒店午休(D3 傍晚可补烟花)——离线模式建议手动微调,AI 模式可自动重排');
   if (/预算|多少钱/.test(text)) notes.push('预算见五件套人均项');
-  var msg = notes.length ? '✍️ '+notes.join(';') : '收到:「'+esc(text)+'」。离线引擎对这条改不动——切到 AI 模式(设置里填 Key)我可以直接重排整份行程。';
+  var msg = notes.length ? '✍️ '+notes.join(';') + (currentTrip ? '' : '') : '收到:「'+esc(text)+'」。' + L('离线引擎对这条改不动——右上角设置里填 Key 切 AI 模式,我可以直接重排整份行程','Offline engine can\'t process this — add a key in Settings to enable AI replanning');
   out.innerHTML = '<div class="tip">'+msg+'</div>' + renderPlanCards(plan);
   currentTrip.planExtracted = plan;
   autoPopulateChecks();
@@ -3935,7 +3942,7 @@ function renderReadiness() {
   var pct=arr.length?Math.round(done/arr.length*100):0;
   $('readyFill').style.width=Math.max(pct,10)+'%';
   $('readyFill').textContent='就绪度 '+pct+'%('+done+'/'+arr.length+')';
-  $('ckList').innerHTML = arr.length ? arr.map(function(c,i){
+  $('ckList').innerHTML = arr.length ? ((done===0 && arr.length>0) ? '<div class="tip">🌱 ' + L('这些是为你预置的待办清单,出发前逐项点亮就行,不用一次做完','These are pre-set to-dos — tick them off as you go, no rush') + '</div>' : '') + arr.map(function(c,i){
     return '<div class="ck-item"><span style="font-weight:600;font-size:13.5px;">'+esc(c.name)+'</span>'+
       (c.lead?' <span style="font-size:11.5px;color:#8c6a4f;">· '+esc(c.lead)+'</span>':'')+
       ' <span class="status '+c.status+'" style="float:right;" onclick="toggleCheck('+i+')">'+(c.status==='done'?'✅ 完成':'🟡 待办')+'</span>'+
@@ -4095,7 +4102,7 @@ function openCase(i) {
 var I18N_MAP = {
   '首页':'Home','旅行规划':'Plan','规划行程':'Plan a Trip','说走就走,帮你排好':'Ready when you are','就绪检查':'Readiness','行程单':'Itinerary','设置':'Settings',
   '离线模式':'Offline','什么时候去':'When','想去哪':'Destination','几个人':'Travelers','预算(人均)':'Budget (pp)',
-  '已订了啥(硬约束)':'Booked already (hard constraints)','偏好':'Preferences','签证':'Visa',
+  '已经订好的(机票/酒店等,选填)':'Already booked (flights/hotels)','偏好':'Preferences','签证':'Visa',
   '说说你的旅行想法':'Tell us your trip idea','填写越具体,方案越准':'More detail, better plans',
   '帮我出方案':'Compare plans','历史行程':'My trips','挑方案':'Pick a plan','改需求':'Edit needs','回对比':'Back to compare',
   '行程出炉':'Itinerary ready','看中哪个?选了再细化':'Pick one to refine','选错了也没关系,后面随时改':'Easy to change later',
