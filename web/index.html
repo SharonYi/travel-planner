@@ -54,6 +54,23 @@
   .modal .note { font-size: 12px; color: #6b7280; margin-top: 8px; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #2d3436; color: #fff; padding: 9px 20px; border-radius: 20px; font-size: 13.5px; display: none; z-index: 12; }
   footer { text-align: center; color: #b8a89a; font-size: 12px; padding: 12px; }
+  /* 行程单预览(打印友好) */
+  .pv-sheet { background: #fff; border-radius: 14px; padding: 28px 26px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+  .pv-head { text-align: center; border-bottom: 3px solid #2c5f6f; padding-bottom: 14px; margin-bottom: 18px; }
+  .pv-head h2 { font-size: 20px; color: #2c5f6f; border: none; padding: 0; margin: 0 0 4px; }
+  .pv-head .m { font-size: 13px; color: #6b7280; }
+  .pv-day { border: 1px solid #e0d9cf; border-radius: 10px; padding: 13px 15px; margin-bottom: 12px; page-break-inside: avoid; }
+  .pv-day .dh { font-size: 15px; font-weight: 700; color: #2c5f6f; margin-bottom: 6px; }
+  .pv-seg { display: inline-block; padding: 3px 9px; border-radius: 5px; margin: 2px 4px 2px 0; font-size: 12px; color: #fff; }
+  .pv-meta { font-size: 12.5px; color: #6b7280; margin-top: 5px; }
+  .pv-empty { text-align: center; color: #b8a89a; padding: 40px 0; font-size: 14px; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .tabs, #inputBar, .mode-bar, footer, .preview-actions, .modal-bg, .modal, .toast { display: none !important; }
+    section.pane { display: none; }
+    section.pane.on { display: block; }
+    .pv-sheet { box-shadow: none; padding: 0; border-radius: 0; }
+  }
   .tabs { text-align: center; margin-bottom: 14px; }
   .tabs button { background: #fff; border: 1px solid #e0d9cf; color: #2c5f6f; padding: 7px 18px; margin: 0 3px 6px; border-radius: 20px; font-size: 13.5px; cursor: pointer; font-family: inherit; }
   .tabs button.on { background: #2c5f6f; color: #fff; border-color: #2c5f6f; }
@@ -97,6 +114,7 @@
   <button id="tab-chat" class="on" onclick="switchTab('chat')">💬 规划对话</button>
   <button id="tab-check" onclick="switchTab('check')">🛫 行前检查</button>
   <button id="tab-trips" onclick="switchTab('trips')">🗂️ 历史/案例</button>
+  <button id="tab-preview" onclick="switchTab('preview')">📄 行程单</button>
 </div>
 
 <section id="pane-chat" class="pane on">
@@ -146,6 +164,15 @@
   <button class="btn ghost" onclick="exportHistoryJSON()">📤 导出全部数据(JSON)</button>
   <button class="btn ghost" onclick="document.getElementById('impFile').click()">📥 导入数据</button>
   <input type="file" id="impFile" accept=".json" style="display:none" onchange="importHistoryJSON(this)">
+</section>
+
+<!-- ═══ 行程单预览 ═══ -->
+<section id="pane-preview" class="pane">
+  <div class="preview-actions" style="text-align:right;margin-bottom:10px;">
+    <button class="btn ghost" onclick="window.print()">🖨️ 打印 / 存 PDF</button>
+    <button class="btn" onclick="exportHTML()">📤 导出单文件 HTML</button>
+  </div>
+  <div id="previewBody"></div>
 </section>
 
 <!-- 设置弹层 -->
@@ -520,7 +547,8 @@ function aiSend(text) {
   }).catch(function(e) {
     t.remove();
     var hint = '';
-    if (/HTTP 401|403/.test(e.message)) hint = 'Key 无效或没权限——检查渠道对应的 Key 是否填对';
+    if (/HTTP 402/.test(e.message)) hint = '账户余额不足——去 DeepSeek 平台充值(10 元够用很久,规划一次约 1–5 分钱)';
+    else if (/HTTP 401|403/.test(e.message)) hint = 'Key 无效或没权限——检查渠道对应的 Key 是否填对';
     else if (/HTTP 404/.test(e.message)) hint = '模型名或 Base URL 可能不对——DeepSeek 填 deepseek-chat,智谱填 glm-4.6';
     else if (/Failed to fetch|NetworkError/i.test(e.message)) hint = '网络不通——国内渠道(DeepSeek/智谱/Kimi)无需国际网络;Anthropic 需要能访问国际站点';
     addMsg('ai', '<p>AI 调用失败:'+esc(e.message)+'</p>' + (hint?'<p style="font-size:12.5px;color:#6b7280;">'+hint+'</p>':'') + '<p style="font-size:12.5px;color:#6b7280;">可在设置里换渠道,或先用离线模式。</p>');
@@ -577,12 +605,13 @@ function saveSettings() {
 
 // ══════════ Tab 切换 ══════════
 function switchTab(name) {
-  ['chat','check','trips'].forEach(function(n){
+  ['chat','check','trips','preview'].forEach(function(n){
     var tb = document.getElementById('tab-'+n), pn = document.getElementById('pane-'+n);
     if (tb) tb.className = (n===name) ? 'on' : '';
     if (pn) pn.className = 'pane' + (n===name ? ' on' : '');
   });
   if (name==='check') renderCheck();
+  if (name==='preview') renderPreview();
   if (name==='trips') renderHistory();
 }
 
@@ -700,6 +729,45 @@ function importHistoryJSON(input) {
   r.readAsText(f); input.value='';
 }
 
+// ══════════ 行程单预览 ══════════
+var PV_COLORS = { nature:'#8B7355', activity:'#6B5637', relax:'#C4A882', transit:'#A8A29E', flight:'#7C6D5F' };
+var PV_LABELS = { nature:'自然', activity:'体验', relax:'休闲', transit:'在途', flight:'飞行' };
+function renderPreview() {
+  var el = document.getElementById('previewBody');
+  if (!el) return;
+  if (!state || !state.plan || !state.plan.length) {
+    el.innerHTML = '<div class="pv-sheet"><div class="pv-empty">还没有行程——先在「规划对话」里聊出一个,或去「历史/案例」打开一个案例 📄</div></div>';
+    return;
+  }
+  var t = state;
+  var segs = function(d) {
+    return (d.acts||[]).map(function(x){
+      return '<span class="pv-seg" style="background:'+PV_COLORS[x[0]]+';">'+esc(x[1])+'</span>';
+    }).join(' ');
+  };
+  var days = t.plan.map(function(d, i){
+    return '<div class="pv-day"><div class="dh">D'+(i+1)+(d.t?' · '+esc(d.t):'')+'</div>' +
+      '<div>'+segs(d)+'</div>' +
+      (d.hotel?'<div class="pv-meta">🏨 '+esc(d.hotel)+'</div>':'') +
+      (d.trans?'<div class="pv-meta">🚃 '+esc(d.trans)+'</div>':'') +
+    '</div>';
+  }).join('');
+  var checksHtml = '';
+  var ck = checks();
+  if (ck.length) {
+    checksHtml = '<div class="pv-head" style="border-bottom-color:#c9a87c;margin-top:20px;"><h2 style="font-size:16px;">📋 必订清单</h2></div>' +
+      ck.map(function(c){
+        return '<div style="font-size:13px;margin:5px 0;">'+(c.status==='done'?'✅':'🟡')+' '+esc(c.name)+(c.lead?' <span style="color:#8c6a4f;font-size:12px;">('+esc(c.lead)+')</span>':'')+'</div>';
+      }).join('');
+  }
+  var title = (t.chosenV && t.chosenV.name) ? t.chosenV.name : (t.lib ? t.lib.keys[0] : '行程');
+  el.innerHTML = '<div class="pv-sheet">' +
+    '<div class="pv-head"><h2>'+esc(title)+'</h2><div class="m">'+t.days+' 天 · '+t.people+' 人'+(t.raw?' · 按你的需求定制':'')+'</div></div>' +
+    days + checksHtml +
+    '<div style="text-align:center;color:#b8a89a;font-size:11px;margin-top:16px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</div>' +
+  '</div>';
+}
+
 // ══════════ T-minus 时间线 ══════════
 var T_MINUS = [
   { day:'T-30', label:'国际机票', desc:'核对时刻与口岸' },
@@ -750,6 +818,20 @@ function renderCases() {
 function openCase(i) {
   var c = CASES[i];
   addMsg('ai', '<p>📖 <b>'+esc(c.title)+'</b>('+esc(c.meta)+' · '+esc(c.tag)+')</p>' + mdToHtml(c.md));
+  // 案例也填充 state,让行程单/风险提示等基于它工作
+  state = {
+    lib: {keys:[c.title]}, days: parseInt(c.meta)||5, people: 2, raw: c.dest,
+    phase: 'refined', plan: [], chosenV: {name: c.title}, isCase: true
+  };
+  // 从案例 md 提取逐日行(供行程单渲染)
+  var rows = (c.md.split(String.fromCharCode(10)).filter(function(l){ return l.indexOf("| D") === 0; }));
+  rows.forEach(function(r){
+    var cells = r.split('|').map(function(x){return x.trim();}).filter(Boolean);
+    if (cells.length >= 3 && /^D\d+/.test(cells[0])) {
+      state.plan.push({ t: cells[1]||'', acts: [['activity', cells[2]||'']],
+        trans: cells[3]||'', hotel: cells[4]||'' });
+    }
+  });
   switchTab('chat');
 }
 
