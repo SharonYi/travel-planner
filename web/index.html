@@ -135,6 +135,9 @@
   .modal.on { display: block; }
   .modal h4 { color: #2c5f6f; font-size: 16px; margin-bottom: 4px; }
   .modal .note { font-size: 12px; color: #8c8478; margin-top: 10px; line-height: 1.7; }
+  /* 中英双语:按 html lang 属性显隐 */
+  html[lang="en"] .zh-only { display: none; }
+  html[lang="zh"] .en-only { display: none; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1c1917; color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px; display: none; z-index: 99; }
   footer { text-align: center; color: #b8b2a8; font-size: 12px; padding: 18px; }
   .empty { text-align: center; color: #b8b2a8; font-size: 13px; padding: 30px 0; }
@@ -153,6 +156,7 @@
   </span>
   <span class="right">
     <span class="modelabel" id="modeLabel">离线模式</span>
+    <button onclick="toggleLang()" id="langBtn">EN</button>
     <button onclick="openSettings()">⚙️ 设置</button>
   </span>
 </div></div>
@@ -162,9 +166,9 @@
   <div class="hero">
     <div class="logo">🧭</div>
     <h1>Trip Compass</h1>
-    <div class="tag">说走就走,帮你排好</div>
-    <p>告诉我时间段和目的地,我出方案、排行程、盯就绪——零登录,数据只存你自己的浏览器。</p>
-    <button class="cta" onclick="go('planner')">开始规划 →</button>
+    <div class="tag"><span class="zh-only">说走就走,帮你排好</span><span class="en-only">Ready when you are</span></div>
+    <p><span class="zh-only">告诉我时间段和目的地,我出方案、排行程、盯就绪——零登录,数据只存你自己的浏览器。</span><span class="en-only">Tell me your dates and destination — I compare plans, build the itinerary, and track readiness. No login; data stays in your browser.</span></p>
+    <button class="cta" onclick="go('planner')"><span class="zh-only">开始规划 →</span><span class="en-only">Start planning →</span></button>
   </div>
   <div class="card">
     <h2>🧭 四步搞定</h2><div class="sub">从想法到出发,一条龙</div>
@@ -199,7 +203,7 @@
   <div class="pagehead"><h2>🗺️ 规划行程</h2></div>
   <div id="pl-input">
     <div class="card">
-      <h2>说说你的旅行想法</h2><div class="sub">填写越具体,方案越准</div>
+      <h2><span class="zh-only">说说你的旅行想法</span><span class="en-only">Tell us your trip idea</span></h2><div class="sub"><span class="zh-only">填写越具体,方案越准</span><span class="en-only">More detail, better plans</span></div>
       <div class="grid2">
         <div><label>什么时候去 <span class="req">*</span></label><input id="fDates" placeholder="例:11月15-19日"></div>
         <div><label>想去哪 <span class="req">*</span></label><input id="fDest" placeholder="例:大阪 / 北海道"></div>
@@ -212,7 +216,7 @@
       <label>偏好</label><textarea id="fPrefs" rows="2" placeholder="例:红叶必看,温泉随意,不想太赶"></textarea>
       <label>签证</label><input id="fVisa" placeholder="例:日本三年签有效,护照2028年到期">
       <div style="height:16px;"></div>
-      <button class="btn big" onclick="handleCompare()">帮我出方案 ➤</button>
+      <button class="btn big" onclick="handleCompare()"><span class="zh-only"><span class="zh-only">帮我出方案 ➤</span><span class="en-only">Compare plans ➤</span></span><span class="en-only">Compare plans ➤</span></button>
     </div>
     <div class="card"><h2>🗂️ 历史行程</h2><div id="plHist"></div></div>
   </div>
@@ -220,8 +224,8 @@
     <div class="pagehead"><button class="back" onclick="plBack('input')">← 改需求</button><h2>挑方案</h2></div>
     <div id="compareBody"></div>
     <div class="pickbox">
-      <div class="q">看中哪个?选了再细化</div>
-      <div class="s">选错了也没关系,后面随时改</div>
+      <div class="q"><span class="zh-only">看中哪个?选了再细化</span><span class="en-only">Pick one to refine</span></div>
+      <div class="s"><span class="zh-only">选错了也没关系,后面随时改</span><span class="en-only">Easy to change later</span></div>
       <button class="btn" onclick="handleDetail('方案A')">✓ 方案 A</button>
       <button class="btn outline" onclick="handleDetail('方案B')">✓ 方案 B</button>
       <button class="btn outline" onclick="handleDetail('方案C')">✓ 方案 C</button>
@@ -250,7 +254,7 @@
 
 <!-- 就绪检查 -->
 <div id="page-readiness" class="page">
-  <div class="pagehead"><h2>🛫 就绪检查</h2></div>
+  <div class="pagehead"><h2>🛫 <span class="zh-only">就绪检查</span><span class="en-only">Readiness</span></h2></div>
   <div class="card">
     <h2>倒计时时间线</h2><div class="sub">该什么时候干什么</div>
     <div class="tm-line" id="tmLine"></div>
@@ -274,10 +278,10 @@
 <!-- 行程单 -->
 <div id="page-preview" class="page">
   <div class="pagehead">
-    <h2>📄 行程单</h2>
+    <h2>📄 <span class="zh-only">行程单</span><span class="en-only">Itinerary</span></h2>
     <span class="no-print" style="float:right;">
-      <button class="btn outline sm" onclick="window.print()">🖨️ 打印/存PDF</button>
-      <button class="btn sm" onclick="exportHTML()">📤 导出 HTML</button>
+      <button class="btn outline sm" onclick="window.print()"><span class="zh-only">🖨️ 打印/存PDF</span><span class="en-only">🖨️ Print / PDF</span></button>
+      <button class="btn sm" onclick="exportHTML()"><span class="zh-only">📤 导出 HTML</span><span class="en-only">📤 Export HTML</span></button>
     </span>
   </div>
   <div id="pvBody"></div>
@@ -360,8 +364,1427 @@ function saveSettings() {
   model=$('setModelInput').value.trim(); baseUrl=$('setBase').value.trim();
   localStorage.setItem(LS.mode,mode); localStorage.setItem(LS.provider,provider);
   localStorage.setItem(LS.key,apiKey); localStorage.setItem(LS.model,model); localStorage.setItem(LS.base,baseUrl);
-  $('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : '离线模式';
+  document.documentElement.setAttribute('lang', LANG);
+$('langBtn').textContent = LANG === 'zh' ? 'EN' : '中';
+$('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : L('离线模式','Offline');
   closeModal(); toast('设置已保存 ⚙️');
+}
+
+// ══════════ 双语知识库(11 目的地,zh/en 各含 intro/variants/days) ══════════
+var KB = [
+ {
+  "keys": [
+   "京都",
+   "关西",
+   "大阪",
+   "日本红叶",
+   "kyoto",
+   "osaka",
+   "kansai"
+  ],
+  "zh": {
+   "name": "关西·京都",
+   "intro": "红叶峰期 11 月中下旬(人多+贵),前中期(11月上中旬)体验最佳。京都=红叶季的目的地本身。",
+   "variants": [
+    {
+     "n": "方案A · 京都深度",
+     "d": "京都3晚+大阪2晚",
+     "hl": "岚山+东福寺+永观堂+鞍马贵船",
+     "cost": "¥4500–6500",
+     "why": "红叶季的京都值得3整天"
+    },
+    {
+     "n": "方案B · 京都+奈良",
+     "d": "京都2.5+奈良0.5+大阪2",
+     "hl": "京都略减+小鹿+春日大社秋色",
+     "cost": "¥4500–6500",
+     "why": "有看鹿执念时选"
+    },
+    {
+     "n": "方案C · 京都+神户",
+     "d": "京都2+神户1+大阪2",
+     "hl": "六甲山红叶+有马温泉",
+     "cost": "¥5000–7000",
+     "why": "想泡温泉,代价是多搬一次酒店"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达→京都东山",
+     "acts": "落地KIX→HARUKA 75min→只园夜散步",
+     "hotel": "京都站南",
+     "trans": "HARUKA ¥2900"
+    },
+    {
+     "t": "岚山一整天",
+     "acts": "竹林(8点前)+天龙寺+保津川小火车",
+     "hotel": "京都站南",
+     "trans": "JR 嵯峨野线"
+    },
+    {
+     "t": "东福寺—伏见—永观堂",
+     "acts": "通天桥(开园即入)+千本鸟居+夜枫",
+     "hotel": "京都站南",
+     "trans": "JR+巴士"
+    },
+    {
+     "t": "鞍马→贵船→大阪",
+     "acts": "叡电红叶隧道+徒步2h+川床午餐",
+     "hotel": "梅田",
+     "trans": "叡电+JR"
+    },
+    {
+     "t": "大阪设计小店日",
+     "acts": "中崎町+堀江→南海Rapi:t赴KIX",
+     "hotel": "—",
+     "trans": "南海 ¥1450"
+    }
+   ]
+  },
+  "en": {
+   "name": "Kansai · Kyoto",
+   "intro": "Peak foliage: mid-late Nov (crowded & pricey). Early-mid Nov is the sweet spot. Kyoto IS the destination in foliage season.",
+   "variants": [
+    {
+     "n": "Plan A · Kyoto Deep",
+     "d": "Kyoto 3N + Osaka 2N",
+     "hl": "Arashiyama + Tofukuji + Eikando + Kurama",
+     "cost": "¥4.5-6.5k",
+     "why": "Kyoto deserves 3 full days in fall"
+    },
+    {
+     "n": "Plan B · Kyoto + Nara",
+     "d": "Kyoto 2.5 + Nara 0.5 + Osaka 2",
+     "hl": "Deer + Kasuga Taisha autumn",
+     "cost": "¥4.5-6.5k",
+     "why": "If deer are a must"
+    },
+    {
+     "n": "Plan C · Kyoto + Kobe",
+     "d": "Kyoto 2 + Kobe 1 + Osaka 2",
+     "hl": "Rokko foliage + Arima onsen",
+     "cost": "¥5-7k",
+     "why": "Onsen lovers; one more hotel switch"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive → Higashiyama",
+     "acts": "KIX → HARUKA 75min → Gion evening walk",
+     "hotel": "S. of Kyoto Stn",
+     "trans": "HARUKA ¥2900"
+    },
+    {
+     "t": "Arashiyama Full Day",
+     "acts": "Bamboo (before 8am) + Tenryuji + Sagano train",
+     "hotel": "S. of Kyoto Stn",
+     "trans": "JR Sagano line"
+    },
+    {
+     "t": "Tofukuji→Fushimi→Eikando",
+     "acts": "Tsutenkyo (at opening) + Fushimi Inari + night illumination",
+     "hotel": "S. of Kyoto Stn",
+     "trans": "JR+bus"
+    },
+    {
+     "t": "Kurama→Kibune→Osaka",
+     "acts": "Eizan foliage tunnel + 2h hike + kawadake lunch",
+     "hotel": "Umeda",
+     "trans": "Eizan+JR"
+    },
+    {
+     "t": "Osaka Design Shops",
+     "acts": "Nakazakicho + Horie → Nankai to KIX",
+     "hotel": "—",
+     "trans": "Nankai ¥1450"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "东京",
+   "tokyo",
+   "富士山",
+   "fuji",
+   "镰仓",
+   "箱根"
+  ],
+  "zh": {
+   "name": "东京·关东",
+   "intro": "都市+近郊组合;樱花3月底-4月初,红叶11月下旬-12月初(比京都晚)。镰仓/箱根是经典近郊。",
+   "variants": [
+    {
+     "n": "方案A · 东京经典",
+     "d": "东京5晚(市区4+镰仓1)",
+     "hl": "浅草+涩谷+teamLab+镰仓江之电",
+     "cost": "¥5000–8000",
+     "why": "第一次去的主线"
+    },
+    {
+     "n": "方案B · 东京+富士山",
+     "d": "东京4+河口湖1",
+     "hl": "富士山逆富士+红叶回廊",
+     "cost": "¥5500–8500",
+     "why": "富士山拍照党"
+    },
+    {
+     "n": "方案C · 东京+箱根",
+     "d": "东京4+箱根1",
+     "hl": "温泉+芦之湖+雕刻之森",
+     "cost": "¥5500–9000",
+     "why": "泡汤+艺术"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达→浅草/上野",
+     "acts": "落地NRT/HND→酒店→浅草寺+晴空塔夜景",
+     "hotel": "上野/浅草",
+     "trans": "Skyliner/单轨"
+    },
+    {
+     "t": "市区经典",
+     "acts": "明治神宫+涩谷+表参道;晚上teamLab",
+     "hotel": "同上",
+     "trans": "地铁"
+    },
+    {
+     "t": "秋叶原/银座",
+     "acts": "秋叶原+银座;或筑地早市",
+     "hotel": "同上",
+     "trans": "地铁"
+    },
+    {
+     "t": "镰仓一日",
+     "acts": "江之电+灌篮高手平交道+长谷寺",
+     "hotel": "东京/镰仓",
+     "trans": "JR湘南新宿线"
+    },
+    {
+     "t": "返程",
+     "acts": "购物补货→赴机场",
+     "hotel": "—",
+     "trans": "Skyliner"
+    }
+   ]
+  },
+  "en": {
+   "name": "Tokyo · Kanto",
+   "intro": "City + nearby combo. Sakura: late Mar-early Apr; foliage: late Nov-early Dec. Kamakura/Hakone are classic extensions.",
+   "variants": [
+    {
+     "n": "Plan A · Tokyo Classic",
+     "d": "Tokyo 5N (4 city + 1 Kamakura)",
+     "hl": "Asakusa+Shibuya+teamLab+Enoden",
+     "cost": "¥5-8k",
+     "why": "First-timer mainline"
+    },
+    {
+     "n": "Plan B · Tokyo + Fuji",
+     "d": "Tokyo 4 + Kawaguchiko 1",
+     "hl": "Reflection shot + Momiji corridor",
+     "cost": "¥5.5-8.5k",
+     "why": "Fuji photographers"
+    },
+    {
+     "n": "Plan C · Tokyo + Hakone",
+     "d": "Tokyo 4 + Hakone 1",
+     "hl": "Onsen + Lake Ashi + open-air museum",
+     "cost": "¥5.5-9k",
+     "why": "Onsen + art"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive → Asakusa",
+     "acts": "NRT/HND → hotel → Sensoji + Skytree night",
+     "hotel": "Ueno/Asakusa",
+     "trans": "Skyliner/monorail"
+    },
+    {
+     "t": "City Classic",
+     "acts": "Meiji Shrine+Shibuya; teamLab at night",
+     "hotel": "same",
+     "trans": "Metro"
+    },
+    {
+     "t": "Akihabara/Ginza",
+     "acts": "Akihabara + Ginza; or Tsukiji morning",
+     "hotel": "same",
+     "trans": "Metro"
+    },
+    {
+     "t": "Kamakura Day",
+     "acts": "Enoden + Slam Dunk crossing + Hasedera",
+     "hotel": "Tokyo/Kamakura",
+     "trans": "JR line"
+    },
+    {
+     "t": "Departure",
+     "acts": "Shopping → airport",
+     "hotel": "—",
+     "trans": "Skyliner"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "巴厘岛",
+   "bali",
+   "火山",
+   "印尼",
+   "bromo",
+   "ijen",
+   "sewu",
+   "佩妮达"
+  ],
+  "zh": {
+   "name": "巴厘岛·双火山",
+   "intro": "旱季(4-10月)最佳;瀑布+火山+海岛三段式。含中转时注意分段签证。",
+   "variants": [
+    {
+     "n": "方案A · 双火山+佩妮达",
+     "d": "Safari+Sewu+Bromo 3天+巴厘岛6天",
+     "hl": "瀑布+火山日出+悬崖+体验潜",
+     "cost": "¥7000–10000",
+     "why": "打卡最全,体力要求高"
+    },
+    {
+     "n": "方案B · 纯巴厘岛",
+     "d": "Sanur+图蓝本+Amed+乌布",
+     "hl": "纯海岛度假,不起夜",
+     "cost": "¥5000–7000",
+     "why": "节奏舒服"
+    },
+    {
+     "n": "方案C · 双火山+科莫多",
+     "d": "火山2天+船宿2天",
+     "hl": "科莫多龙+Manta浮潜",
+     "cost": "¥9000–13000",
+     "why": "有潜水证选"
+    }
+   ],
+   "days": [
+    {
+     "t": "Safari+进山",
+     "acts": "Prigen Safari Park→车程5h→山脚民宿",
+     "hotel": "山脚",
+     "trans": "包车"
+    },
+    {
+     "t": "Sewu→Bromo",
+     "acts": "瀑布下峡谷2h→经Malang上山",
+     "hotel": "Bromo火山村",
+     "trans": "包车"
+    },
+    {
+     "t": "Bromo日出→飞巴厘岛",
+     "acts": "02:00起·日出+火山口→午后赴机场",
+     "hotel": "库塔",
+     "trans": "包车+航班"
+    },
+    {
+     "t": "佩妮达西线",
+     "acts": "Kelingking+Broken Beach日落",
+     "hotel": "岛上",
+     "trans": "快船+皮卡"
+    },
+    {
+     "t": "佩妮达东线+浮潜",
+     "acts": "Diamond Beach+浮潜Manta",
+     "hotel": "Sanur",
+     "trans": "快船"
+    },
+    {
+     "t": "体验潜→乌布",
+     "acts": "DSD沉船岸潜→水宫梯田",
+     "hotel": "Amed→乌布",
+     "trans": "包车"
+    },
+    {
+     "t": "南部+水明漾",
+     "acts": "海神庙+Uluwatu+Kecak+海鲜",
+     "hotel": "Seminyak",
+     "trans": "包车"
+    }
+   ]
+  },
+  "en": {
+   "name": "Bali · Twin Volcanoes",
+   "intro": "Dry season (Apr-Oct) best. Waterfall+volcano+island triple. Mind transit visas.",
+   "variants": [
+    {
+     "n": "Plan A · Volcanoes + Penida",
+     "d": "Safari+Sewu+Bromo 3d + Bali 6d",
+     "hl": "Waterfall+sunrise+cliffs+discover dive",
+     "cost": "¥7-10k",
+     "why": "Most complete"
+    },
+    {
+     "n": "Plan B · Bali Only",
+     "d": "Sanur+Tulamben+Amed+Ubud",
+     "hl": "Pure island, no pre-dawn",
+     "cost": "¥5-7k",
+     "why": "Relaxed pace"
+    },
+    {
+     "n": "Plan C · Volcanoes + Komodo",
+     "d": "Volcano 2d + liveaboard 2d",
+     "hl": "Komodo + manta snorkel",
+     "cost": "¥9-13k",
+     "why": "Certified divers"
+    }
+   ],
+   "days": [
+    {
+     "t": "Safari + Mountain",
+     "acts": "Prigen Safari → 5h drive → foothill",
+     "hotel": "foothill",
+     "trans": "car"
+    },
+    {
+     "t": "Sewu → Bromo",
+     "acts": "Canyon descent 2h → via Malang",
+     "hotel": "Bromo village",
+     "trans": "car"
+    },
+    {
+     "t": "Bromo Sunrise → Fly",
+     "acts": "2am wake · crater → afternoon flight",
+     "hotel": "Kuta",
+     "trans": "car+flight"
+    },
+    {
+     "t": "Penida West",
+     "acts": "Kelingking + Broken Beach sunset",
+     "hotel": "island",
+     "trans": "ferry+pickup"
+    },
+    {
+     "t": "Penida East + Snorkel",
+     "acts": "Diamond Beach + manta snorkel",
+     "hotel": "Sanur",
+     "trans": "ferry"
+    },
+    {
+     "t": "Dive → Ubud",
+     "acts": "DSD shipwreck → palace+terraces",
+     "hotel": "Amed→Ubud",
+     "trans": "car"
+    },
+    {
+     "t": "South + Seminyak",
+     "acts": "Tanah Lot+Uluwatu+Kecak",
+     "hotel": "Seminyak",
+     "trans": "car"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "曼谷",
+   "清迈",
+   "泰国",
+   "bangkok",
+   "chiangmai",
+   "普吉",
+   "phuket",
+   "拜县"
+  ],
+  "zh": {
+   "name": "泰国·曼谷清迈",
+   "intro": "11-2月凉季最佳;落地签便捷。泼水节4月中。",
+   "variants": [
+    {
+     "n": "方案A · 曼谷+清迈",
+     "d": "曼谷3+清迈3",
+     "hl": "大皇宫+周末市场+古城+丛林飞跃",
+     "cost": "¥3500–5500",
+     "why": "城市+古城经典"
+    },
+    {
+     "n": "方案B · 曼谷+海岛",
+     "d": "曼谷3+普吉/苏梅3",
+     "hl": "皮皮岛跳岛+浮潜",
+     "cost": "¥4500–7000",
+     "why": "海滩爱好者"
+    },
+    {
+     "n": "方案C · 纯清迈慢生活",
+     "d": "清迈5(含拜县1)",
+     "hl": "咖啡馆+大象营+夜市",
+     "cost": "¥3000–4500",
+     "why": "松弛度假"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达曼谷",
+     "acts": "大皇宫+卧佛寺+湄南河日落",
+     "hotel": "暹罗/素坤逸",
+     "trans": "机场快线+BTS"
+    },
+    {
+     "t": "曼谷市集日",
+     "acts": "郑王庙+ICONSIAM或周末市场",
+     "hotel": "同上",
+     "trans": "BTS/船"
+    },
+    {
+     "t": "飞清迈",
+     "acts": "古城寺庙+周日夜市",
+     "hotel": "古城内",
+     "trans": "航班1.2h"
+    },
+    {
+     "t": "清迈体验日",
+     "acts": "大象保护营或丛林飞跃",
+     "hotel": "同上",
+     "trans": "双条车"
+    },
+    {
+     "t": "素贴山/返程",
+     "acts": "双龙寺+俯瞰清迈→返程",
+     "hotel": "—",
+     "trans": "red car"
+    }
+   ]
+  },
+  "en": {
+   "name": "Thailand · BKK + Chiang Mai",
+   "intro": "Cool season Nov-Feb best. Easy visa. Songkran mid-Apr.",
+   "variants": [
+    {
+     "n": "Plan A · BKK + Chiang Mai",
+     "d": "BKK 3 + CM 3",
+     "hl": "Grand Palace + markets + zipline",
+     "cost": "¥3.5-5.5k",
+     "why": "City+old city classic"
+    },
+    {
+     "n": "Plan B · BKK + Island",
+     "d": "BKK 3 + Phuket/Samui 3",
+     "hl": "Phi Phi + snorkeling",
+     "cost": "¥4.5-7k",
+     "why": "Beach lovers"
+    },
+    {
+     "n": "Plan C · CM Slow",
+     "d": "CM 5 (Pai 1)",
+     "hl": "Cafes + elephants + bazaars",
+     "cost": "¥3-4.5k",
+     "why": "Chill"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive BKK",
+     "acts": "Grand Palace + Wat Pho + river sunset",
+     "hotel": "Siam/Sukhumvit",
+     "trans": "ARL+BTS"
+    },
+    {
+     "t": "Market Day",
+     "acts": "Wat Arun + ICONSIAM or weekend market",
+     "hotel": "same",
+     "trans": "BTS/boat"
+    },
+    {
+     "t": "Fly to CM",
+     "acts": "Old city temples + Sunday street",
+     "hotel": "old city",
+     "trans": "flight 1.2h"
+    },
+    {
+     "t": "Experience",
+     "acts": "Elephant sanctuary OR ziplining",
+     "hotel": "same",
+     "trans": "songthaew"
+    },
+    {
+     "t": "Doi Suthep",
+     "acts": "Wat Phra That → depart",
+     "hotel": "—",
+     "trans": "red car"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "新加坡",
+   "singapore",
+   "狮城",
+   "圣淘沙"
+  ],
+  "zh": {
+   "name": "新加坡",
+   "intro": "全年皆宜;3-4天足够。免签30天。亲子友好。",
+   "variants": [
+    {
+     "n": "方案A · 经典全景",
+     "d": "3晚市区",
+     "hl": "滨海湾+环球影城+动物园",
+     "cost": "¥4000–6000",
+     "why": "第一次主线"
+    },
+    {
+     "n": "方案B · 深度休闲",
+     "d": "4晚(含圣淘沙2)",
+     "hl": "海滩+SEA海洋馆",
+     "cost": "¥5000–7500",
+     "why": "亲子度假"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达→滨海湾",
+     "acts": "鱼尾狮+金沙空中花园+滨海湾花园夜灯",
+     "hotel": "市政厅/克拉码头",
+     "trans": "MRT"
+    },
+    {
+     "t": "环球影城",
+     "acts": "圣淘沙全天+海滩傍晚",
+     "hotel": "同上",
+     "trans": "圣淘沙捷运"
+    },
+    {
+     "t": "动物园/街区",
+     "acts": "夜间动物园或小印度+甘榜格南",
+     "hotel": "—",
+     "trans": "MRT"
+    }
+   ]
+  },
+  "en": {
+   "name": "Singapore",
+   "intro": "Year-round. 3-4 days enough. 30-day visa-free.",
+   "variants": [
+    {
+     "n": "Plan A · Classic",
+     "d": "3N downtown",
+     "hl": "Marina Bay + Universal + zoo",
+     "cost": "¥4-6k",
+     "why": "First-timer"
+    },
+    {
+     "n": "Plan B · Relaxed",
+     "d": "4N (Sentosa 2)",
+     "hl": "Beach + aquarium",
+     "cost": "¥5-7.5k",
+     "why": "Family"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive → Marina Bay",
+     "acts": "Merlion + SkyPark + Gardens night",
+     "hotel": "City Hall",
+     "trans": "MRT"
+    },
+    {
+     "t": "Universal",
+     "acts": "Sentosa full day + beach",
+     "hotel": "same",
+     "trans": "Express"
+    },
+    {
+     "t": "Zoo/Quarters",
+     "acts": "Night Safari OR Little India",
+     "hotel": "—",
+     "trans": "MRT"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "长白山",
+   "changbaishan",
+   "吉林",
+   "东北滑雪",
+   "天池"
+  ],
+  "zh": {
+   "name": "长白山",
+   "intro": "夏(6-8月避暑看天池)冬(12-2月滑雪)双旺季;10月红叶+初雪。北坡开发最全,西坡视野最好。天池可见率约60%,留机动日。",
+   "variants": [
+    {
+     "n": "方案A · 北坡经典",
+     "d": "北坡2天+小镇1天",
+     "hl": "天池+瀑布+温泉+漂流",
+     "cost": "¥2000–3500",
+     "why": "第一次必走北坡"
+    },
+    {
+     "n": "方案B · 北坡+西坡",
+     "d": "北坡1+西坡1+机动1",
+     "hl": "双坡双看天池",
+     "cost": "¥2500–4000",
+     "why": "提高天池可见率"
+    },
+    {
+     "n": "方案C · 滑雪度假",
+     "d": "万达滑雪场3-4天",
+     "hl": "粉雪+温泉小镇",
+     "cost": "¥3500–6000",
+     "why": "冬季专项"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达→二道白河镇",
+     "acts": "机场→小镇安顿→美人松公园",
+     "hotel": "二道白河",
+     "trans": "班车30min"
+    },
+    {
+     "t": "北坡主景区",
+     "acts": "天池主峰+长白瀑布+聚龙温泉+绿渊潭",
+     "hotel": "二道白河",
+     "trans": "景区班车"
+    },
+    {
+     "t": "西坡或魔界",
+     "acts": "西坡1442台阶 或 魔界晨雾+漂流",
+     "hotel": "二道白河",
+     "trans": "包车1.5h"
+    },
+    {
+     "t": "返程",
+     "acts": "机动(天池补看)→机场",
+     "hotel": "—",
+     "trans": "班车"
+    }
+   ]
+  },
+  "en": {
+   "name": "Changbaishan",
+   "intro": "Summer (lake) & winter (ski) dual peaks; Oct = foliage+first snow. North slope most developed. Tianchi visibility ~60%.",
+   "variants": [
+    {
+     "n": "Plan A · North Slope",
+     "d": "North 2d + town 1d",
+     "hl": "Tianchi + falls + springs",
+     "cost": "¥2-3.5k",
+     "why": "First visit"
+    },
+    {
+     "n": "Plan B · N + W Slopes",
+     "d": "N 1 + W 1 + buffer 1",
+     "hl": "Two chances at Tianchi",
+     "cost": "¥2.5-4k",
+     "why": "Visibility chasers"
+    },
+    {
+     "n": "Plan C · Ski Resort",
+     "d": "Wanda 3-4d",
+     "hl": "Powder + hot springs",
+     "cost": "¥3.5-6k",
+     "why": "Winter"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive → Erdaobaihe",
+     "acts": "Airport → settle → pine park",
+     "hotel": "Erdaobaihe",
+     "trans": "shuttle 30m"
+    },
+    {
+     "t": "North Slope",
+     "acts": "Tianchi + falls + springs",
+     "hotel": "Erdaobaihe",
+     "trans": "park shuttle"
+    },
+    {
+     "t": "West or Mojie",
+     "acts": "1442 steps OR morning mist",
+     "hotel": "Erdaobaihe",
+     "trans": "car 1.5h"
+    },
+    {
+     "t": "Departure",
+     "acts": "Buffer → airport",
+     "hotel": "—",
+     "trans": "shuttle"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "云南",
+   "大理",
+   "丽江",
+   "香格里拉",
+   "yunnan",
+   "洱海",
+   "泸沽湖"
+  ],
+  "zh": {
+   "name": "云南·大理丽江",
+   "intro": "四季皆宜;雨季6-8月。香格里拉海拔3300m注意高反。",
+   "variants": [
+    {
+     "n": "方案A · 大理+丽江",
+     "d": "大理3+丽江2",
+     "hl": "环洱海+古城+玉龙雪山",
+     "cost": "¥3000–5000",
+     "why": "经典双城"
+    },
+    {
+     "n": "方案B · 加香格里拉",
+     "d": "大理2+丽江1+香格里拉2",
+     "hl": "松赞林寺+普达措",
+     "cost": "¥4000–6500",
+     "why": "藏地风情"
+    },
+    {
+     "n": "方案C · 纯大理躺平",
+     "d": "大理5(双廊/喜洲)",
+     "hl": "洱海边住下",
+     "cost": "¥2500–4000",
+     "why": "纯度假"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达大理",
+     "acts": "古城漫步+洱海门日落",
+     "hotel": "古城/才村",
+     "trans": "高铁/飞机"
+    },
+    {
+     "t": "环洱海",
+     "acts": "喜洲+海舌+双廊",
+     "hotel": "双廊",
+     "trans": "包车/电动车"
+    },
+    {
+     "t": "大理→丽江",
+     "acts": "丽江古城+狮子山日落",
+     "hotel": "丽江古城",
+     "trans": "火车2h"
+    },
+    {
+     "t": "玉龙雪山",
+     "acts": "冰川大索道+蓝月谷",
+     "hotel": "丽江",
+     "trans": "包车"
+    },
+    {
+     "t": "返程",
+     "acts": "束河→机场",
+     "hotel": "—",
+     "trans": "机场大巴"
+    }
+   ]
+  },
+  "en": {
+   "name": "Yunnan · Dali + Lijiang",
+   "intro": "Year-round; Jun-Aug rainy. Shangri-La 3300m altitude.",
+   "variants": [
+    {
+     "n": "Plan A · Dali + Lijiang",
+     "d": "Dali 3 + LJ 2",
+     "hl": "Erhai loop + snow mt",
+     "cost": "¥3-5k",
+     "why": "Classic duo"
+    },
+    {
+     "n": "Plan B · + Shangri-La",
+     "d": "Dali 2 + LJ 1 + SL 2",
+     "hl": "Sumtseling + Potatso",
+     "cost": "¥4-6.5k",
+     "why": "Tibetan flavor"
+    },
+    {
+     "n": "Plan C · Dali Only",
+     "d": "Dali 5",
+     "hl": "Stay by the lake",
+     "cost": "¥2.5-4k",
+     "why": "Pure holiday"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Dali",
+     "acts": "Old town + sunset",
+     "hotel": "old town",
+     "trans": "HSR/flight"
+    },
+    {
+     "t": "Erhai Loop",
+     "acts": "Xizhou + Shuanglang",
+     "hotel": "Shuanglang",
+     "trans": "car/e-bike"
+    },
+    {
+     "t": "→ Lijiang",
+     "acts": "Old town + Lion Hill",
+     "hotel": "old town",
+     "trans": "train 2h"
+    },
+    {
+     "t": "Jade Dragon",
+     "acts": "Glacier cable + Blue Moon",
+     "hotel": "LJ",
+     "trans": "car"
+    },
+    {
+     "t": "Departure",
+     "acts": "Shuhe → airport",
+     "hotel": "—",
+     "trans": "shuttle"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "川西",
+   "稻城亚丁",
+   "成都",
+   "四姑娘山",
+   "sichuan",
+   "318"
+  ],
+  "zh": {
+   "name": "川西·成都稻城",
+   "intro": "最佳9-10月秋色;亚丁海拔4100m+需适应。成都进出。",
+   "variants": [
+    {
+     "n": "方案A · 成都+稻城亚丁",
+     "d": "成都2+川西环线5",
+     "hl": "亚丁三神山+牛奶海",
+     "cost": "¥4500–7000",
+     "why": "川西天花板(体力高)"
+    },
+    {
+     "n": "方案B · 成都+四姑娘山",
+     "d": "成都3+四姑娘山2",
+     "hl": "双桥沟+长坪沟",
+     "cost": "¥3500–5000",
+     "why": "轻量雪山入门"
+    },
+    {
+     "n": "方案C · 成都周边",
+     "d": "成都4+乐山峨眉2",
+     "hl": "熊猫+乐山大佛+金顶",
+     "cost": "¥3000–4500",
+     "why": "低海拔休闲"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达成都",
+     "acts": "宽窄巷子+人民公园+火锅",
+     "hotel": "春熙路",
+     "trans": "地铁"
+    },
+    {
+     "t": "成都市内",
+     "acts": "熊猫基地(早)+武侯祠+锦里",
+     "hotel": "同上",
+     "trans": "地铁+景区车"
+    },
+    {
+     "t": "→新都桥",
+     "acts": "318国道+折多山口4270m",
+     "hotel": "新都桥",
+     "trans": "包车6h"
+    },
+    {
+     "t": "→稻城",
+     "acts": "理塘+海子山",
+     "hotel": "稻城",
+     "trans": "包车5h"
+    },
+    {
+     "t": "亚丁景区",
+     "acts": "冲古寺+洛绒牛场+牛奶海(徒步6h)",
+     "hotel": "香格里拉镇",
+     "trans": "景区车"
+    },
+    {
+     "t": "返程",
+     "acts": "稻城机场直飞或返成都",
+     "hotel": "—",
+     "trans": "航班/包车"
+    }
+   ]
+  },
+  "en": {
+   "name": "West Sichuan",
+   "intro": "Best Sep-Oct. Yading 4100m+ needs acclimatization. Chengdu in/out.",
+   "variants": [
+    {
+     "n": "Plan A · + Yading",
+     "d": "CD 2 + loop 5",
+     "hl": "Three peaks + Milk Lake",
+     "cost": "¥4.5-7k",
+     "why": "Ceiling (hard)"
+    },
+    {
+     "n": "Plan B · Siguniang",
+     "d": "CD 3 + SG 2",
+     "hl": "Shuangqiao+Changping",
+     "cost": "¥3.5-5k",
+     "why": "Gentle intro"
+    },
+    {
+     "n": "Plan C · Chengdu Area",
+     "d": "CD 4 + Leshan 2",
+     "hl": "Pandas + Buddha",
+     "cost": "¥3-4.5k",
+     "why": "Low altitude"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive CD",
+     "acts": "Kuanzhai + hotpot",
+     "hotel": "Chunxi",
+     "trans": "metro"
+    },
+    {
+     "t": "City",
+     "acts": "Panda base + Wuhou",
+     "hotel": "same",
+     "trans": "metro"
+    },
+    {
+     "t": "→ Xinduqiao",
+     "acts": "G318 + Zheduo pass",
+     "hotel": "Xinduqiao",
+     "trans": "car 6h"
+    },
+    {
+     "t": "→ Daocheng",
+     "acts": "Litang + Haizi",
+     "hotel": "Daocheng",
+     "trans": "car 5h"
+    },
+    {
+     "t": "Yading",
+     "acts": "Milk Lake (6h hike)",
+     "hotel": "Shangri-La town",
+     "trans": "park bus"
+    },
+    {
+     "t": "Return",
+     "acts": "Fly or drive back",
+     "hotel": "—",
+     "trans": "flight/car"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "新疆",
+   "喀纳斯",
+   "伊犁",
+   "赛里木湖",
+   "xinjiang",
+   "独库"
+  ],
+  "zh": {
+   "name": "新疆·北疆环线",
+   "intro": "最佳6-9月(伊犁7月,喀纳斯9月中下)。每天车程4-6h是常态,按环线规划。",
+   "variants": [
+    {
+     "n": "方案A · 伊犁小环线",
+     "d": "乌鲁木齐进,伊犁7天",
+     "hl": "赛里木湖+那拉提+独库北段",
+     "cost": "¥5000–8000",
+     "why": "夏季草原精华"
+    },
+    {
+     "n": "方案B · 喀纳斯环线",
+     "d": "北疆8天",
+     "hl": "喀纳斯+禾木+白哈巴(9月金色)",
+     "cost": "¥6000–9000",
+     "why": "秋色天花板"
+    },
+    {
+     "n": "方案C · 混合大环线",
+     "d": "北疆10天+",
+     "hl": "伊犁+喀纳斯全包",
+     "cost": "¥8000–12000",
+     "why": "假期充足才选"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达乌鲁木齐",
+     "acts": "新疆博物馆+国际大巴扎",
+     "hotel": "市区",
+     "trans": "机场快线"
+    },
+    {
+     "t": "→赛里木湖",
+     "acts": "环湖+果子沟大桥",
+     "hotel": "湖边/清水河",
+     "trans": "包车5h"
+    },
+    {
+     "t": "→伊宁",
+     "acts": "六星街+喀赞其",
+     "hotel": "伊宁",
+     "trans": "包车2h"
+    },
+    {
+     "t": "那拉提",
+     "acts": "草原骑马+毡房",
+     "hotel": "那拉提",
+     "trans": "包车3h"
+    },
+    {
+     "t": "独库北段",
+     "acts": "一日穿越(仅6-10月)",
+     "hotel": "独山子",
+     "trans": "包车"
+    },
+    {
+     "t": "返乌市",
+     "acts": "安集海大峡谷→机场",
+     "hotel": "—",
+     "trans": "包车3h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Xinjiang · North Loop",
+   "intro": "Best Jun-Sep. 4-6h daily drives normal. Plan as a loop.",
+   "variants": [
+    {
+     "n": "Plan A · Yili Loop",
+     "d": "Urumqi in, 7d",
+     "hl": "Sayram + Nalati + Duku",
+     "cost": "¥5-8k",
+     "why": "Summer essence"
+    },
+    {
+     "n": "Plan B · Kanas Loop",
+     "d": "8d north",
+     "hl": "Kanas + Hemu (Sep gold)",
+     "cost": "¥6-9k",
+     "why": "Foliage ceiling"
+    },
+    {
+     "n": "Plan C · Grand Loop",
+     "d": "10d+",
+     "hl": "Yili + Kanas",
+     "cost": "¥8-12k",
+     "why": "Long vacation only"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Urumqi",
+     "acts": "Museum + Grand Bazaar",
+     "hotel": "downtown",
+     "trans": "express"
+    },
+    {
+     "t": "→ Sayram",
+     "acts": "Lake loop + bridge",
+     "hotel": "lakeside",
+     "trans": "car 5h"
+    },
+    {
+     "t": "→ Yining",
+     "acts": "Six-Star + Kazanqi",
+     "hotel": "Yining",
+     "trans": "car 2h"
+    },
+    {
+     "t": "Nalati",
+     "acts": "Grassland + yurt",
+     "hotel": "Nalati",
+     "trans": "car 3h"
+    },
+    {
+     "t": "Duku North",
+     "acts": "Day crossing (Jun-Oct)",
+     "hotel": "Dushanzi",
+     "trans": "car"
+    },
+    {
+     "t": "Return",
+     "acts": "Anjihai → airport",
+     "hotel": "—",
+     "trans": "car 3h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "西藏",
+   "拉萨",
+   "林芝",
+   "珠峰",
+   "tibet",
+   "lhasa",
+   "布达拉宫"
+  ],
+  "zh": {
+   "name": "西藏",
+   "intro": "4-6月/9-10月最佳(林芝桃花3月底-4月中)。珠峰线需边防证;高反适应2-3天。",
+   "variants": [
+    {
+     "n": "方案A · 拉萨+林芝",
+     "d": "拉萨3+林芝3",
+     "hl": "布达拉宫+大昭寺+大峡谷+桃花",
+     "cost": "¥4500–7000",
+     "why": "首次进藏友好"
+    },
+    {
+     "n": "方案B · 拉萨+珠峰",
+     "d": "拉萨3+珠峰线4",
+     "hl": "珠峰大本营(需边防证)",
+     "cost": "¥7000–10000",
+     "why": "世界之极执念"
+    },
+    {
+     "n": "方案C · 深度阿里",
+     "d": "10天+",
+     "hl": "冈仁波齐转山",
+     "cost": "¥12000+",
+     "why": "精神之旅"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达拉萨",
+     "acts": "静养适应+八廓街(慢!)",
+     "hotel": "拉萨(可氧房)",
+     "trans": "火车/车"
+    },
+    {
+     "t": "拉萨圣城",
+     "acts": "布达拉宫(预约!)+大昭寺+色拉寺辩经",
+     "hotel": "同上",
+     "trans": "步行/出租"
+    },
+    {
+     "t": "→林芝",
+     "acts": "拉林铁路,尼洋河沿途",
+     "hotel": "林芝/索松村",
+     "trans": "动车3.5h"
+    },
+    {
+     "t": "雅鲁藏布大峡谷",
+     "acts": "南迦巴瓦+索松村桃花(春)",
+     "hotel": "索松村",
+     "trans": "包车"
+    },
+    {
+     "t": "返程",
+     "acts": "巴松措→拉萨 或林芝飞",
+     "hotel": "—",
+     "trans": "动车/航班"
+    }
+   ]
+  },
+  "en": {
+   "name": "Tibet",
+   "intro": "Best Apr-Jun/Sep-Oct (peach bloom late Mar-mid Apr). Everest needs border permit; 2-3 days acclimatization.",
+   "variants": [
+    {
+     "n": "Plan A · Lhasa + Nyingchi",
+     "d": "Lhasa 3 + NY 3",
+     "hl": "Potala + Jokhang + canyon",
+     "cost": "¥4.5-7k",
+     "why": "First-timer friendly"
+    },
+    {
+     "n": "Plan B · + Everest",
+     "d": "Lhasa 3 + EBC 4",
+     "hl": "Base camp (permit!)",
+     "cost": "¥7-10k",
+     "why": "Bucket-list"
+    },
+    {
+     "n": "Plan C · Deep Ngari",
+     "d": "10d+",
+     "hl": "Kailash kora",
+     "cost": "¥12k+",
+     "why": "Pilgrimage"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Lhasa",
+     "acts": "Rest + Barkhor (slow!)",
+     "hotel": "Lhasa",
+     "trans": "train/car"
+    },
+    {
+     "t": "Holy City",
+     "acts": "Potala (book!) + Jokhang",
+     "hotel": "same",
+     "trans": "walk/taxi"
+    },
+    {
+     "t": "→ Nyingchi",
+     "acts": "Rail, Niyang river",
+     "hotel": "NY/Songsum",
+     "trans": "train 3.5h"
+    },
+    {
+     "t": "Grand Canyon",
+     "acts": "Namcha Barwa + bloom",
+     "hotel": "Songsum",
+     "trans": "car"
+    },
+    {
+     "t": "Return",
+     "acts": "Basum → Lhasa or fly",
+     "hotel": "—",
+     "trans": "train/flight"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "草原",
+   "坝上",
+   "张北",
+   "承德",
+   "北京周边",
+   "自驾",
+   "雾灵山",
+   "阿那亚",
+   "崇礼"
+  ],
+  "zh": {
+   "name": "北京周边·草原山岳",
+   "intro": "草原7-8月最绿;红叶9月下-10月中(雾灵山10月上中,11月中后封山)。自驾单程建议≤2.5h。",
+   "variants": [
+    {
+     "n": "方案A · 张北草原天路",
+     "d": "中途住+天路+返程",
+     "hl": "全程高速,单次驾驶≤2h",
+     "cost": "¥1000–1500",
+     "why": "单人驾驶友好"
+    },
+    {
+     "n": "方案B · 承德+坝上",
+     "d": "承德+坝上蒙古包",
+     "hl": "避暑山庄+京北草原",
+     "cost": "¥1200–1800",
+     "why": "天气不稳时稳妥"
+    },
+    {
+     "n": "方案C · 雾灵山红叶",
+     "d": "主峰+民宿过夜+晨雾日出",
+     "hl": "华北秋色天花板(10月中)",
+     "cost": "¥800–1500",
+     "why": "秋季专属"
+    }
+   ],
+   "days": [
+    {
+     "t": "出发日",
+     "acts": "高速→中途镇晚餐休整",
+     "hotel": "中途镇",
+     "trans": "自驾1.5-2h"
+    },
+    {
+     "t": "主景区日",
+     "acts": "核心景观(早到避团客)→日落",
+     "hotel": "景区附近",
+     "trans": "自驾+索道"
+    },
+    {
+     "t": "返程日",
+     "acts": "晨雾/日出(可选)→返程",
+     "hotel": "—",
+     "trans": "自驾2-4h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Beijing Outskirts",
+   "intro": "Grassland greenest Jul-Aug; foliage late Sep-mid Oct. Drive legs ≤2.5h.",
+   "variants": [
+    {
+     "n": "Plan A · Zhangbei Sky Rd",
+     "d": "Midpoint + sky road",
+     "hl": "All-highway, ≤2h legs",
+     "cost": "¥1-1.5k",
+     "why": "Solo-driver friendly"
+    },
+    {
+     "n": "Plan B · Chengde + Bashang",
+     "d": "Chengde + yurt",
+     "hl": "Resort + grassland",
+     "cost": "¥1.2-1.8k",
+     "why": "Weather-proof"
+    },
+    {
+     "n": "Plan C · Wuling Foliage",
+     "d": "Peak + lodge + sunrise",
+     "hl": "Best fall color (mid-Oct)",
+     "cost": "¥0.8-1.5k",
+     "why": "Autumn-only"
+    }
+   ],
+   "days": [
+    {
+     "t": "Departure Eve",
+     "acts": "Highway → midpoint",
+     "hotel": "midpoint",
+     "trans": "drive 1.5-2h"
+    },
+    {
+     "t": "Main Area",
+     "acts": "Core sights (early!)",
+     "hotel": "near park",
+     "trans": "drive+cable"
+    },
+    {
+     "t": "Return",
+     "acts": "Sunrise (opt.) → home",
+     "hotel": "—",
+     "trans": "drive 2-4h"
+    }
+   ]
+  }
+ }
+];
+
+// ══════════ i18n ══════════
+var LANG = (function(){ try { return localStorage.getItem('tc.lang') || 'zh'; } catch(e){ return 'zh'; } })();
+function L(zh, en) { return LANG === 'en' ? (en || zh) : zh; }
+function toggleLang() {
+  LANG = LANG === 'zh' ? 'en' : 'zh';
+  try { localStorage.setItem('tc.lang', LANG); } catch(e){}
+  location.reload();
+}
+function kbHit(text) {
+  var t = String(text||'').toLowerCase();
+  for (var i=0;i<KB.length;i++) {
+    if (KB[i].keys.some(function(k){ return t.indexOf(String(k).toLowerCase()) > -1; })) return KB[i];
+  }
+  return null;
+}
+function kbCur() {
+  var k = currentTrip && currentTrip.kb;
+  if (!k) return null;
+  var cur = k[LANG] || k.zh;
+  // 兼容旧 LIB 结构(无 zh/en 包装)
+  if (!cur.variants && k.variants) return k;
+  return cur;
 }
 
 // ══════════ Planner ══════════
@@ -442,45 +1865,56 @@ function matchLib(text) {
   return null;
 }
 function offlineCompare(f) {
-  var lib = matchLib(f.dest + ' ' + f.prefs);
-  if (!lib) {
-    // 通用骨架:国内目的地给三版通用节奏,保证流程可走通
-    var generic = {
+  var k = kbHit(f.dest + ' ' + f.prefs);
+  if (!k) {
+    // 通用骨架
+    var gen = LANG === 'en' ? {
       variants:[
-        {n:'方案A · 经典紧凑',d:'D1 抵达+市区,D2 核心景区,D3 返程',hl:'打卡主线,节奏标准',cost:'1500–3000',why:'第一次去,先走主线'},
-        {n:'方案B · 深度慢游',d:'核心景区拆两天,加周边联游',hl:'少赶路,体验深',cost:'2000–3500',why:'不想赶路选这个'},
-        {n:'方案C · 松弛度假',d:'一地驻扎,周边轻量走',hl:'酒店即目的地',cost:'1800–4000',why:'纯放松'}],
+        {n:'Plan A · Classic',d:'D1 arrive, D2 core sights, D3 return',hl:'Mainline hits',cost:'¥1.5-3k',why:'First visit mainline'},
+        {n:'Plan B · Deep & Slow',d:'Split core into 2 days + nearby',hl:'Less rushing',cost:'¥2-3.5k',why:'Pace first'},
+        {n:'Plan C · Resort Chill',d:'One base, light outings',hl:'Hotel as destination',cost:'¥1.8-4k',why:'Pure relax'}],
       days:[
-        {t:'抵达+安顿',acts:'抵达→入住→周边熟悉+晚餐',hotel:'核心区域',trans:'按实际'},
-        {t:'核心景区日',acts:'主景区全天(早到避人流)',hotel:'核心区域',trans:'按实际'},
-        {t:'周边/返程',acts:'周边轻量游→返程',hotel:'—',trans:'按实际'}]
+        {t:'Arrive & Settle',acts:'Arrive → hotel → explore nearby',hotel:'core area',trans:'—'},
+        {t:'Main Sights',acts:'Full day (go early)',hotel:'core area',trans:'—'},
+        {t:'Nearby / Return',acts:'Light outing → depart',hotel:'—',trans:'—'}]
+    } : {
+      variants:[
+        {n:'方案A · 经典紧凑',d:'D1抵达,D2核心景区,D3返程',hl:'打卡主线',cost:'¥1500–3000',why:'第一次去先走主线'},
+        {n:'方案B · 深度慢游',d:'核心景区拆两天+周边联游',hl:'少赶路',cost:'¥2000–3500',why:'不想赶路'},
+        {n:'方案C · 松弛度假',d:'一地驻扎,周边轻量走',hl:'酒店即目的地',cost:'¥1800–4000',why:'纯放松'}],
+      days:[
+        {t:'抵达+安顿',acts:'抵达→入住→周边熟悉',hotel:'核心区域',trans:'—'},
+        {t:'核心景区日',acts:'主景区全天(早到避人流)',hotel:'核心区域',trans:'—'},
+        {t:'周边/返程',acts:'轻量游→返程',hotel:'—',trans:'—'}]
     };
-    lib = generic;
-    currentTrip.lib = generic; currentTrip.compareMd = 'offline-generic';
-    $('compareBody').innerHTML = '<div class="tip">💡 离线模式还没学过「'+esc(f.dest)+'」,先给你通用节奏骨架;切 AI 模式可得针对 '+esc(f.dest)+' 的定制方案。</div><div class="card md">' + mdToHtml(
-      '## 方案对比(通用骨架)\n| 方案 | 路线 | 亮点 | 人均 |\n|---|---|---|---|\n' + generic.variants.map(function(v){return '| '+v.n+' | '+v.d+' | '+v.hl+' | ¥'+v.cost+' |';}).join('\n') + '\n\n## 推荐\n推荐'+generic.variants[0].n+'——'+generic.variants[0].why
+    currentTrip.kb = {zh: gen, en: gen};
+    $('compareBody').innerHTML = '<div class="tip">💡 ' + L('离线模式还没学过「'+esc(f.dest)+'」,先给通用节奏骨架;切 AI 模式可获定制方案。', 'Offline KB does not cover '+esc(f.dest)+' yet — generic skeleton below; switch to AI mode for a custom plan.') + '</div><div class="card md">' + mdToHtml(
+      L('## 方案对比(通用骨架)','## Plan Comparison (generic)') + '\n| ' + L('方案|路线|亮点|人均','Plan|Route|Highlights|Budget') + ' |\n|---|---|---|---|\n' + gen.variants.map(function(v){return '| '+v.n+' | '+v.d+' | '+v.hl+' | '+v.cost+' |';}).join('\n') + '\n\n## ' + L('推荐','Pick') + '\n' + gen.variants[0].n + '——' + gen.variants[0].why
     ) + '</div>';
     return;
   }
-  currentTrip.lib = lib; currentTrip.compareMd = 'offline';
-  var rows = lib.variants.map(function(v){
-    return '| '+v.n+' | '+v.d+' | '+v.hl+' | ¥'+v.cost+' |';
+  currentTrip.kb = k;
+  var c = k[LANG] || k.zh;
+  var rows = c.variants.map(function(v){
+    return '| '+v.n+' | '+v.d+' | '+v.hl+' | '+v.cost+' |';
   }).join('\n');
-  var md = '## 方案对比\n| 方案 | 路线 | 亮点 | 人均 |\n|---|---|---|---|\n'+rows+'\n\n## 推荐\n推荐'+lib.variants[0].n+'——'+lib.variants[0].why+'。在下方选一版继续细化。';
-  $('compareBody').innerHTML = '<div class="tip">💡 这只是选个<b>大方向</b>,不用纠结~后续还能调整细节、换景点、加减天数。</div><div class="card md">'+mdToHtml(md)+'</div>';
+  var md = '## ' + L('方案对比','Plan Comparison') + '\n| ' + L('方案|路线|亮点|人均','Plan|Route|Highlights|Budget') + ' |\n|---|---|---|---|\n'+rows+'\n\n## ' + L('推荐','Pick') + '\n' + c.variants[0].n + '——' + c.variants[0].why + L('。在下方选一版继续细化。', '. Pick one below to refine.');
+  $('compareBody').innerHTML = '<div class="tip">💡 ' + c.intro + '</div><div class="card md">'+mdToHtml(md)+'</div>';
 }
 function offlineDetail(which) {
-  var lib = currentTrip && currentTrip.lib;
-  if (!lib) { toast('先出方案'); plBack('input'); return; }
-  var days = lib.days;
-  var md = '## 每日行程表\n| D+ | 路线 | 安排 | 住宿 |\n|---|---|---|---|\n' +
+  var c = kbCur();
+  if (!c || !c.days) { toast(L('先出方案','Generate plans first')); plBack('input'); return; }
+  var days = c.days;
+  var md = '## ' + L('每日行程表','Daily Itinerary') + '\n| ' + L('D+|路线|安排|住宿','D+|Route|Plan|Hotel') + ' |\n|---|---|---|---|\n' +
     days.map(function(d,i){ return '| D'+(i+1)+' | '+d.t+' | '+d.acts+' | '+d.hotel+' |'; }).join('\n') +
-    '\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 国际机票 | 尽快订 | T-30 |\n| 酒店 | 建议预订 | T-14 |\n| 保险 | 建议预订 | T-7 |';
+    '\n\n## ' + L('必订清单 + 状态','Booking Checklist') + '\n| ' + L('项目|状态|提前量','Item|Status|Lead') + ' |\n|---|---|---|\n' +
+    L('| 国际机票 | 尽快订 | T-30 |\n| 酒店 | 建议预订 | T-14 |\n| 保险 | 建议预订 | T-7 |',
+       '| Flights | ASAP | T-30 |\n| Hotels | Suggested | T-14 |\n| Insurance | Suggested | T-7 |');
   currentTrip.detailMd = md;
-  currentTrip.planExtracted = days.map(function(d,i){ return {n:'D'+(i+1), t:d.t, acts:[['activity',d.acts]], hotel:d.hotel, trans:d.trans}; });
-  autoPopulateChecks();
+  currentTrip.planExtracted = days.map(function(d,i){ return {n:'D'+(i+1), t:d.t, acts:[['activity',d.acts]], hotel:d.hotel, trans:d.trans||''}; });
   $('detailBody').innerHTML='<div class="card md">'+mdToHtml(md)+'</div>';
-  toast('离线引擎已生成(内置模板);AI 模式下按你的需求定制');
+  autoPopulateChecks();
+  toast(L('离线引擎已生成(内置模板);AI 模式下按你的需求定制','Generated from built-in KB; switch to AI for customization'));
 }
 
 // ── AI 引擎 ──
@@ -861,7 +2295,9 @@ function openCase(i) {
 }
 
 // ══════════ 启动 ══════════
-$('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : '离线模式';
+document.documentElement.setAttribute('lang', LANG);
+$('langBtn').textContent = LANG === 'zh' ? 'EN' : '中';
+$('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : L('离线模式','Offline');
 renderHomeCases(); renderPlHist(); renderReadiness(); renderPreview();
 </script>
 
