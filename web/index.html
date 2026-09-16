@@ -226,9 +226,9 @@
     <div class="pickbox">
       <div class="q"><span class="zh-only">看中哪个?选了再细化</span><span class="en-only">Pick one to refine</span></div>
       <div class="s"><span class="zh-only">选错了也没关系,后面随时改</span><span class="en-only">Easy to change later</span></div>
-      <button class="btn" onclick="handleDetail('方案A')">✓ 方案 A</button>
-      <button class="btn outline" onclick="handleDetail('方案B')">✓ 方案 B</button>
-      <button class="btn outline" onclick="handleDetail('方案C')">✓ 方案 C</button>
+      <button class="btn" onclick="handleDetail('方案A')"><span class="zh-only">✓ 方案 A</span><span class="en-only">✓ Plan A</span></button>
+      <button class="btn outline" onclick="handleDetail('方案B')"><span class="zh-only">✓ 方案 B</span><span class="en-only">✓ Plan B</span></button>
+      <button class="btn outline" onclick="handleDetail('方案C')"><span class="zh-only">✓ 方案 C</span><span class="en-only">✓ Plan C</span></button>
     </div>
   </div>
   <div id="pl-detail" style="display:none;">
@@ -365,6 +365,7 @@ function saveSettings() {
   localStorage.setItem(LS.mode,mode); localStorage.setItem(LS.provider,provider);
   localStorage.setItem(LS.key,apiKey); localStorage.setItem(LS.model,model); localStorage.setItem(LS.base,baseUrl);
   document.documentElement.setAttribute('lang', LANG);
+i18nStatic();
 $('langBtn').textContent = LANG === 'zh' ? 'EN' : '中';
 $('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : L('离线模式','Offline');
   closeModal(); toast('设置已保存 ⚙️');
@@ -1761,7 +1762,1765 @@ var KB = [
    ]
   }
  }
-];
+,
+[
+ {
+  "keys": [
+   "青海湖",
+   "青海",
+   "茶卡",
+   "西宁",
+   "qinghai"
+  ],
+  "zh": {
+   "name": "青海湖·大环线",
+   "intro": "最佳6-8月(油菜花7月);高反温和(3200m)。环湖360km,大环线含茶卡盐湖+祁连,小环线2天。昼夜温差大带外套。",
+   "variants": [
+    {
+     "n": "方案A · 青海湖小环线",
+     "d": "西宁进,2-3天",
+     "hl": "环湖+茶卡盐湖+日月山",
+     "cost": "¥1500–2500",
+     "why": "初次+时间紧"
+    },
+    {
+     "n": "方案B · 青甘大环线",
+     "d": "西宁进,7天",
+     "hl": "青海湖+茶卡+大柴旦+敦煌+张掖七彩",
+     "cost": "¥4000–6500",
+     "why": "西北史诗线(热门)"
+    },
+    {
+     "n": "方案C · 环湖骑行",
+     "d": "4天360km",
+     "hl": "藏族圣地骑行+黑马河日出",
+     "cost": "¥2000–3000",
+     "why": "体力党专属"
+    }
+   ],
+   "days": [
+    {
+     "t": "西宁→青海湖",
+     "acts": "塔尔寺→日月山→倒淌河→湖东",
+     "hotel": "湖边帐篷/黑马河",
+     "trans": "包车2.5h"
+    },
+    {
+     "t": "环湖+茶卡",
+     "acts": "黑马河日出→鸟岛→茶卡盐湖(天空之镜)",
+     "hotel": "茶卡/回西宁",
+     "trans": "包车"
+    },
+    {
+     "t": "返回西宁",
+     "acts": "金沙湾+原子城→西宁",
+     "hotel": "—",
+     "trans": "包车3h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Qinghai Lake",
+   "intro": "Best Jun-Aug (rapeseed bloom Jul). Mild altitude 3200m. Lake loop 360km; grand loop adds Chaka+Dunhuang. Big day-night temp swings.",
+   "variants": [
+    {
+     "n": "Plan A · Small Loop",
+     "d": "Xining in, 2-3d",
+     "hl": "Lake loop + Chaka mirror",
+     "cost": "¥1.5-2.5k",
+     "why": "Short trip"
+    },
+    {
+     "n": "Plan B · Grand Qing-Gan Loop",
+     "d": "Xining in, 7d",
+     "hl": "Lake+Chaka+Dachaidan+Dunhuang+Zhangye",
+     "cost": "¥4-6.5k",
+     "why": "Epic NW route"
+    },
+    {
+     "n": "Plan C · Cycle the Lake",
+     "d": "4d 360km",
+     "hl": "Tibetan pilgrimage ride",
+     "cost": "¥2-3k",
+     "why": "Cyclists only"
+    }
+   ],
+   "days": [
+    {
+     "t": "Xining → Lake",
+     "acts": "Kumbum → Riyue Mtn → east shore",
+     "hotel": "lakeside tents",
+     "trans": "car 2.5h"
+    },
+    {
+     "t": "Loop + Chaka",
+     "acts": "Heimahe sunrise → Bird Island → salt mirror",
+     "hotel": "Chaka/Xining",
+     "trans": "car"
+    },
+    {
+     "t": "Return",
+     "acts": "Sands Bay → Xining",
+     "hotel": "—",
+     "trans": "car 3h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "甘南",
+   "甘加",
+   "扎尕那",
+   "郎木寺",
+   "拉卜楞",
+   "gannan"
+  ],
+  "zh": {
+   "name": "甘南",
+   "intro": "最佳6-9月(草原绿+凉爽);海拔2900-3500m。藏地风情浓、游客少,扎尕那石城是精华。兰州进出。",
+   "variants": [
+    {
+     "n": "方案A · 甘南小环线",
+     "d": "兰州进,4天",
+     "hl": "拉卜楞寺+桑科草原+郎木寺",
+     "cost": "¥2000–3000",
+     "why": "藏文化入门"
+    },
+    {
+     "n": "方案B · 加扎尕那",
+     "d": "5-6天",
+     "hl": "+扎尕那石城+若尔盖花湖",
+     "cost": "¥2500–4000",
+     "why": "甘南精华全包"
+    },
+    {
+     "n": "方案C · 甘南+莲宝叶则",
+     "d": "6-7天",
+     "hl": "+年保玉则周边+黄河第一湾",
+     "cost": "¥3000–4500",
+     "why": "地貌控"
+    }
+   ],
+   "days": [
+    {
+     "t": "兰州→夏河",
+     "acts": "拉卜楞寺(转经长廊3km)+贡唐宝塔",
+     "hotel": "夏河",
+     "trans": "包车3h"
+    },
+    {
+     "t": "夏河→郎木寺",
+     "acts": "桑科草原+尕海湖→郎木寺(一镇跨甘川)",
+     "hotel": "郎木寺镇",
+     "trans": "包车3.5h"
+    },
+    {
+     "t": "郎木寺→扎尕那",
+     "acts": "纳摩峡谷晨雾→扎尕那石城(徒步仙女滩)",
+     "hotel": "扎尕那(藏寨)",
+     "trans": "包车2.5h"
+    },
+    {
+     "t": "返程",
+     "acts": "若尔盖花湖→兰州",
+     "hotel": "—",
+     "trans": "包车6h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Gannan (S. Gansu)",
+   "intro": "Best Jun-Sep; altitude 2900-3500m. Strong Tibetan culture, few tourists. Zhagana stone city is the highlight. Lanzhou in/out.",
+   "variants": [
+    {
+     "n": "Plan A · Small Loop",
+     "d": "Lanzhou in, 4d",
+     "hl": "Labrang + grassland + Langmusi",
+     "cost": "¥2-3k",
+     "why": "Tibetan culture intro"
+    },
+    {
+     "n": "Plan B · + Zhagana",
+     "d": "5-6d",
+     "hl": "+ stone city + Zoige lake",
+     "cost": "¥2.5-4k",
+     "why": "Full Gannan essence"
+    },
+    {
+     "n": "Plan C · + Nyenbo Yutse",
+     "d": "6-7d",
+     "hl": "+ alpine geology",
+     "cost": "¥3-4.5k",
+     "why": "Landscape nerds"
+    }
+   ],
+   "days": [
+    {
+     "t": "Lanzhou → Xiahe",
+     "acts": "Labrang (3km prayer wheel)",
+     "hotel": "Xiahe",
+     "trans": "car 3h"
+    },
+    {
+     "t": "→ Langmusi",
+     "acts": "Sangke + Gahai lake → town straddling GS/SC",
+     "hotel": "Langmusi",
+     "trans": "car 3.5h"
+    },
+    {
+     "t": "→ Zhagana",
+     "acts": "Namo gorge mist → stone city hike",
+     "hotel": "Tibetan village",
+     "trans": "car 2.5h"
+    },
+    {
+     "t": "Return",
+     "acts": "Zoige → Lanzhou",
+     "hotel": "—",
+     "trans": "car 6h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "挪威",
+   "norway",
+   "峡湾",
+   "fjord",
+   "卑尔根",
+   "bergen",
+   "罗弗敦",
+   "lofoten"
+  ],
+  "zh": {
+   "name": "挪威·峡湾与极光",
+   "intro": "夏季(6-8月)峡湾+罗弗敦极昼徒步;冬季(11-2月)特罗姆瑟看极光。物价欧洲最高档,人均日预算¥1500+。Shengen 签证。",
+   "variants": [
+    {
+     "n": "方案A · 卑尔根峡湾线",
+     "d": "奥斯陆进,5-6天",
+     "hl": "Flåm小火车+纳柔依峡湾+布道石",
+     "cost": "¥15000–22000",
+     "why": "经典峡湾一次性"
+    },
+    {
+     "n": "方案B · 罗弗敦群岛",
+     "d": "飞Leknes,5-7天",
+     "hl": "Reine镜头+午夜太阳+渔村徒步",
+     "cost": "¥18000–26000",
+     "why": "摄影师终极目标(夏)"
+    },
+    {
+     "n": "方案C · 特罗姆瑟极光",
+     "d": "飞Tromsø,4-5天",
+     "hl": "极光+峡湾夜游+萨米文化(11-3月)",
+     "cost": "¥16000–24000",
+     "why": "冬季限定"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达奥斯陆",
+     "acts": "歌剧院+蒙克美术馆+维格兰雕塑公园",
+     "hotel": "奥斯陆",
+     "trans": "机场快线"
+    },
+    {
+     "t": "→卑尔根",
+     "acts": "奥斯陆-卑尔根高山铁路(欧洲最美)",
+     "hotel": "卑尔根",
+     "trans": "火车7h"
+    },
+    {
+     "t": "Flåm峡湾日",
+     "acts": "弗洛姆高山小火车+松恩峡湾游船",
+     "hotel": "Flåm/卑尔根",
+     "trans": "小火车+船"
+    },
+    {
+     "t": "布道石徒步",
+     "acts": "Preikestolen 4h往返(悬崖604m)",
+     "hotel": "斯塔万格",
+     "trans": "船+巴士"
+    },
+    {
+     "t": "返程",
+     "acts": "卑尔根鱼市+彩色木屋→奥斯陆",
+     "hotel": "—",
+     "trans": "航班1h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Norway · Fjords & Aurora",
+   "intro": "Summer (Jun-Aug): fjords + Lofoten midnight sun; winter (Nov-Feb): aurora in Tromsø. Highest price tier in Europe — budget ¥1500+/day. Schengen visa.",
+   "variants": [
+    {
+     "n": "Plan A · Bergen Fjords",
+     "d": "Oslo in, 5-6d",
+     "hl": "Flåm railway + Nærøyfjord + Pulpit Rock",
+     "cost": "¥15-22k",
+     "why": "Classic fjord sweep"
+    },
+    {
+     "n": "Plan B · Lofoten Islands",
+     "d": "Fly to Leknes, 5-7d",
+     "hl": "Reine + midnight sun + fishing villages",
+     "cost": "¥18-26k",
+     "why": "Photographer's dream (summer)"
+    },
+    {
+     "n": "Plan C · Tromsø Aurora",
+     "d": "Fly in, 4-5d",
+     "hl": "Northern lights + fjord night cruise (Nov-Mar)",
+     "cost": "¥16-24k",
+     "why": "Winter only"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Oslo",
+     "acts": "Opera + Munch + Vigeland park",
+     "hotel": "Oslo",
+     "trans": "express train"
+    },
+    {
+     "t": "→ Bergen",
+     "acts": "Oslo-Bergen mountain railway",
+     "hotel": "Bergen",
+     "trans": "train 7h"
+    },
+    {
+     "t": "Flåm Day",
+     "acts": "Flåm railway + Sognefjord cruise",
+     "hotel": "Flåm/Bergen",
+     "trans": "rail+boat"
+    },
+    {
+     "t": "Pulpit Rock",
+     "acts": "Preikestolen 4h return (604m cliff)",
+     "hotel": "Stavanger",
+     "trans": "boat+bus"
+    },
+    {
+     "t": "Return",
+     "acts": "Fish market + Bryggen → Oslo",
+     "hotel": "—",
+     "trans": "flight 1h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "希腊",
+   "greece",
+   "圣托里尼",
+   "santorini",
+   "雅典",
+   "athens",
+   "米克诺斯"
+  ],
+  "zh": {
+   "name": "希腊·海岛与古文明",
+   "intro": "最佳5-6月/9-10月(避开7-8月热+游轮潮)。申根签。雅典卫城+1-2个岛是标准节奏。",
+   "variants": [
+    {
+     "n": "方案A · 雅典+圣托里尼",
+     "d": "雅典2+圣岛3",
+     "hl": "卫城+伊亚日落+蓝顶教堂",
+     "cost": "¥12000–18000",
+     "why": "经典首刷"
+    },
+    {
+     "n": "方案B · 加米克诺斯",
+     "d": "雅典2+圣岛2+米岛1",
+     "hl": "天堂海滩+风车+夜生活",
+     "cost": "¥14000–20000",
+     "why": "派对+浪漫双拼"
+    },
+    {
+     "n": "方案C · 伯罗奔尼撒深度",
+     "d": "雅典3+迈锡尼+德尔斐5",
+     "hl": "古文明巡礼(自驾)",
+     "cost": "¥10000–15000",
+     "why": "历史控"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达雅典",
+     "acts": "卫城(早场避晒)+帕特农+普拉卡老城",
+     "hotel": "普拉卡",
+     "trans": "地铁"
+    },
+    {
+     "t": "雅典→圣托里尼",
+     "acts": "航班45min→费拉小镇+日落",
+     "hotel": "费拉/伊亚",
+     "trans": "航班"
+    },
+    {
+     "t": "圣岛",
+     "acts": "伊亚蓝顶+红沙滩+火山岛游船",
+     "hotel": "伊亚",
+     "trans": "公交/租ATV"
+    },
+    {
+     "t": "圣岛→雅典返程",
+     "acts": "清晨伊亚再逛→飞回",
+     "hotel": "—",
+     "trans": "航班"
+    }
+   ]
+  },
+  "en": {
+   "name": "Greece · Islands & Antiquity",
+   "intro": "Best May-Jun / Sep-Oct (avoid Jul-Aug heat+cruise crowds). Schengen visa. Athens + 1-2 islands is the standard rhythm.",
+   "variants": [
+    {
+     "n": "Plan A · Athens + Santorini",
+     "d": "Athens 2 + Santorini 3",
+     "hl": "Acropolis + Oia sunset + blue domes",
+     "cost": "¥12-18k",
+     "why": "Classic first trip"
+    },
+    {
+     "n": "Plan B · + Mykonos",
+     "d": "Athens 2 + Santorini 2 + Mykonos 1",
+     "hl": "Beaches + windmills + nightlife",
+     "cost": "¥14-20k",
+     "why": "Party + romance"
+    },
+    {
+     "n": "Plan C · Peloponnese Deep",
+     "d": "Athens 3 + Mycenae + Delphi 5",
+     "hl": "Ancient civilization road trip",
+     "cost": "¥10-15k",
+     "why": "History buffs"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Athens",
+     "acts": "Acropolis (early!) + Plaka old town",
+     "hotel": "Plaka",
+     "trans": "metro"
+    },
+    {
+     "t": "→ Santorini",
+     "acts": "45min flight → Fira + sunset",
+     "hotel": "Fira/Oia",
+     "trans": "flight"
+    },
+    {
+     "t": "Santorini",
+     "acts": "Oia domes + Red Beach + volcano cruise",
+     "hotel": "Oia",
+     "trans": "bus/ATV"
+    },
+    {
+     "t": "Return",
+     "acts": "Morning Oia → fly back",
+     "hotel": "—",
+     "trans": "flight"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "意大利",
+   "italy",
+   "罗马",
+   "rome",
+   "佛罗伦萨",
+   "florence",
+   "威尼斯",
+   "venice",
+   "米兰",
+   "amalfi"
+  ],
+  "zh": {
+   "name": "意大利",
+   "intro": "4-6月/9-10月最佳。申根签。罗马-佛罗伦萨-威尼斯金三角是主线;旺季热门景点必须预约(乌菲兹/学院/斗兽场)。",
+   "variants": [
+    {
+     "n": "方案A · 金三角",
+     "d": "罗马3+佛城2+威尼斯2",
+     "hl": "斗兽场+乌菲兹+贡多拉",
+     "cost": "¥14000–20000",
+     "why": "首刷经典"
+    },
+    {
+     "n": "方案B · 加阿玛尔菲",
+     "d": "罗马2+佛城2+威尼斯1+南意2",
+     "hl": "波西塔诺悬崖+卡普里蓝洞",
+     "cost": "¥16000–23000",
+     "why": "海岸浪漫加分"
+    },
+    {
+     "n": "方案C · 托斯卡纳自驾",
+     "d": "罗马2+托斯卡纳4",
+     "hl": "丝柏之路+酒庄+中世纪山城",
+     "cost": "¥13000–19000",
+     "why": "慢节奏田园"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达罗马",
+     "acts": "斗兽场(预约!)+古罗马广场+万神殿",
+     "hotel": "中心区",
+     "trans": "机场快线"
+    },
+    {
+     "t": "罗马→佛罗伦萨",
+     "acts": "梵蒂冈早场→高铁1.5h→老桥黄昏",
+     "hotel": "佛城",
+     "trans": "红箭高铁"
+    },
+    {
+     "t": "佛罗伦萨",
+     "acts": "乌菲兹(预约!)+学院大卫+米开朗基罗广场日落",
+     "hotel": "佛城",
+     "trans": "步行"
+    },
+    {
+     "t": "→威尼斯",
+     "acts": "高铁2h→圣马可+里亚托桥",
+     "hotel": "主岛",
+     "trans": "红箭"
+    },
+    {
+     "t": "威尼斯→返程",
+     "acts": "彩色岛+贡多拉→机场",
+     "hotel": "—",
+     "trans": "水上巴士"
+    }
+   ]
+  },
+  "en": {
+   "name": "Italy",
+   "intro": "Best Apr-Jun / Sep-Oct. Schengen visa. Rome-Florence-Venice is the mainline; book major sights ahead in season (Uffizi/Accademia/Colosseum).",
+   "variants": [
+    {
+     "n": "Plan A · Golden Triangle",
+     "d": "Rome 3 + Florence 2 + Venice 2",
+     "hl": "Colosseum + Uffizi + gondola",
+     "cost": "¥14-20k",
+     "why": "First-timer classic"
+    },
+    {
+     "n": "Plan B · + Amalfi",
+     "d": "Rome 2 + FLR 2 + Venice 1 + South 2",
+     "hl": "Positano cliffs + Blue Grotto",
+     "cost": "¥16-23k",
+     "why": "Coast romance"
+    },
+    {
+     "n": "Plan C · Tuscany Drive",
+     "d": "Rome 2 + Tuscany 4",
+     "hl": "Cypress lanes + wineries + hill towns",
+     "cost": "¥13-19k",
+     "why": "Slow countryside"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Rome",
+     "acts": "Colosseum (booked!) + Forum + Pantheon",
+     "hotel": "center",
+     "trans": "express"
+    },
+    {
+     "t": "→ Florence",
+     "acts": "Vatican early → 1.5h train → Ponte Vecchio",
+     "hotel": "Florence",
+     "trans": "Frecciarossa"
+    },
+    {
+     "t": "Florence",
+     "acts": "Uffizi (booked!) + David + Piazzale sunset",
+     "hotel": "Florence",
+     "trans": "walk"
+    },
+    {
+     "t": "→ Venice",
+     "acts": "2h train → St Mark's + Rialto",
+     "hotel": "main island",
+     "trans": "train"
+    },
+    {
+     "t": "Departure",
+     "acts": "Burano + gondola → airport",
+     "hotel": "—",
+     "trans": "vaporetto"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "西班牙",
+   "spain",
+   "巴塞罗那",
+   "barcelona",
+   "马德里",
+   "madrid",
+   "塞维利亚",
+   "seville",
+   "安达卢西亚"
+  ],
+  "zh": {
+   "name": "西班牙",
+   "intro": "4-6月/9-10月最佳(夏热南端40°C)。申根签。圣家堂/阿尔罕布拉宫必须提前订票。弗拉明戈+Tapas+高迪三件套。",
+   "variants": [
+    {
+     "n": "方案A · 双城经典",
+     "d": "巴塞罗那3+马德里2",
+     "hl": "圣家堂+高迪三件+普拉多",
+     "cost": "¥12000–18000",
+     "why": "首刷主线"
+    },
+    {
+     "n": "方案B · 安达卢西亚",
+     "d": "巴塞2+塞维利亚2+格拉纳达2",
+     "hl": "阿尔罕布拉宫+弗拉明戈+白色小镇",
+     "cost": "¥13000–19000",
+     "why": "南欧风情浓度最高"
+    },
+    {
+     "n": "方案C · 北部+圣路",
+     "d": "圣塞巴斯蒂安+毕尔巴鄂4",
+     "hl": "美食之都+古根海姆",
+     "cost": "¥11000–16000",
+     "why": "吃客专属"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达巴塞罗那",
+     "acts": "圣家堂(预约!)+奎尔公园黄昏",
+     "hotel": "扩展区",
+     "trans": "机场快线"
+    },
+    {
+     "t": "巴塞高迪日",
+     "acts": "巴特罗之家+米拉之家+哥特区+海鲜饭",
+     "hotel": "同上",
+     "trans": "地铁"
+    },
+    {
+     "t": "→马德里",
+     "acts": "高铁2.5h→普拉多+丽池公园",
+     "hotel": "中心",
+     "trans": "高铁"
+    },
+    {
+     "t": "马德里→返程",
+     "acts": "索菲亚王后(格尔尼卡)→机场",
+     "hotel": "—",
+     "trans": "快线"
+    }
+   ]
+  },
+  "en": {
+   "name": "Spain",
+   "intro": "Best Apr-Jun / Sep-Oct (south hits 40°C in summer). Schengen visa. Sagrada/Alhambra need advance booking. Flamenco + tapas + Gaudí.",
+   "variants": [
+    {
+     "n": "Plan A · Two Cities",
+     "d": "Barcelona 3 + Madrid 2",
+     "hl": "Sagrada + Gaudí set + Prado",
+     "cost": "¥12-18k",
+     "why": "First-timer mainline"
+    },
+    {
+     "n": "Plan B · Andalusia",
+     "d": "BCN 2 + Seville 2 + Granada 2",
+     "hl": "Alhambra + flamenco + white towns",
+     "cost": "¥13-19k",
+     "why": "Most Spanish Spain"
+    },
+    {
+     "n": "Plan C · North & Pintxos",
+     "d": "San Sebastián + Bilbao 4",
+     "hl": "Food capital + Guggenheim",
+     "cost": "¥11-16k",
+     "why": "Foodies"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive BCN",
+     "acts": "Sagrada (booked!) + Park Güell sunset",
+     "hotel": "Eixample",
+     "trans": "aerobus"
+    },
+    {
+     "t": "Gaudí Day",
+     "acts": "Casa Batlló + Milà + Gothic Quarter + paella",
+     "hotel": "same",
+     "trans": "metro"
+    },
+    {
+     "t": "→ Madrid",
+     "acts": "2.5h train → Prado + Retiro",
+     "hotel": "center",
+     "trans": "AVE"
+    },
+    {
+     "t": "Departure",
+     "acts": "Reina Sofía (Guernica) → airport",
+     "hotel": "—",
+     "trans": "express"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "法国",
+   "france",
+   "巴黎",
+   "paris",
+   "普罗旺斯",
+   "尼斯",
+   "波尔多"
+  ],
+  "zh": {
+   "name": "法国",
+   "intro": "4-6月/9-10月最佳。申根签。卢浮宫/凡尔赛需预约;巴黎博物馆通票2/4/6日。南法夏季薰衣草6月底-7月中。",
+   "variants": [
+    {
+     "n": "方案A · 巴黎经典",
+     "d": "巴黎4-5天",
+     "hl": "卢浮宫+埃菲尔+凡尔赛+塞纳河",
+     "cost": "¥11000–16000",
+     "why": "首刷必修"
+    },
+    {
+     "n": "方案B · 巴黎+南法",
+     "d": "巴黎3+普罗旺斯+尼斯3",
+     "hl": "薰衣草(7月)+蔚蓝海岸+阿维尼翁",
+     "cost": "¥14000–20000",
+     "why": "夏季节限定"
+    },
+    {
+     "n": "方案C · 波尔多酒乡",
+     "d": "巴黎2+波尔多+圣埃米利永3",
+     "hl": "酒庄品鉴+中世纪小镇",
+     "cost": "¥12000–17000",
+     "why": "葡萄酒爱好者"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达巴黎",
+     "acts": "凯旋门登顶+香街+塞纳河黄昏游船",
+     "hotel": "玛黑/拉丁区",
+     "trans": "RER"
+    },
+    {
+     "t": "卢浮宫日",
+     "acts": "卢浮宫(预约+优先路线3h)+杜乐丽+奥赛",
+     "hotel": "同上",
+     "trans": "地铁"
+    },
+    {
+     "t": "凡尔赛+蒙马特",
+     "acts": "凡尔赛宫(预约)→圣心堂+爱墙日落",
+     "hotel": "同上",
+     "trans": "RER+地铁"
+    },
+    {
+     "t": "返程",
+     "acts": "莎士比亚书店+甜品采购→机场",
+     "hotel": "—",
+     "trans": "RER"
+    }
+   ]
+  },
+  "en": {
+   "name": "France",
+   "intro": "Best Apr-Jun / Sep-Oct. Schengen visa. Louvre/Versailles need booking; Paris Museum Pass 2/4/6 days. Lavender: late Jun-mid Jul.",
+   "variants": [
+    {
+     "n": "Plan A · Paris Classic",
+     "d": "Paris 4-5d",
+     "hl": "Louvre + Eiffel + Versailles + Seine",
+     "cost": "¥11-16k",
+     "why": "Must-do first"
+    },
+    {
+     "n": "Plan B · + South",
+     "d": "Paris 3 + Provence + Nice 3",
+     "hl": "Lavender + Riviera + Avignon",
+     "cost": "¥14-20k",
+     "why": "Summer special"
+    },
+    {
+     "n": "Plan C · Bordeaux Wine",
+     "d": "Paris 2 + Bordeaux 3",
+     "hl": "Tastings + Saint-Émilion",
+     "cost": "¥12-17k",
+     "why": "Wine lovers"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Paris",
+     "acts": "Arc de Triomphe + Champs + Seine cruise",
+     "hotel": "Marais/Latin",
+     "trans": "RER"
+    },
+    {
+     "t": "Louvre Day",
+     "acts": "Louvre (booked, 3h route) + Tuileries + Orsay",
+     "hotel": "same",
+     "trans": "metro"
+    },
+    {
+     "t": "Versailles + Montmartre",
+     "acts": "Versailles (booked) → Sacré-Cœur sunset",
+     "hotel": "same",
+     "trans": "RER+metro"
+    },
+    {
+     "t": "Departure",
+     "acts": "Shakespeare & Co → airport",
+     "hotel": "—",
+     "trans": "RER"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "瑞士",
+   "switzerland",
+   "因特拉肯",
+   "interlaken",
+   "少女峰",
+   "卢塞恩",
+   "采尔马特",
+   "zermatt",
+   "马特洪峰"
+  ],
+  "zh": {
+   "name": "瑞士",
+   "intro": "6-9月徒步季/12-3月滑雪季。申根签。瑞士旅行通票(Swiss Pass)火车全包最省心;物价欧洲顶级,人均日预算¥1500+。",
+   "variants": [
+    {
+     "n": "方案A · 黄金列车线",
+     "d": "卢塞恩→因特拉肯→采尔马特,6天",
+     "hl": "少女峰+金色山口列车+马特洪",
+     "cost": "¥18000–25000",
+     "why": "火车旅行天花板"
+    },
+    {
+     "n": "方案B · 少女峰深度",
+     "d": "因特拉肯4-5天",
+     "hl": "格林德瓦First+米伦+文根徒步",
+     "cost": "¥15000–21000",
+     "why": "徒步爱好者"
+    },
+    {
+     "n": "方案C · 冬季滑雪",
+     "d": "采尔马特/圣莫里茨5天",
+     "hl": "马特洪冰川天堂+滑雪",
+     "cost": "¥20000–30000",
+     "why": "雪季专项"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达苏黎世→卢塞恩",
+     "acts": "卡佩尔桥+狮子纪念碑+湖游",
+     "hotel": "卢塞恩",
+     "trans": "火车1h"
+    },
+    {
+     "t": "→因特拉肯",
+     "acts": "金色山口列车2h→图恩湖+布里恩茨湖",
+     "hotel": "因特拉肯",
+     "trans": "黄金列车"
+    },
+    {
+     "t": "少女峰日",
+     "acts": "Jungfraujoch欧洲之巅(订早班)+冰宫",
+     "hotel": "因特拉肯",
+     "trans": "登山火车"
+    },
+    {
+     "t": "→采尔马特",
+     "acts": "冰川快车段+马特洪峰日落(利菲尔湖)",
+     "hotel": "采尔马特",
+     "trans": "火车3h"
+    },
+    {
+     "t": "返程",
+     "acts": "Gornergrat观景台→苏黎世",
+     "hotel": "—",
+     "trans": "火车3.5h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Switzerland",
+   "intro": "Jun-Sep hiking / Dec-Mar skiing. Schengen visa. Swiss Pass covers trains — easiest way. Top price tier, ¥1500+/day.",
+   "variants": [
+    {
+     "n": "Plan A · Golden Route",
+     "d": "Lucerne→Interlaken→Zermatt, 6d",
+     "hl": "Jungfrau + GoldenPass + Matterhorn",
+     "cost": "¥18-25k",
+     "why": "Train travel ceiling"
+    },
+    {
+     "n": "Plan B · Jungfrau Base",
+     "d": "Interlaken 4-5d",
+     "hl": "Grindelwald First + Mürren + Wengen",
+     "cost": "¥15-21k",
+     "why": "Hikers"
+    },
+    {
+     "n": "Plan C · Winter Ski",
+     "d": "Zermatt/St. Moritz 5d",
+     "hl": "Glacier Paradise + pistes",
+     "cost": "¥20-30k",
+     "why": "Snow season"
+    }
+   ],
+   "days": [
+    {
+     "t": "Zurich → Lucerne",
+     "acts": "Chapel Bridge + Lion + lake",
+     "hotel": "Lucerne",
+     "trans": "train 1h"
+    },
+    {
+     "t": "→ Interlaken",
+     "acts": "GoldenPass 2h + both lakes",
+     "hotel": "Interlaken",
+     "trans": "Golden line"
+    },
+    {
+     "t": "Jungfrau Day",
+     "acts": "Jungfraujoch Top of Europe (early!) + ice palace",
+     "hotel": "Interlaken",
+     "trans": "mountain rail"
+    },
+    {
+     "t": "→ Zermatt",
+     "acts": "Glacier Express leg + Matterhorn sunset at Riffelsee",
+     "hotel": "Zermatt",
+     "trans": "train 3h"
+    },
+    {
+     "t": "Return",
+     "acts": "Gornergrat → Zurich",
+     "hotel": "—",
+     "trans": "train 3.5h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "荷兰",
+   "荷兰郁金香",
+   "阿姆斯特丹",
+   "amsterdam",
+   "netherlands",
+   "风车",
+   "羊角村"
+  ],
+  "zh": {
+   "name": "荷兰",
+   "intro": "4-5月郁金香季(库肯霍夫3月下-5月中)是顶点;申根签。城市紧凑,火车1h内串联。自行车王国。",
+   "variants": [
+    {
+     "n": "方案A · 阿姆+周边",
+     "d": "阿姆3+羊角村+风车村1",
+     "hl": "博物馆广场+运河游船+桑斯安斯",
+     "cost": "¥10000–15000",
+     "why": "经典4日"
+    },
+    {
+     "n": "方案B · 郁金香季",
+     "d": "4-5月:阿姆3+库肯霍夫1",
+     "hl": "世界最大花园+花田骑行",
+     "cost": "¥11000–16000",
+     "why": "季节限定"
+    },
+    {
+     "n": "方案C · 多城巡游",
+     "d": "阿姆2+海牙+鹿特丹+乌特勒支3",
+     "hl": "代尔夫特蓝瓷+立方屋+梵高森林",
+     "cost": "¥11000–16000",
+     "why": "深度文化"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达阿姆斯特丹",
+     "acts": "运河游船+九街+乔登区",
+     "hotel": "中心运河区",
+     "trans": "机场火车20min"
+    },
+    {
+     "t": "博物馆日",
+     "acts": "梵高博物馆(预约!)+国立博物馆+伦勃朗广场",
+     "hotel": "同上",
+     "trans": "步行/电车"
+    },
+    {
+     "t": "风车村/羊角村",
+     "acts": "桑斯安斯风车 或 羊角村撑船",
+     "hotel": "阿姆",
+     "trans": "火车1h"
+    },
+    {
+     "t": "返程",
+     "acts": "早晨花市+芝士采购→机场",
+     "hotel": "—",
+     "trans": "火车"
+    }
+   ]
+  },
+  "en": {
+   "name": "Netherlands",
+   "intro": "Tulip season Apr-May (Keukenhof late Mar-mid May) is peak. Schengen visa. Compact cities 1h apart by train. Bike kingdom.",
+   "variants": [
+    {
+     "n": "Plan A · Ams + Around",
+     "d": "Ams 3 + Giethoorn/Zaans 1",
+     "hl": "Museumplein + canal cruise + windmills",
+     "cost": "¥10-15k",
+     "why": "Classic 4d"
+    },
+    {
+     "n": "Plan B · Tulip Season",
+     "d": "Apr-May: Ams 3 + Keukenhof 1",
+     "hl": "World's largest garden + flower-field cycling",
+     "cost": "¥11-16k",
+     "why": "Seasonal"
+    },
+    {
+     "n": "Plan C · Multi-city",
+     "d": "Ams 2 + Hague/Rotrecht/Utrecht 3",
+     "hl": "Delft blue + cube houses + Van Gogh forest",
+     "cost": "¥11-16k",
+     "why": "Deep culture"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Amsterdam",
+     "acts": "Canal cruise + Nine Streets + Jordaan",
+     "hotel": "canal belt",
+     "trans": "train 20m"
+    },
+    {
+     "t": "Museum Day",
+     "acts": "Van Gogh (book!) + Rijksmuseum + Rembrandt",
+     "hotel": "same",
+     "trans": "walk/tram"
+    },
+    {
+     "t": "Windmills/Giethoorn",
+     "acts": "Zaanse Schans OR Giethoorn boating",
+     "hotel": "Ams",
+     "trans": "train 1h"
+    },
+    {
+     "t": "Departure",
+     "acts": "Flower market + cheese → airport",
+     "hotel": "—",
+     "trans": "train"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "埃及",
+   "egypt",
+   "开罗",
+   "cairo",
+   "卢克索",
+   "luxor",
+   "红海",
+   "阿斯旺",
+   "赫尔加达"
+  ],
+  "zh": {
+   "name": "埃及",
+   "intro": "10-4月最佳(夏酷热50°C)。落地签$25。金字塔+尼罗河+卢克索神庙是三大件;红海潜水世界级且便宜。女士注意着装。",
+   "variants": [
+    {
+     "n": "方案A · 金字塔+卢克索",
+     "d": "开罗2+卢克索2+红海2",
+     "hl": "吉萨金字塔+帝王谷+热气球",
+     "cost": "¥8000–13000",
+     "why": "文明首刷"
+    },
+    {
+     "n": "方案B · 尼罗河游轮",
+     "d": "开罗2+游轮4(卢克索→阿斯旺)",
+     "hl": "河上五日+神庙沿途停靠",
+     "cost": "¥12000–18000",
+     "why": "慵懒史诗"
+    },
+    {
+     "n": "方案C · 红海潜水",
+     "d": "开罗1+赫尔加达5",
+     "hl": "珊瑚墙潜水(便宜大碗)",
+     "cost": "¥7000–11000",
+     "why": "潜水证持有者"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达开罗",
+     "acts": "吉萨金字塔+狮身人面像+埃及博物馆",
+     "hotel": "吉萨/市中心",
+     "trans": "机场出租"
+    },
+    {
+     "t": "→卢克索",
+     "acts": "航班1h→卡纳克神庙+卢克索神庙夜灯",
+     "hotel": "东岸",
+     "trans": "航班"
+    },
+    {
+     "t": "卢克索西岸",
+     "acts": "帝王谷+哈特谢普苏特神庙+热气球(清晨)",
+     "hotel": "东岸",
+     "trans": "包车"
+    },
+    {
+     "t": "→红海",
+     "acts": "赫尔加达:浮潜/潜水+沙滩日落",
+     "hotel": "红海度假村",
+     "trans": "包车4h"
+    },
+    {
+     "t": "返程",
+     "acts": "红海→开罗机场",
+     "hotel": "—",
+     "trans": "航班1h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Egypt",
+   "intro": "Best Oct-Apr (summer hits 50°C). Visa on arrival $25. Pyramids + Nile + Luxor temples; Red Sea diving is world-class and cheap. Dress modestly.",
+   "variants": [
+    {
+     "n": "Plan A · Pyramids + Luxor",
+     "d": "Cairo 2 + Luxor 2 + Red Sea 2",
+     "hl": "Giza + Valley of Kings + balloon",
+     "cost": "¥8-13k",
+     "why": "First civilization trip"
+    },
+    {
+     "n": "Plan B · Nile Cruise",
+     "d": "Cairo 2 + cruise 4 (Luxor→Aswan)",
+     "hl": "Floating hotel + temple stops",
+     "cost": "¥12-18k",
+     "why": "Lazy epic"
+    },
+    {
+     "n": "Plan C · Red Sea Diving",
+     "d": "Cairo 1 + Hurghada 5",
+     "hl": "Coral walls (cheap!)",
+     "cost": "¥7-11k",
+     "why": "Certified divers"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Cairo",
+     "acts": "Giza + Sphinx + Egyptian Museum",
+     "hotel": "Giza/downtown",
+     "trans": "taxi"
+    },
+    {
+     "t": "→ Luxor",
+     "acts": "1h flight → Karnak + night-lit temple",
+     "hotel": "East Bank",
+     "trans": "flight"
+    },
+    {
+     "t": "West Bank",
+     "acts": "Valley of Kings + Hatshepsut + dawn balloon",
+     "hotel": "East Bank",
+     "trans": "car"
+    },
+    {
+     "t": "→ Red Sea",
+     "acts": "Hurghada snorkel/dive + beach sunset",
+     "hotel": "resort",
+     "trans": "car 4h"
+    },
+    {
+     "t": "Return",
+     "acts": "Hurghada → Cairo airport",
+     "hotel": "—",
+     "trans": "flight 1h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "土耳其",
+   "turkey",
+   "伊斯坦布尔",
+   "istanbul",
+   "卡帕多奇亚",
+   "cappadocia",
+   "棉花堡",
+   "热气球"
+  ],
+  "zh": {
+   "name": "土耳其",
+   "intro": "4-6月/9-10月最佳。电子签便捷(在线秒批)。热气球是卡帕多奇亚的灵魂(早班+天气窗口);伊斯坦布尔横跨欧亚。",
+   "variants": [
+    {
+     "n": "方案A · 伊斯坦布尔+卡帕",
+     "d": "伊斯坦布尔3+卡帕2+棉花堡1",
+     "hl": "蓝色清真寺+热气球+钙化池",
+     "cost": "¥9000–14000",
+     "why": "三大件一次集齐"
+    },
+    {
+     "n": "方案B · 爱琴海岸线",
+     "d": "伊兹密尔起,费特希耶+安塔利亚5天",
+     "hl": "滑翔伞+D400海岸公路自驾",
+     "cost": "¥10000–15000",
+     "why": "海岸浪漫"
+    },
+    {
+     "n": "方案C · 大环线",
+     "d": "10天全境",
+     "hl": "伊斯坦布尔+卡帕+海岸+以弗所",
+     "cost": "¥13000–20000",
+     "why": "假期充足"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达伊斯坦布尔",
+     "acts": "圣索菲亚+蓝色清真寺+地下水宫",
+     "hotel": "苏丹艾哈迈德区",
+     "trans": "机场快线"
+    },
+    {
+     "t": "伊斯坦布尔",
+     "acts": "大巴扎+加拉塔+博斯普鲁斯游船(欧亚两岸)",
+     "hotel": "同上",
+     "trans": "电车+船"
+    },
+    {
+     "t": "→卡帕多奇亚",
+     "acts": "航班1.5h→黄昏 ATV/山谷徒步",
+     "hotel": "格雷梅洞穴酒店",
+     "trans": "航班"
+    },
+    {
+     "t": "热气球日",
+     "acts": "清晨热气球(天气窗口)+精灵烟囱+陶瓷镇",
+     "hotel": "格雷梅",
+     "trans": "接送车"
+    },
+    {
+     "t": "→棉花堡/返程",
+     "acts": "钙化白池+希拉波利斯→返程",
+     "hotel": "—",
+     "trans": "包车/航班"
+    }
+   ]
+  },
+  "en": {
+   "name": "Türkiye",
+   "intro": "Best Apr-Jun / Sep-Oct. E-visa instant online. Balloons are Cappadocia's soul (dawn + weather window); Istanbul straddles Europe & Asia.",
+   "variants": [
+    {
+     "n": "Plan A · Istanbul + Capp",
+     "d": "Istanbul 3 + Capp 2 + Pamukkale 1",
+     "hl": "Blue Mosque + balloon + travertines",
+     "cost": "¥9-14k",
+     "why": "Big three in one"
+    },
+    {
+     "n": "Plan B · Aegean Coast",
+     "d": "Izmir in, Fethiye + Antalya 5d",
+     "hl": "Paragliding + D400 coast drive",
+     "cost": "¥10-15k",
+     "why": "Coast romance"
+    },
+    {
+     "n": "Plan C · Grand Loop",
+     "d": "10d countrywide",
+     "hl": "Istanbul+Capp+coast+Ephesus",
+     "cost": "¥13-20k",
+     "why": "Long vacations"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Istanbul",
+     "acts": "Hagia Sophia + Blue Mosque + cistern",
+     "hotel": "Sultanahmet",
+     "trans": "express"
+    },
+    {
+     "t": "Istanbul",
+     "acts": "Bazaar + Galata + Bosphorus cruise",
+     "hotel": "same",
+     "trans": "tram+boat"
+    },
+    {
+     "t": "→ Cappadocia",
+     "acts": "1.5h flight → sunset ATV",
+     "hotel": "Göreme cave hotel",
+     "trans": "flight"
+    },
+    {
+     "t": "Balloon Day",
+     "acts": "Dawn balloons + fairy chimneys",
+     "hotel": "Göreme",
+     "trans": "pickup"
+    },
+    {
+     "t": "→ Pamukkale/Depart",
+     "acts": "Travertines + Hierapolis → home",
+     "hotel": "—",
+     "trans": "car/flight"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "safari",
+   "肯尼亚",
+   "kenya",
+   "坦桑尼亚",
+   "tanzania",
+   "马赛马拉",
+   "塞伦盖蒂",
+   "动物大迁徙",
+   "东非"
+  ],
+  "zh": {
+   "name": "东非·Safari",
+   "intro": "看动物:肯尼亚马赛马拉7-10月大迁徙(渡河);坦桑全年但1-2月角马产仔。黄热疫苗+疟疾预防必做。Safari预算高(人均日$200-600)。",
+   "variants": [
+    {
+     "n": "方案A · 肯尼亚经典",
+     "d": "内罗毕进,6-7天",
+     "hl": "马赛马拉+纳库鲁火烈鸟+安博塞利(乞力马扎罗背景)",
+     "cost": "¥25000–40000",
+     "why": "大迁徙季首选(7-10月)"
+    },
+    {
+     "n": "方案B · 坦桑北部",
+     "d": "乞力马扎罗机场进,7-8天",
+     "hl": "塞伦盖蒂+恩戈罗火山口+塔兰吉雷",
+     "cost": "¥30000–50000",
+     "why": "动物密度最高"
+    },
+    {
+     "n": "方案C · 轻量入门",
+     "d": "肯尼亚4-5天(2-3个保护区分",
+     "hl": "中档营地+关键物种聚焦",
+     "cost": "¥15000–25000",
+     "why": "预算友好入门"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达内罗毕",
+     "acts": "长颈鹿中心+大象孤儿院(适应时差)",
+     "hotel": "内罗毕",
+     "trans": "机场接送"
+    },
+    {
+     "t": "→马赛马拉",
+     "acts": "车程5-6h→傍晚首巡(狮群/象群)",
+     "hotel": "马拉营地",
+     "trans": "Safari车"
+    },
+    {
+     "t": "马拉全日",
+     "acts": "清晨+傍晚两次游猎(黄金时段);BIG5追踪",
+     "hotel": "营地",
+     "trans": "Safari车"
+    },
+    {
+     "t": "→纳库鲁",
+     "acts": "火烈鸟湖+犀牛保护区",
+     "hotel": "纳库鲁",
+     "trans": "车程4h"
+    },
+    {
+     "t": "→安博塞利",
+     "acts": "乞力马扎罗雪山背景下的象群",
+     "hotel": "安博塞利",
+     "trans": "车程5h"
+    },
+    {
+     "t": "返程",
+     "acts": "晨巡→内罗毕机场",
+     "hotel": "—",
+     "trans": "车程4h"
+    }
+   ]
+  },
+  "en": {
+   "name": "East Africa Safari",
+   "intro": "Wildebeest migration in Kenya's Mara Jul-Oct (river crossings); Tanzania good year-round, calving Jan-Feb. Yellow fever vaccine + malaria prophylaxis required. Budget $200-600/day.",
+   "variants": [
+    {
+     "n": "Plan A · Kenya Classic",
+     "d": "Nairobi in, 6-7d",
+     "hl": "Mara + flamingos + Amboseli (Kili backdrop)",
+     "cost": "¥25-40k",
+     "why": "Migration season (Jul-Oct)"
+    },
+    {
+     "n": "Plan B · N Tanzania",
+     "d": "Kilimanjaro airport in, 7-8d",
+     "hl": "Serengeti + Ngorongoro + Tarangire",
+     "cost": "¥30-50k",
+     "why": "Highest density"
+    },
+    {
+     "n": "Plan C · Lite Intro",
+     "d": "Kenya 4-5d",
+     "hl": "Mid-range camps, key species focus",
+     "cost": "¥15-25k",
+     "why": "Budget-friendly intro"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Nairobi",
+     "acts": "Giraffe Centre + elephant orphanage",
+     "hotel": "Nairobi",
+     "trans": "pickup"
+    },
+    {
+     "t": "→ Masai Mara",
+     "acts": "5-6h drive → evening game drive",
+     "hotel": "Mara camp",
+     "trans": "safari van"
+    },
+    {
+     "t": "Mara Full Day",
+     "acts": "Dawn + dusk drives; Big Five tracking",
+     "hotel": "camp",
+     "trans": "safari van"
+    },
+    {
+     "t": "→ Nakuru",
+     "acts": "Flamingo lake + rhino sanctuary",
+     "hotel": "Nakuru",
+     "trans": "4h drive"
+    },
+    {
+     "t": "→ Amboseli",
+     "acts": "Elephants under Kilimanjaro",
+     "hotel": "Amboseli",
+     "trans": "5h drive"
+    },
+    {
+     "t": "Departure",
+     "acts": "Dawn drive → Nairobi airport",
+     "hotel": "—",
+     "trans": "4h drive"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "冰岛",
+   "iceland",
+   "雷克雅未克",
+   "极光",
+   "蓝湖",
+   "环岛"
+  ],
+  "zh": {
+   "name": "冰岛",
+   "intro": "极光季9-3月;夏季6-8月极昼+高地开放。申根签。环岛1号公路1300km自驾5-7天;天气多变,行程留弹性。",
+   "variants": [
+    {
+     "n": "方案A · 南岸+杰古沙龙",
+     "d": "雷克雅未克进,4-5天",
+     "hl": "黑沙滩+冰河湖+蓝冰洞(冬)/瀑布群",
+     "cost": "¥16000–24000",
+     "why": "精华浓缩(自驾)"
+    },
+    {
+     "n": "方案B · 全岛环线",
+     "d": "7-8天逆时针",
+     "hl": "米湖+阿克雷里+西峡湾+黄金圈",
+     "cost": "¥22000–32000",
+     "why": "完整冰岛"
+    },
+    {
+     "n": "方案C · 极光+蓝湖",
+     "d": "冬季3-4天",
+     "hl": "极光猎+蓝湖温泉+黄金圈",
+     "cost": "¥14000–20000",
+     "why": "冬季度假式"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达雷克雅未克",
+     "acts": "蓝湖温泉(预约!)+珍珠楼日落",
+     "hotel": "雷市",
+     "trans": "机场巴士45min"
+    },
+    {
+     "t": "黄金圈",
+     "acts": "辛格维利尔+间歇泉+黄金瀑布",
+     "hotel": "海拉/南部",
+     "trans": "自驾2h"
+    },
+    {
+     "t": "南岸",
+     "acts": "塞里雅兰瀑布+黑沙滩+冰川徒步(可选)",
+     "hotel": "维克",
+     "trans": "自驾2h"
+    },
+    {
+     "t": "杰古沙龙",
+     "acts": "冰河湖游船+钻石沙滩",
+     "hotel": "赫本",
+     "trans": "自驾2h"
+    },
+    {
+     "t": "返程",
+     "acts": "回雷市(或继续东行环岛)",
+     "hotel": "—",
+     "trans": "自驾4h"
+    }
+   ]
+  },
+  "en": {
+   "name": "Iceland",
+   "intro": "Aurora Sep-Mar; summer Jun-Aug midnight sun + highlands open. Schengen visa. Ring Road 1300km, 5-7 days self-drive; weather changes fast — keep buffer days.",
+   "variants": [
+    {
+     "n": "Plan A · South Coast + Jökulsárlón",
+     "d": "Reykjavik in, 4-5d",
+     "hl": "Black beach + glacier lagoon + ice cave (winter)",
+     "cost": "¥16-24k",
+     "why": "Compact essence (drive)"
+    },
+    {
+     "n": "Plan B · Full Ring",
+     "d": "7-8d clockwise",
+     "hl": "Mývatn + Akureyri + Westfjords",
+     "cost": "¥22-32k",
+     "why": "Complete Iceland"
+    },
+    {
+     "n": "Plan C · Aurora + Blue Lagoon",
+     "d": "Winter 3-4d",
+     "hl": "Aurora hunt + lagoon + Golden Circle",
+     "cost": "¥14-20k",
+     "why": "Winter lounging"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Reykjavík",
+     "acts": "Blue Lagoon (book!) + Perlan sunset",
+     "hotel": "RVK",
+     "trans": "flybus 45m"
+    },
+    {
+     "t": "Golden Circle",
+     "acts": "Þingvellir + Geysir + Gullfoss",
+     "hotel": "Hella",
+     "trans": "drive 2h"
+    },
+    {
+     "t": "South Coast",
+     "acts": "Seljalandsfoss + black beach + glacier hike",
+     "hotel": "Vík",
+     "trans": "drive 2h"
+    },
+    {
+     "t": "Jökulsárlón",
+     "acts": "Lagoon boat + Diamond Beach",
+     "hotel": "Höfn",
+     "trans": "drive 2h"
+    },
+    {
+     "t": "Return",
+     "acts": "Back to RVK (or continue ring)",
+     "hotel": "—",
+     "trans": "drive 4h"
+    }
+   ]
+  }
+ },
+ {
+  "keys": [
+   "新西兰",
+   "new zealand",
+   "皇后镇",
+   "queenstown",
+   "奥克兰",
+   "米尔福德",
+   "milford",
+   "霍比特人"
+  ],
+  "zh": {
+   "name": "新西兰",
+   "intro": "北半球冬=新西兰夏(12-2月最佳);6-8月滑雪+库克山雪景。NZeTA 电子旅行许可。自驾右舵左行。",
+   "variants": [
+    {
+     "n": "方案A · 南岛精华",
+     "d": "基督城/皇后镇进,7天",
+     "hl": "米尔福德峡湾+瓦纳卡+特卡波观星",
+     "cost": "¥18000–26000",
+     "why": "风光全在南岛"
+    },
+    {
+     "n": "方案B · 南北双岛",
+     "d": "12天全境",
+     "hl": "+霍比特村+罗托鲁瓦地热+奥克兰",
+     "cost": "¥25000–35000",
+     "why": "完整体验"
+    },
+    {
+     "n": "方案C · 极限运动",
+     "d": "皇后镇5天",
+     "hl": "蹦极发源地+跳伞+喷射快艇",
+     "cost": "¥15000–22000",
+     "why": "肾上腺素套餐"
+    }
+   ],
+   "days": [
+    {
+     "t": "抵达基督城",
+     "acts": "市区恢复+植物园",
+     "hotel": "基督城",
+     "trans": "机场出租"
+    },
+    {
+     "t": "→特卡波",
+     "acts": "好牧羊人教堂+观星(暗夜保护区)",
+     "hotel": "特卡波",
+     "trans": "自驾3h"
+    },
+    {
+     "t": "→库克山",
+     "acts": "胡克山谷徒步(3h)普卡基湖",
+     "hotel": "库克山村",
+     "trans": "自驾2h"
+    },
+    {
+     "t": "→皇后镇",
+     "acts": "天空缆车+湖边黄昏",
+     "hotel": "皇后镇",
+     "trans": "自驾3h"
+    },
+    {
+     "t": "米尔福德峡湾",
+     "acts": "一日往返(车程4.5h单程,晨发)",
+     "hotel": "皇后镇",
+     "trans": "巴士/自驾"
+    },
+    {
+     "t": "返程",
+     "acts": "箭镇+蹦极(卡瓦劳)→机场",
+     "hotel": "—",
+     "trans": "自驾"
+    }
+   ]
+  },
+  "en": {
+   "name": "New Zealand",
+   "intro": "N-hemisphere winter = NZ summer (Dec-Feb best); Jun-Aug for skiing + alpine snow. NZeTA required. Drive on the LEFT (right-hand cars).",
+   "variants": [
+    {
+     "n": "Plan A · South Island",
+     "d": "Christchurch/Queenstown in, 7d",
+     "hl": "Milford Sound + Wanaka + Tekapo stargazing",
+     "cost": "¥18-26k",
+     "why": "All the scenery is south"
+    },
+    {
+     "n": "Plan B · Both Islands",
+     "d": "12d nationwide",
+     "hl": "+ Hobbiton + Rotorua + Auckland",
+     "cost": "¥25-35k",
+     "why": "Full experience"
+    },
+    {
+     "n": "Plan C · Adrenaline",
+     "d": "Queenstown 5d",
+     "hl": "Bungee birthplace + skydive + jetboat",
+     "cost": "¥15-22k",
+     "why": "Adrenaline package"
+    }
+   ],
+   "days": [
+    {
+     "t": "Arrive Christchurch",
+     "acts": "Recover + botanic gardens",
+     "hotel": "CHC",
+     "trans": "taxi"
+    },
+    {
+     "t": "→ Tekapo",
+     "acts": "Church of Good Shepherd + dark-sky stargazing",
+     "hotel": "Tekapo",
+     "trans": "drive 3h"
+    },
+    {
+     "t": "→ Mt Cook",
+     "acts": "Hooker Valley track (3h) + Pukaki",
+     "hotel": "village",
+     "trans": "drive 2h"
+    },
+    {
+     "t": "→ Queenstown",
+     "acts": "Skyline + lakefront dusk",
+     "hotel": "QT",
+     "trans": "drive 3h"
+    },
+    {
+     "t": "Milford Day",
+     "acts": "Day trip (4.5h each way, early start)",
+     "hotel": "QT",
+     "trans": "bus/drive"
+    },
+    {
+     "t": "Departure",
+     "acts": "Arrowtown + Kawarau bungee → airport",
+     "hotel": "—",
+     "trans": "drive"
+    }
+   ]
+  }
+ }
+]];
 
 // ══════════ i18n ══════════
 var LANG = (function(){ try { return localStorage.getItem('tc.lang') || 'zh'; } catch(e){ return 'zh'; } })();
@@ -2277,12 +4036,20 @@ var CASES=[
    md:'## 每日行程表\n| D+ | 路线 | 安排 | 交通 | 住宿 | 红叶 |\n|---|---|---|---|---|---|\n| D1 | 抵达→京都东山 | 落地→HARUKA 75min→只园夜散步 | HARUKA | 京都站南 | ⭐⭐ |\n| D2 | 岚山一整天 | 竹林(8点前)+天龙寺+小火车 | JR | 京都站南 | ⭐⭐⭐⭐ |\n| D3 | 东福寺—伏见—永观堂 | 通天桥(开园即入)+夜枫 | JR+巴士 | 京都站南 | ⭐⭐⭐⭐⭐ |\n| D4 | 鞍马→贵船→大阪 | 叡电红叶隧道+徒步+川床午餐 | 叡电+JR | 梅田 | ⭐⭐⭐⭐ |\n| D5 | 大阪设计小店日 | 中崎町+堀江→南海赴 KIX | 南海 | — | ⭐⭐ |\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 机票 | 尽快订 | T-30 |\n| 嵯峨野小火车 | 建议预订 | 提前 10 天 |\n| 川床午餐 | 建议预订 | T-7 |\n\n## 备选分支\n- 奈良半日:仅当想看鹿执念存在——代价是永观堂让出+12h 暴走'}
 ];
 function renderHomeCases() {
+  var EN_CASES = {
+    '巴厘岛 12 天': {t:'Bali 12 Days', d:'Bali · Penida · Hanoi', m:'12D11N · couple', tag:'28 rounds', desc:'Twin volcanoes, Penida & slow Bali, with flight-change and volcano-closure replans.', hls:['Flight replan','Volcano closure','Booking states']},
+    '草原自驾 2 天': {t:'Grassland Roadtrip 2D', d:'Beijing outskirts', m:'2D1N · solo driver', tag:'5 rounds', desc:'Solo-driving constraint turned into daily drive caps; weather-compared across 4 directions.', hls:['Weather-driven','Solo constraint','Real-time']},
+    '关西红叶 5 天': {t:'Kansai Foliage 5D', d:'Kyoto + Osaka', m:'5D4N · couple · early Nov', tag:'skill 1st test', desc:'Foliage window first; Nara trade-offs laid out; Kurama-Kibune hike added.', hls:['Window-first','Trade-off math','Backup branches']}
+  };
   $('homeCases').innerHTML = CASES.map(function(c,i){
-    return '<div class="case-card"><div class="tag">'+esc(c.tag)+'</div>'+
-      '<h3>'+c.ic+' '+esc(c.title)+'</h3><div class="m">'+esc(c.dest)+' · '+esc(c.meta)+'</div>'+
-      '<div class="d">'+esc(c.desc)+'</div>'+
-      '<div>'+c.hls.map(function(h){return '<span class="hl">'+esc(h)+'</span>';}).join('')+'</div>'+
-      '<div style="height:10px;"></div><button class="btn outline sm" onclick="openCase('+i+')">查看完整行程</button></div>';
+    var e = LANG === 'en' && EN_CASES[c.title];
+    var title = e ? e.t : c.title, dest = e ? e.d : c.dest, meta = e ? e.m : c.meta,
+        tag = e ? e.tag : c.tag, desc = e ? e.desc : c.desc, hls = e ? e.hls : c.hls;
+    return '<div class="case-card"><div class="tag">'+esc(tag)+'</div>'+
+      '<h3>'+c.ic+' '+esc(title)+'</h3><div class="m">'+esc(dest)+' · '+esc(meta)+'</div>'+
+      '<div class="d">'+esc(desc)+'</div>'+
+      '<div>'+hls.map(function(h){return '<span class="hl">'+esc(h)+'</span>';}).join('')+'</div>'+
+      '<div style="height:10px;"></div><button class="btn outline sm" onclick="openCase('+i+')">'+(LANG==='en'?'View full plan':'查看完整行程')+'</button></div>';
   }).join('');
 }
 function openCase(i) {
@@ -2294,8 +4061,109 @@ function openCase(i) {
   go('planner');
 }
 
+
+// ══════════ 静态文案 i18n(启动时全文翻译) ══════════
+var I18N_MAP = {
+  '首页':'Home','旅行规划':'Plan','规划行程':'Plan a Trip','说走就走,帮你排好':'Ready when you are','就绪检查':'Readiness','行程单':'Itinerary','设置':'Settings',
+  '离线模式':'Offline','什么时候去':'When','想去哪':'Destination','几个人':'Travelers','预算(人均)':'Budget (pp)',
+  '已订了啥(硬约束)':'Booked already (hard constraints)','偏好':'Preferences','签证':'Visa',
+  '说说你的旅行想法':'Tell us your trip idea','填写越具体,方案越准':'More detail, better plans',
+  '帮我出方案':'Compare plans','历史行程':'My trips','挑方案':'Pick a plan','改需求':'Edit needs','回对比':'Back to compare',
+  '行程出炉':'Itinerary ready','看中哪个?选了再细化':'Pick one to refine','选错了也没关系,后面随时改':'Easy to change later',
+  '接下来':'Next up','就绪检查':'Readiness check','倒计时时间线':'Countdown timeline','该什么时候干什么':'What to do when','继续调整行程':'Keep Refining','预览行程单':'Preview itinerary','存入历史':'Save to history',
+  '倒计时时间线':'Countdown timeline','该什么时候干什么':'What to do when','就绪度':'Readiness','添加检查项':'Add item',
+  '事项':'Item','提前量':'Lead time','选择…':'Select…','风险提示':'Risk alerts','按当前行程自动生成':'Auto-generated from your trip',
+  '继续调整行程':'Keep refining','打印/存PDF':'Print / PDF','导出 HTML':'Export HTML',
+  '模式与设置':'Mode & Settings','规划行程':'Plan a Trip','规划模式':'Planning mode','AI 渠道':'AI provider','API Key':'API Key',
+  '模型名(留空用渠道默认)':'Model (blank = default)','Base URL(仅自定义渠道)':'Base URL (custom only)','保存':'Save','取消':'Cancel',
+  '四步搞定':'Four steps','从想法到出发,一条龙':'Idea to departure in one flow','为什么好用':'Why it works',
+  '不硬塞方案,帮你做决定':'Plans compared, you decide','排完给你什么':'What you get','案例库':'Case library',
+  '点开案例,直接看完整行程':'Open a case, see the full itinerary','查看完整行程':'View full plan',
+  '说说去哪':'Where to','挑方案':'Compare','排行程':'Build','查就绪':'Check readiness',
+  '时间、目的地、偏好,一次说完':'Dates, destination, prefs — all at once','2-3 版对比表,你拍板':'2-3 plans, you decide',
+  '逐日时间轴 + 五件套':'Daily timeline + 5-piece deliverable','T-minus 扫必订项':'T-minus scans bookings',
+  '不替你决定':'We decide nothing for you','关键选择给对比表,理由说清,你拍板':'Compare tables with reasons — you call it',
+  '在途预警':'Transit alerts','单日赶路超 6h 自动提醒':'Auto alert when transit >6h/day','航变重排':'Flight-change replan',
+  '航班变了?局部重排不推倒重来':'Flight changed? Local replan, not from scratch','T-minus 盯守':'T-minus watch',
+  '出发前自动扫必订项,该催的催':'Auto-scan bookings pre-departure','行程表':'Itinerary','交通':'Transport',
+  '住宿':'Hotels','必订清单':'Booking list','预算':'Budget','开始规划':'Start planning',
+  '还没有历史——出方案细化后点「💾 存入历史」':'No history yet — generate & save',
+  '清单还空着——签证、机票、酒店、船票都加进来,出发前一项项点掉':'Empty — add visas, flights, hotels…',
+  '暂无特定风险提示——一般项:护照有效期 6 个月+ · 旅行保险(含活动项目) · 出发前 3 天查目的地天气':'General: passport 6mo+ validity, insurance, check weather T-3d',
+  '通用项:护照有效期 6 个月+ · 旅行保险(含活动项目) · 出发前 3 天查目的地天气':'General: passport 6mo+, insurance, weather check T-3d',
+  '想去哪':'Destination','什么时候去':'When',
+};
+function i18nStatic() {
+  if (LANG !== 'en') return;
+  // 1) 文本节点:包含匹配翻译(map key 是干净短语,匹配「含此短语」的节点)
+  document.querySelectorAll('label, button, h2, h3, .sub, .m, .tag, .q, .s, p, .empty, .hist .t, .deliver span, option').forEach(function(el){
+    for (var i=0;i<el.childNodes.length;i++) {
+      var n = el.childNodes[i];
+      if (n.nodeType !== 3) continue;
+      var raw = n.textContent;
+      var keys = Object.keys(I18N_MAP).sort(function(a,b){ return b.length - a.length; });
+      for (var j=0;j<keys.length;j++) {
+        var k = keys[j];
+        if (raw.indexOf(k) > -1) {
+          raw = raw.split(k).join(I18N_MAP[k]);
+        }
+      }
+      n.textContent = raw;
+    }
+  });
+  // 2) placeholder
+  var PH_MAP = {
+    '例:11月15-19日':'e.g. Nov 15-19','例:大阪 / 北海道':'e.g. Osaka / Hokkaido','例:2人,体力好,有驾照':'e.g. 2 people, fit, licensed',
+    '例:5K-8K RMB':'e.g. ¥5-8k','例:已订京都酒店3晚,11/15大阪入港航班':'e.g. Kyoto hotel booked, KIX Nov 15',
+    '例:红叶必看,温泉随意,不想太赶':'e.g. foliage must, onsen optional, relaxed',
+    '例:日本三年签有效,护照2028年到期':'e.g. 3yr Japan visa, passport 2028',
+    '例:签证提交':'e.g. visa submission','渠道对应的 Key':'your API key',
+    '例:deepseek-chat / glm-4.6':'e.g. deepseek-chat','例:https://api.example.com/v1':'e.g. https://api.example.com/v1'
+  };
+  document.querySelectorAll('[placeholder]').forEach(function(el){
+    var ph = el.getAttribute('placeholder');
+    if (PH_MAP[ph]) el.setAttribute('placeholder', PH_MAP[ph]);
+  });
+  // 3) 下拉选项
+  var OM = {
+    '离线模式——内置案例+规则引擎,零配置':'Offline — built-in KB, zero config',
+    'AI 模式——填自己的 Key,任意目的地实时规划':'AI — your own key, any destination',
+    'DeepSeek(国内直连,推荐)':'DeepSeek (CN direct, recommended)','智谱 GLM(国内直连)':'Zhipu GLM (CN direct)',
+    'Kimi 月之暗面(国内直连)':'Moonshot Kimi (CN direct)','Anthropic Claude(需国际网络)':'Anthropic Claude (intl network)',
+    '自定义 OpenAI 兼容端点':'Custom OpenAI-compatible endpoint','选择…':'Select…'
+  };
+  document.querySelectorAll('option').forEach(function(o){
+    var t = o.textContent.trim();
+    if (OM[t]) o.textContent = OM[t];
+  });
+  // 4) 首页 phases/features 专项(map 长句)
+  var CARD = {
+    '时间、目的地、偏好,一次说完':'Dates, destination, prefs — all at once',
+    '2-3 版对比表,你拍板':'2-3 plans, you decide',
+    '逐日时间轴 + 五件套':'Daily timeline + 5-piece deliverable',
+    'T-minus 扫必订项':'T-minus scans bookings',
+    '关键选择给对比表,理由说清,你拍板':'Compare tables with reasons — you call it',
+    '单日赶路超 6h 自动提醒':'Auto alert when transit >6h/day',
+    '航班变了?局部重排不推倒重来':'Flight changed? Local replan, not from scratch',
+    '出发前自动扫必订项,该催的催':'Auto-scan bookings pre-departure',
+    '不替你决定':'We decide nothing','在途预警':'Transit alerts','航变重排':'Flight-change replan',
+    'T-minus 盯守':'T-minus watch','不硬塞方案,帮你做决定':'Plans compared, you decide',
+    '从想法到出发,一条龙':'Idea to departure in one flow',
+    '四步搞定':'Four steps','为什么好用':'Why it works','排完给你什么':'What you get',
+    '案例库':'Case library','点开案例,直接看完整行程':'Open a case, see the full itinerary',
+    '说说去哪':'Where to','挑方案':'Compare','排行程':'Build','查就绪':'Check readiness',
+    '不替你决定':'We decide nothing for you',
+    '说走就走,帮你排好':'Ready when you are',
+    '告诉我时间段和目的地,我出方案、排行程、盯就绪——零登录,数据只存你自己的浏览器。':'Tell me your dates and destination — I compare plans, build the itinerary, and track readiness. No login; data stays in your browser.'
+  };
+  document.querySelectorAll('.phases p, .phases h3, .features p, .features h3, .hero .tag, .hero p, .card h2, .card .sub').forEach(function(el){
+    var t = el.textContent.trim();
+    if (CARD[t]) el.textContent = CARD[t];
+  });
+}
 // ══════════ 启动 ══════════
 document.documentElement.setAttribute('lang', LANG);
+i18nStatic();
 $('langBtn').textContent = LANG === 'zh' ? 'EN' : '中';
 $('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : L('离线模式','Offline');
 renderHomeCases(); renderPlHist(); renderReadiness(); renderPreview();
