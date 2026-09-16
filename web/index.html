@@ -6,842 +6,698 @@
 <title>Trip Compass · 说走就走,帮你排好</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f7f4ef; color: #2d3436; line-height: 1.8; padding: 16px; max-width: 860px; margin: 0 auto; -webkit-text-size-adjust: 100%; word-wrap: break-word; overflow-wrap: break-word; }
-  header { text-align: center; padding: 30px 20px 26px; background: linear-gradient(135deg,#2c5f6f,#3a7a8c); color: #fff; border-radius: 14px; margin-bottom: 16px; }
-  header h1 { font-size: 23px; font-weight: 600; margin-bottom: 5px; }
-  header .sub { font-size: 13.5px; opacity: .9; }
-  .mode-bar { text-align: center; margin-bottom: 12px; font-size: 12.5px; color: #6b7280; }
-  .mode-bar b { color: #2c5f6f; }
-  .mode-bar a { color: #2c5f6f; text-decoration: underline; cursor: pointer; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #faf9f7; color: #1c1917; line-height: 1.75; -webkit-text-size-adjust: 100%; word-wrap: break-word; overflow-wrap: break-word; }
 
-  #chat { background: #fff; border-radius: 14px; padding: 22px 20px; min-height: 320px; box-shadow: 0 2px 8px rgba(0,0,0,.05); margin-bottom: 14px; }
-  .msg { margin-bottom: 22px; }
-  .msg .who { font-size: 11.5px; font-weight: 700; margin-bottom: 3px; }
-  .msg.user .who { color: #c2410c; }
-  .msg.ai .who { color: #2c5f6f; }
-  .bubble { border-radius: 12px; padding: 13px 16px; font-size: 14.5px; }
-  .msg.user .bubble { background: #fff7ed; max-width: 85%; margin-left: auto; border: 1px solid #f3d9bf; }
-  .msg.ai .bubble { background: #f4f8f9; border: 1px solid #dce8eb; }
-  .bubble p { margin-bottom: 10px; }
-  .bubble table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0; }
-  .bubble th { background: #2c5f6f; color: #fff; padding: 7px 10px; text-align: left; }
-  .bubble td { padding: 7px 10px; border-bottom: 1px solid #e0d9cf; vertical-align: top; }
-  .bubble tr:nth-child(even) td { background: #faf8f4; }
-  .bubble .day-h { font-weight: 700; color: #2c5f6f; margin-top: 8px; }
-  .seg { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; color: #fff; margin: 1px 3px 1px 0; }
-  .choice-btn { display: block; width: 100%; text-align: left; background: #fff; border: 1.5px solid #c9a87c; color: #2d3436; border-radius: 10px; padding: 13px 16px; margin: 10px 0; cursor: pointer; font-family: inherit; font-size: 14px; }
-  .choice-btn:hover { background: #faf8f4; }
-  .choice-btn b { color: #2c5f6f; font-size: 15px; }
-  .typing { color: #8a9ba8; font-size: 12.5px; font-style: italic; }
-  .hint-chips { margin: 8px 0 0; }
-  .hint-chips button { background: #f0ebe1; border: none; border-radius: 16px; color: #6b4f3a; font-size: 12.5px; padding: 5px 14px; margin: 3px 6px 3px 0; cursor: pointer; font-family: inherit; }
+  /* ── 顶部导航 ── */
+  .topnav { background: #2c5f6f; color: #fff; position: sticky; top: 0; z-index: 50; }
+  .topnav .inner { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  .topnav .brand { display: inline-block; padding: 14px 0; font-weight: 700; font-size: 16px; cursor: pointer; }
+  .topnav .menu { display: inline-block; vertical-align: top; margin-left: 18px; }
+  .topnav .menu button { background: none; border: none; color: rgba(255,255,255,.85); padding: 15px 13px; font-size: 13.5px; cursor: pointer; font-family: inherit; border-bottom: 2px solid transparent; }
+  .topnav .menu button.on { color: #fff; border-bottom-color: #e8a87c; }
+  .topnav .menu button:hover { color: #fff; }
+  .topnav .right { float: right; }
+  .topnav .right button { background: rgba(255,255,255,.15); border: none; color: #fff; border-radius: 7px; padding: 7px 14px; font-size: 12.5px; cursor: pointer; font-family: inherit; margin-top: 9px; }
+  .topnav .right .modelabel { font-size: 11.5px; opacity: .8; margin-right: 8px; }
+  @media (max-width: 760px) { .topnav .menu { display: none; } .topnav .brand { font-size: 15px; } }
 
-  #inputBar { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-  #inputBar textarea { width: 100%; border: 1px solid #e0d9cf; border-radius: 8px; padding: 9px 12px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 56px; background: #faf8f4; }
-  .input-row { margin-top: 8px; text-align: right; }
-  .btn { background: #2c5f6f; color: #fff; border: none; border-radius: 9px; padding: 10px 24px; font-size: 14px; cursor: pointer; font-family: inherit; margin-left: 8px; }
-  .btn.ghost { background: #fff; color: #2c5f6f; border: 1px solid #c9a87c; }
-  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .page { max-width: 1080px; margin: 0 auto; padding: 22px 16px 40px; display: none; }
+  .page.on { display: block; }
 
-  /* 设置弹层 */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 10; }
-  .modal-bg.on { display: block; }
-  .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 12px; padding: 22px 20px; width: min(520px, 92vw); max-height: 85vh; overflow-y: auto; z-index: 11; box-shadow: 0 8px 30px rgba(0,0,0,.2); }
-  .modal.on { display: block; }
-  .modal h4 { color: #2c5f6f; font-size: 16px; margin-bottom: 8px; }
-  .modal label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 10px 0 3px; }
-  .modal input, .modal select { width: 100%; padding: 8px 10px; border: 1px solid #e0d9cf; border-radius: 6px; font-size: 14px; font-family: inherit; }
-  .modal .note { font-size: 12px; color: #6b7280; margin-top: 8px; }
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #2d3436; color: #fff; padding: 9px 20px; border-radius: 20px; font-size: 13.5px; display: none; z-index: 12; }
-  footer { text-align: center; color: #b8a89a; font-size: 12px; padding: 12px; }
-  /* 行程单预览(打印友好) */
-  .pv-sheet { background: #fff; border-radius: 14px; padding: 28px 26px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-  .pv-head { text-align: center; border-bottom: 3px solid #2c5f6f; padding-bottom: 14px; margin-bottom: 18px; }
-  .pv-head h2 { font-size: 20px; color: #2c5f6f; border: none; padding: 0; margin: 0 0 4px; }
-  .pv-head .m { font-size: 13px; color: #6b7280; }
-  .pv-day { border: 1px solid #e0d9cf; border-radius: 10px; padding: 13px 15px; margin-bottom: 12px; page-break-inside: avoid; }
-  .pv-day .dh { font-size: 15px; font-weight: 700; color: #2c5f6f; margin-bottom: 6px; }
-  .pv-seg { display: inline-block; padding: 3px 9px; border-radius: 5px; margin: 2px 4px 2px 0; font-size: 12px; color: #fff; }
-  .pv-meta { font-size: 12.5px; color: #6b7280; margin-top: 5px; }
-  .pv-empty { text-align: center; color: #b8a89a; padding: 40px 0; font-size: 14px; }
-  @media print {
-    body { background: #fff; padding: 0; }
-    .tabs, #inputBar, .mode-bar, footer, .preview-actions, .modal-bg, .modal, .toast { display: none !important; }
-    section.pane { display: none; }
-    section.pane.on { display: block; }
-    .pv-sheet { box-shadow: none; padding: 0; border-radius: 0; }
-  }
-  .tabs { text-align: center; margin-bottom: 14px; }
-  .tabs button { background: #fff; border: 1px solid #e0d9cf; color: #2c5f6f; padding: 7px 18px; margin: 0 3px 6px; border-radius: 20px; font-size: 13.5px; cursor: pointer; font-family: inherit; }
-  .tabs button.on { background: #2c5f6f; color: #fff; border-color: #2c5f6f; }
-  section.pane { display: none; }
-  section.pane.on { display: block; }
-  h2 { font-size: 18px; color: #2c5f6f; border-left: 4px solid #e8a87c; padding-left: 10px; margin-bottom: 12px; }
-  h3 { font-size: 15px; color: #2c5f6f; margin: 14px 0 8px; }
-  .panel-form { background: #faf8f4; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
-  .grid2 { display: table; width: 100%; border-spacing: 8px 0; margin: 0 -8px; }
+  /* ── 通用卡片 ── */
+  .card { background: #fff; border: 1px solid #eee9e2; border-radius: 14px; padding: 22px; margin-bottom: 16px; }
+  .card h2 { font-size: 17px; margin-bottom: 4px; color: #1c1917; }
+  .card .sub { font-size: 13px; color: #8c8478; margin-bottom: 16px; }
+  .btn { background: #2c5f6f; color: #fff; border: none; border-radius: 9px; padding: 10px 26px; font-size: 14px; cursor: pointer; font-family: inherit; }
+  .btn:hover { background: #24506a; }
+  .btn.outline { background: #fff; color: #2c5f6f; border: 1px solid #c9a87c; }
+  .btn.big { width: 100%; padding: 13px; font-size: 15px; }
+  .btn.sm { padding: 6px 14px; font-size: 12.5px; }
+  label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 12px 0 4px; }
+  label .req { color: #c2410c; }
+  input, textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #e0d9cf; border-radius: 8px; font-size: 14px; font-family: inherit; background: #fff; }
+  textarea { min-height: 56px; resize: vertical; }
+  .grid2 { display: table; width: 100%; border-spacing: 10px 0; margin: 0 -10px; }
   .grid2 > div { display: table-cell; width: 50%; vertical-align: top; }
-  label { display: block; font-size: 12.5px; color: #8c6a4f; margin: 10px 0 3px; }
-  input, select { width: 100%; padding: 8px 10px; border: 1px solid #e0d9cf; border-radius: 6px; font-size: 14px; font-family: inherit; background: #fff; }
-  .check-item { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 8px; padding: 11px 13px; margin-bottom: 8px; }
-  .status { padding: 2px 9px; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  @media (max-width: 700px) { .grid2 { display: block; margin: 0; } .grid2 > div { display: block; width: 100%; margin-bottom: 6px; } }
+
+  /* ── 首页 ── */
+  .hero { background: linear-gradient(135deg, #2c5f6f, #3a7a8c); color: #fff; border-radius: 16px; padding: 44px 30px; text-align: center; margin-bottom: 22px; }
+  .hero .logo { width: 56px; height: 56px; background: rgba(255,255,255,.15); border-radius: 14px; line-height: 56px; font-size: 30px; margin: 0 auto 14px; }
+  .hero h1 { font-size: 28px; font-weight: 800; letter-spacing: .5px; }
+  .hero .tag { font-size: 14px; opacity: .85; margin: 4px 0 18px; }
+  .hero p { font-size: 15px; opacity: .92; max-width: 560px; margin: 0 auto 22px; }
+  .hero .cta { background: #e8a87c; color: #3d2e1e; border: none; border-radius: 10px; padding: 12px 34px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+
+  .phases { display: table; width: 100%; border-spacing: 12px 0; margin: 0 -12px; }
+  .phases > div { display: table-cell; width: 25%; vertical-align: top; background: #fff; border: 1px solid #eee9e2; border-radius: 12px; padding: 18px 16px; position: relative; }
+  .phases .num { font-size: 26px; font-weight: 800; color: rgba(44,95,111,.14); position: absolute; top: 10px; right: 14px; }
+  .phases .ic { font-size: 22px; margin-bottom: 8px; }
+  .phases h3 { font-size: 14.5px; margin-bottom: 4px; }
+  .phases p { font-size: 12px; color: #8c8478; }
+  @media (max-width: 700px) { .phases { display: block; margin: 0; } .phases > div { display: block; width: 100%; margin-bottom: 10px; } }
+
+  .features { display: table; width: 100%; border-spacing: 12px 0; margin: 0 -12px; }
+  .features > div { display: table-cell; width: 25%; vertical-align: top; background: #fff; border: 1px solid #eee9e2; border-radius: 12px; padding: 16px; }
+  .features .ic { font-size: 20px; margin-bottom: 6px; }
+  .features h3 { font-size: 14px; margin-bottom: 3px; }
+  .features p { font-size: 12px; color: #8c8478; }
+  @media (max-width: 700px) { .features { display: block; margin: 0; } .features > div { display: block; width: 100%; margin-bottom: 10px; } }
+
+  .deliver { text-align: center; padding: 14px 0 4px; }
+  .deliver span { display: inline-block; background: #f4ede3; color: #6b4f3a; border-radius: 18px; padding: 6px 16px; font-size: 12.5px; margin: 4px; }
+
+  .case-card { background: #fff; border: 1px solid #eee9e2; border-radius: 12px; padding: 18px; display: table-cell; width: 33.3%; vertical-align: top; }
+  .case-row { display: table; width: 100%; border-spacing: 12px 0; margin: 0 -12px; }
+  @media (max-width: 800px) { .case-row { display: block; margin: 0; } .case-card { display: block; width: 100%; margin-bottom: 12px; } }
+  .case-card .tag { display: inline-block; background: #f0e6d6; color: #8c6a4f; border-radius: 5px; padding: 2px 9px; font-size: 11px; margin-bottom: 8px; }
+  .case-card h3 { font-size: 15.5px; margin-bottom: 3px; }
+  .case-card .m { font-size: 12px; color: #8c8478; margin-bottom: 8px; }
+  .case-card .d { font-size: 12.5px; color: #57534e; margin-bottom: 10px; min-height: 44px; }
+  .hl { display: inline-block; background: #fdf3e7; color: #b45309; border-radius: 4px; padding: 1px 7px; font-size: 10.5px; margin: 0 3px 4px 0; }
+
+  /* ── Planner ── */
+  .pagehead { display: inline-block; margin-bottom: 14px; width: 100%; }
+  .pagehead h2 { font-size: 19px; display: inline-block; vertical-align: middle; }
+  .pagehead .m { font-size: 13px; color: #8c8478; margin-top: 2px; }
+  .back { background: none; border: none; color: #2c5f6f; font-size: 13px; cursor: pointer; font-family: inherit; margin-right: 10px; vertical-align: middle; }
+  .loading { text-align: center; padding: 56px 0; color: #8c8478; font-size: 13.5px; }
+  .spin { width: 30px; height: 30px; border: 3px solid #e0d9cf; border-top-color: #2c5f6f; border-radius: 50%; margin: 0 auto 14px; animation: sp 0.9s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .tip { background: #f4f0e8; border-radius: 10px; padding: 10px 14px; font-size: 12.5px; color: #57534e; margin-bottom: 14px; }
+  .pickbox { background: #fdf6ec; border: 1px solid #f0e0c8; border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .pickbox .q { font-size: 14.5px; font-weight: 600; margin-bottom: 2px; }
+  .pickbox .s { font-size: 12px; color: #8c8478; margin-bottom: 12px; }
+
+  /* ── Markdown ── */
+  .md .h2 { font-weight: 700; font-size: 15.5px; color: #2c5f6f; margin: 16px 0 8px; }
+  .md table { width: 100%; border-collapse: collapse; font-size: 12.8px; margin: 10px 0 14px; }
+  .md th { background: #2c5f6f; color: #fff; padding: 7px 9px; text-align: left; font-weight: 500; }
+  .md td { padding: 7px 9px; border-bottom: 1px solid #e8e2d8; vertical-align: top; }
+  .md tr:nth-child(even) td { background: #faf8f4; }
+  .md li { padding-left: 4px; margin: 4px 0; font-size: 13.5px; list-style: none; }
+  .md p { font-size: 14px; margin: 8px 0; }
+
+  /* ── 行程单 ── */
+  .pv-sheet { background: #fff; border: 1px solid #eee9e2; border-radius: 14px; padding: 26px 24px; }
+  .pv-head { text-align: center; border-bottom: 3px solid #2c5f6f; padding-bottom: 14px; margin-bottom: 16px; }
+  .pv-head h2 { font-size: 20px; color: #2c5f6f; margin: 0 0 4px; }
+  .pv-head .m { font-size: 12.5px; color: #8c8478; }
+  .pv-day { border: 1px solid #e8e2d8; border-radius: 10px; padding: 13px 15px; margin-bottom: 11px; page-break-inside: avoid; }
+  .pv-day .dh { font-size: 14.5px; font-weight: 700; color: #2c5f6f; margin-bottom: 5px; }
+  .pv-seg { display: inline-block; padding: 3px 9px; border-radius: 5px; margin: 2px 4px 2px 0; font-size: 11.5px; color: #fff; }
+  .pv-meta { font-size: 12px; color: #8c8478; margin-top: 4px; }
+
+  /* ── 就绪检查 ── */
+  .tm-line { display: table; width: 100%; border-spacing: 6px 0; margin: 0 -6px; }
+  .tm-line > div { display: table-cell; width: 16.6%; vertical-align: top; background: #f4f0e8; border-radius: 9px; padding: 10px 8px; }
+  .tm-line .d { font-weight: 700; color: #2c5f6f; font-size: 12px; }
+  .tm-line .l { font-size: 11.5px; color: #57534e; }
+  .tm-line .s { font-size: 10.5px; color: #a8a29e; }
+  @media (max-width: 700px) { .tm-line { display: block; margin: 0; } .tm-line > div { display: inline-block; width: 31%; margin: 3px 1%; } }
+  .ready-bar { background: #e8e2d8; border-radius: 9px; padding: 4px; margin: 14px 0; }
+  .ready-fill { background: #5b8c5a; border-radius: 9px; padding: 6px 14px; color: #fff; font-size: 12.5px; font-weight: 600; }
+  .sec-title { font-weight: 700; font-size: 14.5px; color: #2c5f6f; margin: 18px 0 8px; }
+  .ck-item { background: #fff; border: 1px solid #eee9e2; border-radius: 9px; padding: 11px 13px; margin-bottom: 7px; }
+  .status { padding: 2px 9px; border-radius: 5px; font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
   .status.done { color: #15803d; background: #dcfce7; }
   .status.todo { color: #c2410c; background: #ffedd5; }
-  .bar { background: #f0ebe1; border-radius: 8px; padding: 4px; margin: 8px 0 12px; }
-  .bar .fill { background: #5b8c5a; border-radius: 8px; padding: 6px 14px; color: #fff; font-size: 12.5px; font-weight: 600; }
-  .risk-card { background: #fff7ed; border-left: 4px solid #e8a87c; border-radius: 6px; padding: 11px 14px; margin: 8px 0; font-size: 13.5px; }
-  .risk-card b { color: #c2410c; }
-  .trip-h { background: #faf8f4; border: 1px solid #e0d9cf; border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
-  .trip-h .t { font-size: 15px; font-weight: 700; color: #2c5f6f; }
-  .trip-h .m { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
-  .trip-h .ops { margin-top: 6px; font-size: 12.5px; }
-  .trip-h .ops a { color: #8c6a4f; text-decoration: underline; cursor: pointer; margin-right: 12px; }
-  .empty { text-align: center; color: #b8a89a; font-size: 13.5px; padding: 26px 0; }
+  .risk { background: #fff7ed; border-left: 3px solid #e8a87c; border-radius: 6px; padding: 10px 13px; margin: 7px 0; font-size: 13px; }
+
+  .hist { background: #fff; border: 1px solid #eee9e2; border-radius: 11px; padding: 13px 15px; margin-bottom: 10px; }
+  .hist .t { font-size: 14.5px; font-weight: 600; color: #2c5f6f; }
+  .hist .m { font-size: 12px; color: #8c8478; margin: 2px 0 6px; }
+  .hist .ops a { color: #8c6a4f; font-size: 12.5px; text-decoration: underline; cursor: pointer; margin-right: 12px; }
+
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 90; }
+  .modal-bg.on { display: block; }
+  .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #fff; border-radius: 14px; padding: 24px 22px; width: min(540px, 94vw); max-height: 88vh; overflow-y: auto; z-index: 91; box-shadow: 0 10px 40px rgba(0,0,0,.22); }
+  .modal.on { display: block; }
+  .modal h4 { color: #2c5f6f; font-size: 16px; margin-bottom: 4px; }
+  .modal .note { font-size: 12px; color: #8c8478; margin-top: 10px; line-height: 1.7; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1c1917; color: #fff; padding: 10px 22px; border-radius: 20px; font-size: 13px; display: none; z-index: 99; }
+  footer { text-align: center; color: #b8b2a8; font-size: 12px; padding: 18px; }
+  .empty { text-align: center; color: #b8b2a8; font-size: 13px; padding: 30px 0; }
+  @media print { body { background:#fff; } .topnav, .no-print, footer { display: none !important; } .page { display: none; } .page.on { display: block; padding: 0; } .card { border: none; padding: 0; } }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🧭 Trip Compass</h1>
-  <div class="sub">告诉我目的地和时间,我来出方案、排行程、盯细节</div>
-</header>
+<div class="topnav"><div class="inner">
+  <span class="brand" onclick="go('home')">🧭 Trip Compass</span>
+  <span class="menu">
+    <button id="nav-home" class="on" onclick="go('home')">首页</button>
+    <button id="nav-planner" onclick="go('planner')">旅行规划</button>
+    <button id="nav-readiness" onclick="go('readiness')">就绪检查</button>
+    <button id="nav-preview" onclick="go('preview')">行程单</button>
+  </span>
+  <span class="right">
+    <span class="modelabel" id="modeLabel">离线模式</span>
+    <button onclick="openSettings()">⚙️ 设置</button>
+  </span>
+</div></div>
 
-<div class="mode-bar">
-  当前模式:<b id="modeLabel">离线规划(内置目的地)</b> · <a onclick="openSettings()">切换到 AI 模式 / 设置</a>
-</div>
-
-<div class="tabs">
-  <button id="tab-chat" class="on" onclick="switchTab('chat')">💬 规划对话</button>
-  <button id="tab-check" onclick="switchTab('check')">🛫 行前检查</button>
-  <button id="tab-trips" onclick="switchTab('trips')">🗂️ 历史/案例</button>
-  <button id="tab-preview" onclick="switchTab('preview')">📄 行程单</button>
-</div>
-
-<section id="pane-chat" class="pane on">
-<div id="chat"></div>
-
-<div id="inputBar">
-  <textarea id="userInput" placeholder="例:十一想去日本关西看红叶,大概 5 天,2 个人,想逛设计小店…"></textarea>
-  <div class="hint-chips">
-    <button onclick="fillInput('十一想去日本关西看红叶,5天左右,2人,自然为主+设计小店')">🍁 关西红叶 5 天</button>
-    <button onclick="fillInput('想去巴厘岛+双火山,10天左右,4个女生,想体验潜')">🌋 巴厘岛双火山</button>
-    <button onclick="fillInput('北京周边草原自驾两日,单人开车,单次别开太久')">🌾 草原自驾</button>
+<!-- 首页 -->
+<div id="page-home" class="page on">
+  <div class="hero">
+    <div class="logo">🧭</div>
+    <h1>Trip Compass</h1>
+    <div class="tag">说走就走,帮你排好</div>
+    <p>告诉我时间段和目的地,我出方案、排行程、盯就绪——零登录,数据只存你自己的浏览器。</p>
+    <button class="cta" onclick="go('planner')">开始规划 →</button>
   </div>
-  <div class="input-row">
-    <button class="btn ghost" onclick="saveTripToHistory()">💾 存入历史</button>
-    <button class="btn ghost" onclick="exportHTML()">📤 导出行程单</button>
-    <button class="btn" onclick="send()">发送 ➤</button>
-  </div>
-</div>
-</section>
-
-<!-- ═══ 行前检查 ═══ -->
-<section id="pane-check" class="pane">
-  <h2>🛫 行前检查 · 就绪度</h2>
-  <h3>倒计时时间线(该什么时候干什么)</h3>
-  <div id="tminus" style="margin-bottom:14px;"></div>
-  <div id="readyBar"></div>
-  <div id="checkList"></div>
-  <h3 style="margin-top:18px;">添加检查项</h3>
-  <div class="panel-form">
-    <div class="grid2">
-      <div><label>事项 *</label><input id="ckName" placeholder="例:越南电子签 ×2"></div>
-      <div><label>提前量</label>
-        <select id="ckLead"><option value="">选择…</option><option>T-30d 核对机票时刻</option><option>T-21d 签证提交(3–5工作日)</option><option>T-14d 酒店/快船(旺季)</option><option>T-7d 包车/潜水/船宿/保险</option><option>T-3d 打印证件/查天气与开放状态</option><option>T-1d 电子入境卡/现金/装备</option></select></div>
+  <div class="card">
+    <h2>🧭 四步搞定</h2><div class="sub">从想法到出发,一条龙</div>
+    <div class="phases">
+      <div><div class="num">01</div><div class="ic">💬</div><h3>说说去哪</h3><p>时间、目的地、偏好,一次说完</p></div>
+      <div><div class="num">02</div><div class="ic">📌</div><h3>挑方案</h3><p>2-3 版对比表,你拍板</p></div>
+      <div><div class="num">03</div><div class="ic">📅</div><h3>排行程</h3><p>逐日时间轴 + 五件套</p></div>
+      <div><div class="num">04</div><div class="ic">✅</div><h3>查就绪</h3><p>T-minus 扫必订项</p></div>
     </div>
+  </div>
+  <div class="card">
+    <h2>💡 为什么好用</h2><div class="sub">不硬塞方案,帮你做决定</div>
+    <div class="features">
+      <div><div class="ic">✨</div><h3>不替你决定</h3><p>关键选择给对比表,理由说清,你拍板</p></div>
+      <div><div class="ic">🗺️</div><h3>在途预警</h3><p>单日赶路超 6h 自动提醒</p></div>
+      <div><div class="ic">✈️</div><h3>航变重排</h3><p>航班变了?局部重排不推倒重来</p></div>
+      <div><div class="ic">⏰</div><h3>T-minus 盯守</h3><p>出发前自动扫必订项,该催的催</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>📦 排完给你什么</h2>
+    <div class="deliver"><span>📅 行程表</span><span>✈️ 交通</span><span>🏨 住宿</span><span>✅ 必订清单</span><span>📈 预算</span></div>
+  </div>
+  <div class="card">
+    <h2>📂 案例库</h2><div class="sub">点开案例,直接看完整行程</div>
+    <div class="case-row" id="homeCases"></div>
+  </div>
+</div>
+
+<!-- 旅行规划 -->
+<div id="page-planner" class="page">
+  <div class="pagehead"><h2>🗺️ 规划行程</h2></div>
+  <div id="pl-input">
+    <div class="card">
+      <h2>说说你的旅行想法</h2><div class="sub">填写越具体,方案越准</div>
+      <div class="grid2">
+        <div><label>什么时候去 <span class="req">*</span></label><input id="fDates" placeholder="例:11月15-19日"></div>
+        <div><label>想去哪 <span class="req">*</span></label><input id="fDest" placeholder="例:大阪 / 北海道"></div>
+      </div>
+      <div class="grid2">
+        <div><label>几个人</label><input id="fPeople" placeholder="例:2人,体力好,有驾照"></div>
+        <div><label>预算(人均)</label><input id="fBudget" placeholder="例:5K-8K RMB"></div>
+      </div>
+      <label>已订了啥(硬约束)</label><textarea id="fConstraints" rows="2" placeholder="例:已订京都酒店3晚,11/15大阪入港航班"></textarea>
+      <label>偏好</label><textarea id="fPrefs" rows="2" placeholder="例:红叶必看,温泉随意,不想太赶"></textarea>
+      <label>签证</label><input id="fVisa" placeholder="例:日本三年签有效,护照2028年到期">
+      <div style="height:16px;"></div>
+      <button class="btn big" onclick="handleCompare()">帮我出方案 ➤</button>
+    </div>
+    <div class="card"><h2>🗂️ 历史行程</h2><div id="plHist"></div></div>
+  </div>
+  <div id="pl-compare" style="display:none;">
+    <div class="pagehead"><button class="back" onclick="plBack('input')">← 改需求</button><h2>挑方案</h2></div>
+    <div id="compareBody"></div>
+    <div class="pickbox">
+      <div class="q">看中哪个?选了再细化</div>
+      <div class="s">选错了也没关系,后面随时改</div>
+      <button class="btn" onclick="handleDetail('方案A')">✓ 方案 A</button>
+      <button class="btn outline" onclick="handleDetail('方案B')">✓ 方案 B</button>
+      <button class="btn outline" onclick="handleDetail('方案C')">✓ 方案 C</button>
+    </div>
+  </div>
+  <div id="pl-detail" style="display:none;">
+    <div class="pagehead"><button class="back" onclick="plBack('compare')">← 回对比</button><h2>行程出炉</h2></div>
+    <div id="detailBody"></div>
+    <div class="card" style="background:#f2f7f4;">
+      <h2>✨ 接下来</h2>
+      <p style="font-size:13.5px;color:#57534e;margin:8px 0 14px;">行程可以继续调整;满意了去做就绪检查,或看行程单。</p>
+      <button class="btn" onclick="go('readiness')">⏰ 就绪检查</button>
+      <button class="btn outline" onclick="go('preview')">📄 预览行程单</button>
+      <button class="btn outline" onclick="saveCurrent()">💾 存入历史</button>
+    </div>
+  </div>
+</div>
+
+<!-- 就绪检查 -->
+<div id="page-readiness" class="page">
+  <div class="pagehead"><h2>🛫 就绪检查</h2></div>
+  <div class="card">
+    <h2>倒计时时间线</h2><div class="sub">该什么时候干什么</div>
+    <div class="tm-line" id="tmLine"></div>
+    <div class="ready-bar"><div class="ready-fill" id="readyFill" style="width:10%;">就绪度 0%(0/0)</div></div>
+    <div id="ckList"></div>
+    <div class="sec-title">添加检查项</div>
+    <div class="grid2">
+      <div><label>事项</label><input id="ckName" placeholder="例:签证提交"></div>
+      <div><label>提前量</label>
+        <select id="ckLead"><option value="">选择…</option><option>T-30 核对机票时刻</option><option>T-21 签证提交(3-5工作日)</option><option>T-14 酒店/船票(旺季)</option><option>T-7 包车/体验/保险</option><option>T-3 打印证件/查天气</option><option>T-1 入境卡/现金/装备</option></select></div>
+    </div>
+    <div style="height:12px;"></div>
     <button class="btn" onclick="addCheck()">加入 ✅</button>
   </div>
-  <h3>⚠️ 风险提示(当前行程)</h3>
-  <div id="riskList"></div>
-</section>
-
-<!-- ═══ 历史行程 ═══ -->
-<section id="pane-trips" class="pane">
-  <h2>🗂️ 历史行程</h2>
-  <div id="historyList"></div>
-  <h2 style="margin-top:22px;">📖 案例库(点开直接看完整五件套)</h2>
-  <div id="caseList"></div>
-  <button class="btn ghost" onclick="exportHistoryJSON()">📤 导出全部数据(JSON)</button>
-  <button class="btn ghost" onclick="document.getElementById('impFile').click()">📥 导入数据</button>
-  <input type="file" id="impFile" accept=".json" style="display:none" onchange="importHistoryJSON(this)">
-</section>
-
-<!-- ═══ 行程单预览 ═══ -->
-<section id="pane-preview" class="pane">
-  <div class="preview-actions" style="text-align:right;margin-bottom:10px;">
-    <button class="btn ghost" onclick="window.print()">🖨️ 打印 / 存 PDF</button>
-    <button class="btn" onclick="exportHTML()">📤 导出单文件 HTML</button>
+  <div class="card">
+    <h2>⚠️ 风险提示</h2><div class="sub">按当前行程自动生成</div>
+    <div id="riskList"></div>
   </div>
-  <div id="previewBody"></div>
-</section>
+</div>
 
-<!-- 设置弹层 -->
+<!-- 行程单 -->
+<div id="page-preview" class="page">
+  <div class="pagehead">
+    <h2>📄 行程单</h2>
+    <span class="no-print" style="float:right;">
+      <button class="btn outline sm" onclick="window.print()">🖨️ 打印/存PDF</button>
+      <button class="btn sm" onclick="exportHTML()">📤 导出 HTML</button>
+    </span>
+  </div>
+  <div id="pvBody"></div>
+</div>
+
+<!-- 设置 -->
 <div class="modal-bg" id="modalBg" onclick="closeModal()"></div>
 <div class="modal" id="modal">
   <h4>⚙️ 模式与设置</h4>
   <label>规划模式</label>
   <select id="setMode">
-    <option value="offline">离线模式——内置目的地知识库(关西/巴厘岛/北京周边),无需任何配置</option>
-    <option value="ai">AI 模式——填入你自己的 API Key,任意目的地实时规划</option>
+    <option value="offline">离线模式——内置案例+规则引擎,零配置</option>
+    <option value="ai">AI 模式——填自己的 Key,任意目的地实时规划</option>
   </select>
   <label>AI 渠道</label>
   <select id="setProvider">
-    <option value="anthropic">Anthropic Claude(platform.claude.com,需国际网络)</option>
-    <option value="deepseek">DeepSeek(国内直连,注册送额度,推荐)</option>
+    <option value="deepseek">DeepSeek(国内直连,推荐)</option>
     <option value="zhipu">智谱 GLM(国内直连)</option>
     <option value="moonshot">Kimi 月之暗面(国内直连)</option>
+    <option value="anthropic">Anthropic Claude(需国际网络)</option>
     <option value="custom">自定义 OpenAI 兼容端点</option>
   </select>
-  <label>API Key</label>
-  <input id="setKey" type="password" placeholder="渠道对应的 Key(sk-... / 通用)">
-  <label>模型名(自定义渠道必填,其他渠道有默认)</label>
-  <input id="setModelInput" placeholder="例:deepseek-chat / glm-4.6 / kimi-latest / 你渠道的模型名">
-  <label>Base URL(仅自定义渠道需要)</label>
-  <input id="setBase" placeholder="例:https://api.example.com/v1">
-  <div class="note">· Key 只存在<b>你自己的浏览器</b>里(localStorage),不上传任何服务器<br>· 国内渠道(DeepSeek/智谱/Kimi)注册即送额度,<b>无需国际网络</b><br>· AI 模式下页面仍保持纯静态,消息直发对应 API</div>
-  <div style="margin-top:14px;">
-    <button class="btn" onclick="saveSettings()">保存</button>
-    <button class="btn ghost" onclick="closeModal()">取消</button>
-  </div>
+  <label>API Key</label><input id="setKey" type="password" placeholder="渠道对应的 Key">
+  <label>模型名(留空用渠道默认)</label><input id="setModelInput" placeholder="例:deepseek-chat / glm-4.6">
+  <label>Base URL(仅自定义渠道)</label><input id="setBase" placeholder="例:https://api.example.com/v1">
+  <div class="note">· Key 只存在<b>你自己的浏览器</b>(localStorage),不上传任何服务器<br>· 国内渠道注册即用,无需国际网络<br>· DeepSeek 需充值后可用(10 元够很久)</div>
+  <div style="height:14px;"></div>
+  <button class="btn" onclick="saveSettings()">保存</button>
+  <button class="btn outline" onclick="closeModal()">取消</button>
 </div>
 
 <div class="toast" id="toast"></div>
 <footer>Trip Compass · <a href="https://github.com/SharonYi/travel-planner" target="_blank" style="color:#8c6a4f;">GitHub 开源</a> · 数据仅存本地浏览器</footer>
 
 <script>
-// ══════════ 状态 ══════════
-var LS_MODE = 'tripCompass.mode', LS_KEY = 'tripCompass.key', LS_MODEL = 'tripCompass.model';
-var LS_PROVIDER = 'tripCompass.provider', LS_BASE = 'tripCompass.base';
-function lsGet(k, d) { try { return localStorage.getItem(k) || d; } catch(e) { return d; } }
-var mode = lsGet(LS_MODE, 'offline');
-var apiKey = lsGet(LS_KEY, '');
-var model = lsGet(LS_MODEL, '');
-var provider = lsGet(LS_PROVIDER, 'anthropic');
-var baseUrl = lsGet(LS_BASE, '');
-// 各渠道默认 base-url 与模型名
-var PROVIDERS = {
-  anthropic: { url: 'https://api.anthropic.com', model: 'claude-sonnet-4-6', label: 'Anthropic Claude', anthropic: true },
-  deepseek:  { url: 'https://api.deepseek.com/v1', model: 'deepseek-chat', label: 'DeepSeek' },
-  zhipu:     { url: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4.6', label: '智谱 GLM' },
-  moonshot:  { url: 'https://api.moonshot.cn/v1', model: 'kimi-latest', label: 'Kimi' },
-  custom:    { url: '', model: '', label: '自定义' }
-};
-function curModel() { return model || (PROVIDERS[provider] ? PROVIDERS[provider].model : ''); }
-function curLabel() { var pr = PROVIDERS[provider] || PROVIDERS.anthropic; return pr.label; }
-var state = null;          // {dest, days, people, prefs, phase: candidates|chosen|refined, plan[], chosenV, history[]}
-var busy = false;
-
-function toast(m) { var t = document.getElementById('toast'); t.textContent = m; t.style.display='block'; setTimeout(function(){ t.style.display='none'; }, 2400); }
+// ══════════ 工具 ══════════
+function $(id) { return document.getElementById(id); }
+function toast(m) { var t=$('toast'); t.textContent=m; t.style.display='block'; setTimeout(function(){t.style.display='none';},2400); }
 function esc(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function fillInput(t) { document.getElementById('userInput').value = t; document.getElementById('userInput').focus(); }
 
-// ══════════ 轻量 Markdown 渲染(表格/标题/列表/粗体/代码) ══════════
-function mdToHtml(md) {
-  var lines = String(md||'').split('\n');
-  var html = [], i = 0, inTable = false, tableBuf = [];
-  function flushTable() {
-    if (!tableBuf.length) return;
-    var rows = tableBuf.filter(function(r){ return !/^\|?[\s:-]+\|/.test(r.replace(/[-: ]/g,'')) || true; });
-    // 过滤分隔行
-    var real = tableBuf.filter(function(r){ return !/^\|?\s*:?-{2,}/.test(r); });
-    var out = '<table>';
-    real.forEach(function(r, ri){
-      var cells = r.replace(/^\||\|$/g,'').split('|').map(function(c){ return c.trim(); });
-      var tag = (ri===0) ? 'th' : 'td';
-      out += '<tr>' + cells.map(function(c){ return '<'+tag+'>'+inlineMd(c)+'</'+tag+'>'; }).join('') + '</tr>';
-    });
-    out += '</table>';
-    html.push(out); tableBuf = [];
-  }
-  function inlineMd(t) {
-    return esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
-      .replace(/^✓/, '<span style="color:#15803d;font-weight:700;">✓</span>')
-      .replace(/(尽快订|待退)/g, '<span style="color:#c2410c;font-weight:600;">$1</span>')
-      .replace(/(建议预订)/g, '<span style="color:#b45309;font-weight:600;">$1</span>');
-  }
-  for (; i<lines.length; i++) {
-    var line = lines[i];
-    if (/^\s*\|/.test(line)) { inTable = true; tableBuf.push(line); continue; }
-    if (inTable) { flushTable(); inTable = false; }
-    if (/^##\s+/.test(line)) html.push('<p style="font-weight:700;color:#2c5f6f;font-size:15px;margin:14px 0 6px;">'+inlineMd(line.replace(/^##\s+/,''))+'</p>');
-    else if (/^#\s+/.test(line)) html.push('<p style="font-weight:700;font-size:16px;margin:14px 0 8px;">'+inlineMd(line.replace(/^#\s+/,''))+'</p>');
-    else if (/^[-*]\s+/.test(line)) html.push('<div style="padding-left:14px;margin:3px 0;">· '+inlineMd(line.replace(/^[-*]\s+/,''))+'</div>');
-    else if (/^>\s?/.test(line)) html.push('<div style="border-left:3px solid #e8a87c;padding:4px 10px;color:#6b7280;margin:6px 0;">'+inlineMd(line.replace(/^>\s?/,''))+'</div>');
-    else if (line.trim()==='') html.push('');
-    else html.push('<p>'+inlineMd(line)+'</p>');
-  }
-  if (inTable) flushTable();
-  return html.join('\n');
-}
-
-function addMsg(who, html) {
-  var chat = document.getElementById('chat');
-  var d = document.createElement('div');
-  d.className = 'msg ' + who;
-  d.innerHTML = '<div class="who">' + (who==='user'?'👤 你':'🧭 Trip Compass') + '</div><div class="bubble">' + html + '</div>';
-  chat.appendChild(d);
-  window.scrollTo(0, document.body.scrollHeight);
-  return d;
-}
-function addTyping() {
-  var chat = document.getElementById('chat');
-  var d = document.createElement('div');
-  d.className = 'msg ai';
-  d.innerHTML = '<div class="who">🧭 Trip Compass</div><div class="bubble"><span class="typing">正在规划…(本地引擎)</span></div>';
-  chat.appendChild(d);
-  window.scrollTo(0, document.body.scrollHeight);
-  return d;
-}
-
-// ══════════ 离线知识库 ══════════
-// 每个目的地:关键词匹配、候选方案生成器(沿用真实案例的方法论)
-var LIB = [
-  {
-    keys: ['关西','京都','大阪','日本','红叶','岚山','奈良'],
-    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
-    intro: '关西红叶窗口:峰期 11 月中下旬(人多+贵),**前中期(11 月上中旬)体验最佳**。',
-    variants: [
-      { name:'V1 · 京都深度', dist:'京都3晚+大阪2晚', hl:'岚山+东福寺+永观堂+鞍马贵船,红叶满配', hotel:'换1次', cost:'4500–6500', why:'红叶季的京都=目的地本身;你的自然+小店偏好它三者全占' },
-      { name:'V2 · 京都+奈良', dist:'京都2.5+奈良0.5+大阪2', hl:'京都略减+小鹿+春日大社秋色', hotel:'换1次', cost:'4500–6500', why:'有「看鹿」执念时选;代价是挤掉一处京都红叶名所' },
-      { name:'V3 · 京都+神户', dist:'京都2+神户1+大阪2', hl:'京都砍贵船线+六甲山红叶+有马温泉', hotel:'换2次', cost:'5000–7000', why:'想泡温泉选;代价是多搬一次酒店' }
-    ],
-    plan: [
-      {t:'抵达→京都东山', acts:[['flight','落地 KIX'],['transit','HARUKA 75min'],['relax','只园白川夜散步']], hotel:'京都站南', trans:'HARUKA ~¥2900'},
-      {t:'岚山一整天', acts:[['nature','竹林(8点前)+天龙寺+常寂光寺'],['activity','保津川小火车'],['relax','鸭川晚餐']], hotel:'京都站南', trans:'JR 嵯峨野线'},
-      {t:'东福寺—伏见—永观堂', acts:[['nature','东福寺通天桥(开园即入)'],['nature','伏见稻荷千本鸟居'],['nature','永观堂+南禅寺夜枫']], hotel:'京都站南', trans:'JR+巴士'},
-      {t:'鞍马→贵船→大阪', acts:[['nature','叡电红叶隧道+鞍马徒步2h'],['activity','川床錦秋床午餐'],['relax','梅田夜景+中崎町小店']], hotel:'梅田', trans:'叡电+JR'},
-      {t:'大阪设计小店日', acts:[['activity','中崎町深度+堀江'],['relax','难波公园/大阪城红叶'],['flight','南海 Rapi:t 赴 KIX']], hotel:'', trans:'南海 Rapi:t ~¥1450'}
-    ]
-  },
-  {
-    keys: ['巴厘岛','bali','火山','布罗莫','bromo','sewu','印尼'],
-    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
-    intro: '巴厘岛+双火山:旱季(4–10月)最佳;瀑布+火山+海岛的经典三段式。',
-    variants: [
-      { name:'V1 · 双火山+佩妮达', dist:'Safari+Sewu+Bromo 3天+巴厘岛 6天', hl:'瀑布+火山日出+悬崖海景+体验潜', hotel:'多次', cost:'7000–10000', why:'打卡最全;体力要求高(两晚凌晨起)' },
-      { name:'V2 · 纯巴厘岛', dist:'Sanur 3+图蓝本潜水+Amed+乌布', hl:'跳过爪哇火山,纯海岛度假', hotel:'3次', cost:'5000–7000', why:'不想起夜赶路选这个;节奏舒服' },
-      { name:'V3 · 双火山+科莫多', dist:'火山2天+飞Labuan Bajo船宿2天', hl:'加科莫多龙+Manta 浮潜', hotel:'多次', cost:'9000–13000', why:'有潜水证选;无证不划算' }
-    ],
-    plan: [
-      {t:'Safari+进山', acts:[['activity','Prigen Safari Park'],['transit','车程5h'],['relax','Semeru 山脚民宿']], hotel:'山脚', trans:'包车'},
-      {t:'Tumpak Sewu→Bromo', acts:[['nature','Sewu 瀑布下峡谷2h'],['transit','经 Malang 上山3h']], hotel:'Bromo 火山村', trans:'包车'},
-      {t:'Bromo 日出→飞巴厘岛', acts:[['nature','凌晨2点起·日出+火山口'],['flight','午后赴 SUB→DPS'],['relax','库塔入住']], hotel:'库塔', trans:'包车+航班'},
-      {t:'佩妮达西线', acts:[['transit','快船40min'],['nature','Kelingking+Broken Beach 日落']], hotel:'岛上', trans:'快船+皮卡'},
-      {t:'佩妮达东线+浮潜', acts:[['nature','Diamond Beach'],['activity','浮潜 Manta Point']], hotel:'Sanur', trans:'快船'},
-      {t:'图蓝本体验潜', acts:[['activity','DSD 自由号沉船(岸潜)'],['relax','Amed 海边日落']], hotel:'Amed', trans:'包车'},
-      {t:'水宫+梯田→乌布', acts:[['nature','Tirta Gangga+Tegalalang'],['relax','乌布市场+SPA']], hotel:'乌布', trans:'包车'},
-      {t:'南部悬崖+海鲜', acts:[['nature','海神庙+Uluwatu'],['activity','黄昏 Kecak 舞'],['relax','Jimbaran 海鲜']], hotel:'Seminyak', trans:'包车'}
-    ]
-  },
-  {
-    keys: ['草原','坝上','张北','承德','北京周边','自驾','雾灵山','天路'],
-    match: function(t) { return this.keys.some(function(k){ return t.indexOf(k)>-1; }); },
-    intro: '北京周边草原:7–8月草最绿;看红叶则是 9 月下–10 月中(雾灵山/坝上)。',
-    variants: [
-      { name:'V1 · 张北草原天路', dist:'周五晚出发中途住+周六天路+周日回', hl:'全程高速,单次驾驶≤2h', hotel:'中途+张北', cost:'1000–1500', why:'单人驾驶友好;8月正季' },
-      { name:'V2 · 承德+坝上环线', dist:'周五晚直达承德+周六坝上+周日回', hl:'避暑山庄+京北第一草原', hotel:'承德+坝上蒙古包', cost:'1200–1800', why:'天气不稳时的稳妥选择(承德方向晴天率高)' },
-      { name:'V3 · 雾灵山红叶', dist:'周六主峰+民宿过夜+周日晨雾日出', hl:'华北秋色天花板(10月中)', hotel:'山下民宿/阿那亚', cost:'800–1500', why:'秋季专属;11月中旬后封山' }
-    ],
-    plan: [
-      {t:'出发日', acts:[['transit','京藏/京承高速'],['relax','中途镇晚餐休整']], hotel:'中途镇', trans:'自驾 1.5–2h'},
-      {t:'主景区日', acts:[['nature','核心景观(早到避人流)'],['activity','骑马/徒步/拍照'],['relax','日落']], hotel:'景区附近', trans:'自驾+索道'},
-      {t:'返程日', acts:[['nature','晨雾/日出(可选早场)'],['transit','返程']], hotel:'', trans:'自驾 2–4h'}
-    ]
-  }
-];
-
-function matchLib(text) {
-  for (var i=0;i<LIB.length;i++) if (LIB[i].match(text)) return LIB[i];
-  return null;
-}
-
-// ══════════ 意图解析(轻量) ══════════
-function parseReq(text) {
-  var days = (text.match(/(\d+)\s*天/) || [0,0])[1];
-  var people = (text.match(/(\d+)\s*(个人|人|个女生|个男生)/) || [0,0])[1];
-  return { days: +days || 0, people: +people || 0, raw: text };
-}
-
-// ══════════ 对话流 ══════════
-function send() {
-  if (busy) { toast('它在想,稍等~'); return; }
-  var text = document.getElementById('userInput').value.trim();
-  if (!text) { toast('说点什么吧'); return; }
-  if (mode === 'ai' && !apiKey) {
-    // 前置拦截:切了 AI 模式但没 Key,直接指引进设置,不再发出必败请求
-    addMsg('ai', '<p>当前是 <b>AI 模式</b>,但还没填 Claude API Key——发出去只会失败,先补上:</p>' +
-      '<button class="choice-btn" onclick="openSettings()"><b>⚙️ 打开设置,填入 API Key</b><br><span style="font-size:12px;color:#6b7280;">在 console.anthropic.com 申请;Key 只存你的浏览器</span></button>' +
-      '<button class="choice-btn" onclick="fillInput(document.getElementById(\'userInput\').value||\'十一想去关西看红叶,5天,2人\')"><b>先用离线模式</b><br><span style="font-size:12px;color:#6b7280;">关西/巴厘岛/北京草原,无需任何配置</span></button>');
-    return;
-  }
-  document.getElementById('userInput').value = '';
-  addMsg('user', esc(text));
-  busy = true;
-  if (mode === 'ai' && apiKey) { aiSend(text); }
-  else { setTimeout(function(){ offlineReply(text); }, 500); }
-}
-
-function offlineReply(text) {
-  var t = addTyping();
-  setTimeout(function() {
-    t.remove();
-    if (!state) {
-      // 第一轮:解析需求 → 匹配知识库 → 候选方案
-      var lib = matchLib(text);
-      var req = parseReq(text);
-      if (!lib) {
-        addMsg('ai', '<p>这个目的地我(离线模式)还没学过 🌱</p><p>两个选择:</p>' +
-          '<button class="choice-btn" onclick="openSettings()"><b>① 切到 AI 模式</b>——填你自己的 Claude API Key,任意目的地都能规划</button>' +
-          '<button class="choice-btn" onclick="fillInput(\'十一想去日本关西看红羊,5天左右,2人,自然为主+设计小店\')"><b>② 试试内置的</b>——关西红叶 / 巴厘岛双火山 / 北京草原自驾</button>');
-        busy = false; return;
-      }
-      state = { lib: lib, days: req.days || 5, people: req.people || 2, raw: text, phase: 'candidates', plan: null };
-      renderCandidates();
-    } else if (state.phase === 'candidates') {
-      // 候选阶段的反馈:重新对比/换条件
-      var v = matchChoice(text);
-      if (v) { chooseVariant(v); }
-      else {
-        state.raw += ' ' + text;
-        addMsg('ai', '<p>收到你的补充 ✍️ 我重新对比一下——</p>');
-        renderCandidates(true);
-      }
-    } else if (state.phase === 'chosen' || state.phase === 'refined') {
-      refine(text);
-    }
-    busy = false;
-  }, 700);
-}
-
-function matchChoice(text) {
-  if (/V?[123]/.test(text)) {
-    var m = text.match(/V?([123])/);
-    if (m) { var idx = +m[1]-1; if (state.lib.variants[idx]) return state.lib.variants[idx]; }
-  }
-  if (text.indexOf('京都深度')>-1) return state.lib.variants[0];
-  if (text.indexOf('奈良')>-1) return state.lib.variants[1];
-  if (text.indexOf('神户')>-1) return state.lib.variants[2];
-  return null;
-}
-
-function segHtml(s) {
-  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
-  return '<span class="seg" style="background:' + colors[s[0]] + ';">' + esc(s[1]) + '</span>';
-}
-
-function renderCandidates(isRerender) {
-  var lib = state.lib;
-  var rows = lib.variants.map(function(v, i){
-    return '<tr><td><b>V'+(i+1)+'</b></td><td>'+esc(v.name.replace(/^V\d · /,''))+'</td><td>'+esc(v.dist)+'</td><td>'+esc(v.hl)+'</td><td>'+esc(v.hotel)+'</td><td>'+esc(v.cost)+'</td></tr>';
-  }).join('');
-  var btns = lib.variants.map(function(v, i){
-    return '<button class="choice-btn" onclick="chooseVariant(LIB['+libIdx(lib)+'].variants['+i+'])"><b>'+esc(v.name)+'</b><br><span style="font-size:12px;color:#6b7280;">'+esc(v.why)+'</span></button>';
-  }).join('');
-  addMsg('ai', (isRerender?'':'<p>'+lib.intro.replace(/\*\*/g,'')+'</p><p>按你的需求('+state.days+'天·'+state.people+'人),给你三版方案:</p>') +
-    '<table><tr><th></th><th>方案</th><th>分布</th><th>亮点</th><th>换酒店</th><th>人均¥</th></tr>'+rows+'</table>' +
-    '<p style="font-size:12px;color:#6b7280;">在下方回复「V1/V2/V3」选择,或继续提要求(例:想加奈良 / 少换酒店)</p>' + btns);
-}
-function libIdx(lib) { for (var i=0;i<LIB.length;i++) if (LIB[i]===lib) return i; return 0; }
-
-function chooseVariant(v) {
-  state.phase = 'chosen';
-  state.chosenV = v;
-  var lib = state.lib;
-  // 按 v 的分布截取/适配 plan
-  state.plan = lib.plan.slice(0, Math.min(state.days, lib.plan.length));
-  addMsg('ai', '<p>好选择 ✨ <b>'+esc(v.name)+'</b></p><p>下面是逐日细化,你可以直接反馈修改(例:D2 太赶 / 想加 XX / 换掉 XX):</p>' + planHtml());
-}
-
-function planHtml() {
-  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
-  return state.plan.map(function(d, i){
-    var segs = d.acts.map(function(s){ return '<span class="seg" style="background:'+colors[s[0]]+';">'+esc(s[1])+'</span>'; }).join(' ');
-    return '<div class="day-h">D'+(i+1)+' · '+esc(d.t)+'</div><div>'+segs+'</div>' +
-      (d.hotel?'<div style="font-size:12px;color:#6b7280;">🏨 '+esc(d.hotel)+(d.trans?' · 🚃 '+esc(d.trans):'')+'</div>':'');
-  }).join('') + '<div style="font-size:11.5px;color:#8a9ba8;margin-top:6px;"><span class="seg" style="background:#5b8c5a">自然</span><span class="seg" style="background:#2c5f6f">活动</span><span class="seg" style="background:#d4a76a">休闲</span><span class="seg" style="background:#8a9ba8">在途</span><span class="seg" style="background:#b0578d">飞行</span></div>';
-}
-
-function refine(text) {
-  var t = addTyping();
-  setTimeout(function() {
-    t.remove();
-    state.phase = 'refined';
-    // 轻量规则:常见反馈就地改
-    var changed = [];
-    if (/太赶|太累|松一点|放松/.test(text)) {
-      // 砍掉最后一个纯活动日的内容密度
-      var last = state.plan[state.plan.length-1];
-      if (last) { last.acts = last.acts.slice(0,2); changed.push('已给最后一天减负'); }
-    }
-    if (/加一天|多一天/.test(text) && state.plan.length < 10) {
-      state.plan.push({t:'机动日', acts:[['relax','自由安排/补漏']], hotel:'', trans:''});
-      changed.push('已加一天机动日');
-    }
-    if (/早一点|日出|早起/.test(text)) changed.push('提醒:D1 起记得调作息,早场点位提前 1h 到');
-    if (/预算|多少钱/.test(text)) changed.push('预算参考:本方案 '+state.chosenV.cost+' RMB/人(不含国际机票)');
-    var msg = changed.length ? '<p>收到 ✍️ '+changed.join(';')+'</p>' : '<p>收到你的反馈:「'+esc(text)+'」</p><p style="font-size:12.5px;color:#6b7280;">离线引擎的能力有限,这类调整我在 AI 模式下能做得更细。当前方案:</p>';
-    addMsg('ai', msg + planHtml() + '<p style="font-size:12px;color:#6b7280;margin-top:8px;">继续反馈可再改;满意了点下方「导出行程单」👇</p>');
-  }, 600);
-}
-
-// ══════════ AI 模式(直连 Anthropic,纯前端) ══════════
-var SYS_PROMPT = '你是个人旅行规划 Agent(Trip Compass)。用户给出时间段和候选目的地后,负责:确认目的地 → 规划行程 → 输出建议 → 出发前就绪度检查。\n\n' +
-'核心原则:\n' +
-'1. 简洁:每轮回复聚焦一个主题;表格优先于段落;不重复用户已知信息\n' +
-'2. 可靠来源:签证/票价/开放状态等事实信息标注来源与查询日期;不确定就明说\n' +
-'3. 硬约束优先:已订的机票/酒店/包车是不可变量,先提取再规划;用户只给单一约束时(如"单人驾驶"),把它转成全行程的结构性参数\n' +
-'4. 不替用户决定:关键分歧给2-3版方案+量化对比表,可推荐但让用户拍板\n' +
-'5. 诚实反馈优于硬排:方案物理不可行时直说并给可行性边界,不硬塞时间表\n\n' +
-'在途时间是第一决策指标:单日纯在途>6h要主动预警。\n' +
-'价格双标:当地货币 + RMB 约值。时间用 D1/D2 相对日。\n' +
-'状态用彩色语义:✓已订(绿)/ 建议预订(橙)/ 尽快订(红橙)/ 待退。\n\n' +
-'两阶段输出规范:\n' +
-'第一阶段(用户刚给需求):输出「方案对比」——Markdown 表格(方案|路线|强度|累计在途|体验覆盖|成本人均|风险),附推荐及一句理由(回扣用户偏好)。\n' +
-'第二阶段(用户选定后):输出「五件套」——①每日行程表(D+|路线|时间轴到小时|交通方式|住宿,季节性加红叶/樱花指数列)②交通汇总(方式/价格/预订要点,包车vs打车vs公交边界)③住宿清单(按晚数,已订标名,未订给2-3候选分档)④必订清单+状态(✓已订/建议预订/尽快订/待退+提前量)⑤人均预算+装备证件清单。有备选分支写成"什么条件下选它"。\n\n' +
-'回复用 Markdown 格式(## 标题、表格),保持标题和表格前后换行。';
-
-function aiSend(text) {
-  var t = addTyping();
-  t.querySelector('.typing').textContent = '正在规划…(AI 模式 · ' + curLabel() + ')';
-  var history = JSON.parse(lsGet('tripCompass.chatHistory', '[]'));
-  history.push({role:'user', content:text});
-  var isAnthropic = provider === 'anthropic';
-  var url, headers, body;
-  if (isAnthropic) {
-    url = 'https://api.anthropic.com/v1/messages';
-    headers = { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' };
-    body = JSON.stringify({ model: curModel(), max_tokens: 3000, system: SYS_PROMPT, messages: history.slice(-12) });
-  } else {
-    var base = baseUrl || PROVIDERS[provider].url;
-    if (!base) { t.remove(); addMsg('ai', '<p>自定义渠道需要填 Base URL(设置里)</p>'); busy=false; return; }
-    url = base.replace(/\/$/, '') + '/chat/completions';
-    headers = { 'content-type': 'application/json', 'authorization': 'Bearer ' + apiKey };
-    body = JSON.stringify({ model: curModel(), max_tokens: 3000,
-      messages: [{role:'system', content: SYS_PROMPT}].concat(history.slice(-12).map(function(m){
-        return { role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content };
-      })) });
-  }
-  fetch(url, { method:'POST', headers: headers, body: body })
-  .then(function(r) {
-    if (!r.ok) return r.text().then(function(tx){ throw new Error('HTTP ' + r.status + (tx ? ' · ' + tx.slice(0,120) : '')); });
-    return r.json();
-  }).then(function(data) {
-    t.remove();
-    var raw;
-    if (isAnthropic) {
-      raw = (data.content && data.content[0] && data.content[0].text) || '(空回复)';
-    } else {
-      raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(空回复)';
-    }
-    var html = mdToHtml(raw);
-    var m = raw.match(/<plan>([\s\S]*?)<\/plan>/);
-    if (m) {
-      try { state = { phase:'refined', plan: JSON.parse(m[1]) }; } catch(e) {}
-      raw = raw.replace(/<plan>[\s\S]*?<\/plan>/, '');
-      html = mdToHtml(raw);
-    }
-    addMsg('ai', html);
-    history.push({role:'assistant', content: raw});
-    localStorage.setItem('tripCompass.chatHistory', JSON.stringify(history.slice(-12)));
-    busy = false;
-  }).catch(function(e) {
-    t.remove();
-    var hint = '';
-    if (/HTTP 402/.test(e.message)) hint = '账户余额不足——去 DeepSeek 平台充值(10 元够用很久,规划一次约 1–5 分钱)';
-    else if (/HTTP 401|403/.test(e.message)) hint = 'Key 无效或没权限——检查渠道对应的 Key 是否填对';
-    else if (/HTTP 404/.test(e.message)) hint = '模型名或 Base URL 可能不对——DeepSeek 填 deepseek-chat,智谱填 glm-4.6';
-    else if (/Failed to fetch|NetworkError/i.test(e.message)) hint = '网络不通——国内渠道(DeepSeek/智谱/Kimi)无需国际网络;Anthropic 需要能访问国际站点';
-    addMsg('ai', '<p>AI 调用失败:'+esc(e.message)+'</p>' + (hint?'<p style="font-size:12.5px;color:#6b7280;">'+hint+'</p>':'') + '<p style="font-size:12.5px;color:#6b7280;">可在设置里换渠道,或先用离线模式。</p>');
-    history.pop();
-    busy = false;
+// ══════════ 路由 ══════════
+function go(name) {
+  ['home','planner','readiness','preview'].forEach(function(n){
+    var pg = $('page-'+n), nv = $('nav-'+n);
+    if (pg) pg.className = 'page' + (n===name ? ' on' : '');
+    if (nv) nv.className = n===name ? 'on' : '';
   });
+  if (name==='readiness') renderReadiness();
+  if (name==='preview') renderPreview();
+  if (name==='planner') renderPlHist();
+  window.scrollTo(0,0);
+}
+function plBack(to) {
+  ['input','compare','detail'].forEach(function(s){ $('pl-'+s).style.display = 'none'; });
+  $('pl-'+to).style.display = 'block';
 }
 
-// ══════════ 导出行程单 ══════════
-function exportHTML() {
-  if (!state || !state.plan || !state.plan.length) { toast('还没有行程,先聊出一个来 🧭'); return; }
-  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
-  var rows = state.plan.map(function(d, i){
-    var segs = d.acts.map(function(s){ return '<span style="display:inline-block;padding:2px 7px;border-radius:4px;margin:1px 3px 1px 0;font-size:11px;color:#fff;background:'+colors[s[0]]+';">'+esc(s[1])+'</span>'; }).join('');
-    return '<tr><td><b>D'+(i+1)+'</b></td><td>'+esc(d.t||'')+'</td><td>'+segs+'</td><td style="font-size:12px;">'+esc(d.trans||'')+'</td><td style="font-size:12px;">'+esc(d.hotel||'')+'</td></tr>';
-  }).join('');
-  var html = '<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>行程单</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC",sans-serif;background:#f7f4ef;color:#2d3436;line-height:1.7;padding:12px;max-width:1000px;margin:0 auto}header{text-align:center;padding:22px 16px;background:#2c5f6f;color:#fff;border-radius:12px;margin-bottom:14px}h2{font-size:16px;color:#2c5f6f;margin:14px 0 8px}table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:10px}th{background:#2c5f6f;color:#fff;padding:7px 9px;text-align:left}td{padding:7px 9px;border-bottom:1px solid #e0d9cf;vertical-align:top}@media print{body{padding:0}}</style></head><body>' +
-    '<header><h1 style="font-size:19px;">'+esc(state.lib ? state.lib.keys[0] : '行程')+(state.chosenV?' · '+esc(state.chosenV.name):'')+'</h1><div style="font-size:12.5px;opacity:.9;margin-top:4px;">'+state.days+' 天 · '+state.people+' 人</div></header>' +
-    '<h2>📅 逐日行程</h2><table><tr><th>日</th><th>主题</th><th>安排</th><th>交通</th><th>住宿</th></tr>'+rows+'</table>' +
-    '<p style="text-align:center;color:#b8a89a;font-size:11px;margin-top:14px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</p></body></html>';
-  var blob = new Blob([html], {type:'text/html'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = '行程单.html';
-  a.click(); URL.revokeObjectURL(a.href);
-  toast('行程单已导出 📤');
-}
-
-// ══════════ 设置 ══════════
+// ══════════ 配置 ══════════
+var LS = { mode:'tc.mode', provider:'tc.provider', key:'tc.key', model:'tc.model', base:'tc.base' };
+function lsGet(k,d) { try { return localStorage.getItem(k) || d; } catch(e){ return d; } }
+var mode = lsGet(LS.mode,'offline'), provider = lsGet(LS.provider,'deepseek'),
+    apiKey = lsGet(LS.key,''), model = lsGet(LS.model,''), baseUrl = lsGet(LS.base,'');
+var PROVIDERS = {
+  deepseek:  { url:'https://api.deepseek.com/v1', model:'deepseek-chat', label:'DeepSeek' },
+  zhipu:     { url:'https://open.bigmodel.cn/api/paas/v4', model:'glm-4.6', label:'智谱' },
+  moonshot:  { url:'https://api.moonshot.cn/v1', model:'kimi-latest', label:'Kimi' },
+  anthropic: { url:'https://api.anthropic.com', model:'claude-sonnet-4-6', label:'Anthropic', anthropic:true },
+  custom:    { url:'', model:'', label:'自定义' }
+};
+function curModel() { return model || (PROVIDERS[provider]||{}).model || ''; }
+function curLabel() { return (PROVIDERS[provider]||{}).label || 'AI'; }
 function openSettings() {
-  document.getElementById('setMode').value = mode;
-  document.getElementById('setProvider').value = provider;
-  document.getElementById('setKey').value = apiKey;
-  document.getElementById('setModelInput').value = model;
-  document.getElementById('setBase').value = baseUrl;
-  document.getElementById('modalBg').className='modal-bg on';
-  document.getElementById('modal').className='modal on';
+  $('setMode').value=mode; $('setProvider').value=provider; $('setKey').value=apiKey;
+  $('setModelInput').value=model; $('setBase').value=baseUrl;
+  $('modalBg').className='modal-bg on'; $('modal').className='modal on';
 }
-function closeModal() { document.getElementById('modalBg').className='modal-bg'; document.getElementById('modal').className='modal'; }
+function closeModal() { $('modalBg').className='modal-bg'; $('modal').className='modal'; }
 function saveSettings() {
-  mode = document.getElementById('setMode').value;
-  provider = document.getElementById('setProvider').value;
-  apiKey = document.getElementById('setKey').value.trim();
-  model = document.getElementById('setModelInput').value.trim();
-  baseUrl = document.getElementById('setBase').value.trim();
-  localStorage.setItem(LS_MODE, mode);
-  localStorage.setItem(LS_PROVIDER, provider);
-  localStorage.setItem(LS_KEY, apiKey);
-  localStorage.setItem(LS_MODEL, model);
-  localStorage.setItem(LS_BASE, baseUrl);
-  document.getElementById('modeLabel').textContent = mode==='ai' ? ('AI 模式 · ' + curLabel()) : '离线规划(内置目的地)';
+  mode=$('setMode').value; provider=$('setProvider').value; apiKey=$('setKey').value.trim();
+  model=$('setModelInput').value.trim(); baseUrl=$('setBase').value.trim();
+  localStorage.setItem(LS.mode,mode); localStorage.setItem(LS.provider,provider);
+  localStorage.setItem(LS.key,apiKey); localStorage.setItem(LS.model,model); localStorage.setItem(LS.base,baseUrl);
+  $('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : '离线模式';
   closeModal(); toast('设置已保存 ⚙️');
 }
 
-// ══════════ Tab 切换 ══════════
-function switchTab(name) {
-  ['chat','check','trips','preview'].forEach(function(n){
-    var tb = document.getElementById('tab-'+n), pn = document.getElementById('pane-'+n);
-    if (tb) tb.className = (n===name) ? 'on' : '';
-    if (pn) pn.className = 'pane' + (n===name ? ' on' : '');
-  });
-  if (name==='check') renderCheck();
-  if (name==='preview') renderPreview();
-  if (name==='trips') renderHistory();
+// ══════════ Planner ══════════
+var SYS_PROMPT = '你是个人旅行规划 Agent(Trip Compass)。用户给出时间段和候选目的地后,负责:确认目的地 → 规划行程 → 输出建议 → 出发前就绪度检查。\n\n'+
+'核心原则:\n1. 简洁:每轮回复聚焦一个主题;表格优先于段落;不重复用户已知信息\n'+
+'2. 可靠来源:签证/票价/开放状态等事实信息标注来源与查询日期;不确定就明说\n'+
+'3. 硬约束优先:已订的机票/酒店/包车是不可变量,先提取再规划;用户只给单一约束时(如"单人驾驶"),把它转成全行程的结构性参数\n'+
+'4. 不替用户决定:关键分歧给2-3版方案+量化对比表,可推荐但让用户拍板\n'+
+'5. 诚实反馈优于硬排:方案物理不可行时直说并给可行性边界,不硬塞时间表\n\n'+
+'在途时间是第一决策指标:单日纯在途>6h要主动预警。\n价格双标:当地货币 + RMB 约值。时间用 D1/D2 相对日。\n'+
+'状态用彩色语义:✓已订(绿)/ 建议预订(橙)/ 尽快订(红橙)/ 待退。\n\n'+
+'两阶段输出规范:\n'+
+'第一阶段(用户刚给需求):输出「方案对比」——Markdown 表格(方案|路线|强度|累计在途|体验覆盖|成本人均|风险),附推荐及一句理由(回扣用户偏好)。\n'+
+'第二阶段(用户选定后):输出「五件套」——①每日行程表(D+|路线|时间轴到小时|交通方式|住宿,季节性加红叶/樱花指数列)②交通汇总(方式/价格/预订要点,包车vs打车vs公交边界)③住宿清单(按晚数,已订标名,未订给2-3候选分档)④必订清单+状态(✓已订/建议预订/尽快订/待退+提前量)⑤人均预算+装备证件清单。有备选分支写成"什么条件下选它"。\n\n'+
+'回复用规范 Markdown(## 标题、表格,标题和表格前后换行)。';
+
+var currentTrip = null;
+
+function formData() {
+  return { dates:$('fDates').value.trim(), dest:$('fDest').value.trim(), people:$('fPeople').value.trim(),
+    budget:$('fBudget').value.trim(), constraints:$('fConstraints').value.trim(),
+    prefs:$('fPrefs').value.trim(), visa:$('fVisa').value.trim() };
 }
 
-// ══════════ 行前检查 ══════════
-var LS_CHECK = 'tripCompass.checklist';
-function checks() { try { return JSON.parse(localStorage.getItem(LS_CHECK)) || []; } catch(e) { return []; } }
-function saveChecks(v) { localStorage.setItem(LS_CHECK, JSON.stringify(v)); }
-function addCheck() {
-  var n = document.getElementById('ckName').value.trim();
-  if (!n) { toast('事项要填哦'); return; }
-  var arr = checks(); arr.unshift({name:n, lead:document.getElementById('ckLead').value, status:'todo'});
-  saveChecks(arr);
-  document.getElementById('ckName').value='';
-  renderCheck(); toast('已加入检查清单 ✅');
+function handleCompare() {
+  var f = formData();
+  if (!f.dates || !f.dest) { toast('填一下时间和目的地吧~'); return; }
+  currentTrip = f;
+  plBack('compare');
+  if (mode==='ai' && apiKey) { aiPlan('compare', f); }
+  else { offlineCompare(f); }
 }
-function toggleCheck(i) { var arr=checks(); arr[i].status = arr[i].status==='done'?'todo':'done'; saveChecks(arr); renderCheck(); }
-function delCheck(i) { var arr=checks(); arr.splice(i,1); saveChecks(arr); renderCheck(); }
-function renderCheck() {
-  renderTminus();
-  var arr = checks();
-  var bar = document.getElementById('readyBar'), el = document.getElementById('checkList');
-  var done = arr.filter(function(c){return c.status==='done';}).length;
-  var pct = arr.length ? Math.round(done/arr.length*100) : 0;
-  bar.innerHTML = arr.length
-    ? '<div class="bar"><div class="fill" style="width:'+Math.max(pct,10)+'%;">就绪度 '+pct+'%('+done+'/'+arr.length+')</div></div>'
-    : '';
-  el.innerHTML = arr.length ? arr.map(function(c,i){
-      return '<div class="check-item"><span style="font-weight:600;">'+esc(c.name)+'</span>' +
-        (c.lead?' <span style="font-size:12px;color:#8c6a4f;">· '+esc(c.lead)+'</span>':'') +
-        ' <span class="status '+c.status+'" style="float:right;margin-top:-2px;" onclick="toggleCheck('+i+')">'+(c.status==='done'?'✅ 完成':'🟡 待办')+'</span>' +
-        ' <a onclick="delCheck('+i+')" style="float:right;margin:4px 10px 0 0;color:#c2410c;font-size:12px;cursor:pointer;">删</a></div>';
-    }).join('') : '<div class="empty">清单还空着——把签证、机票、酒店、船票都加进来,出发前一项项点掉 🛫</div>';
-  renderRisks();
-}
-// ══════════ 风险提示(按当前行程/常识生成) ══════════
-function renderRisks() {
-  var el = document.getElementById('riskList');
-  var risks = [];
-  if (state && state.plan) {
-    // 单日在途预警
-    state.plan.forEach(function(d, i){
-      var transit = (d.acts||[]).filter(function(a){return a[0]==='transit';}).length;
-      if (transit >= 2) risks.push('D'+(i+1)+' 有 '+transit+' 段在途——当天的游玩时间被压缩,考虑拆分或砍点');
-    });
-    // 凌晨/早起预警
-    var raw = state.raw || '';
-    if (/凌晨|日出|夜爬|早起/.test(raw)) risks.push('行程含凌晨/日出安排:前一晚务必早睡;连续多天早起会累积疲劳');
-    if (/潜水|dive|浮潜/i.test(raw)) risks.push('含潜水/浮潜:<b>潜后 24h 内不能坐飞机</b>;体验潜(DSD)无证可潜,但感冒/鼻炎/孕期不可下水');
-    if (/火山|ijen|bromo/i.test(raw)) risks.push('含火山:出发前 5–10 天确认开放状态(当地司机/官方监测),山火或气体异常会临时关闭;凌晨山顶 5–10°C 带保暖层');
-    if (/红叶|樱/i.test(raw)) risks.push('季节限定景观:出发前一周查红叶/樱花前沿预报,峰期提前或延后时点位可整体平移');
-  }
-  if (!risks.length) risks.push('暂无特定风险提示——一般项:护照有效期 6 个月+、旅行保险(含活动项目)、出发前 3 天查目的地天气');
-  el.innerHTML = risks.map(function(r){ return '<div class="risk-card">'+r+'</div>'; }).join('');
+function handleDetail(which) {
+  if (!currentTrip) { toast('先出方案'); return; }
+  plBack('detail');
+  if (mode==='ai' && apiKey) { aiPlan('detail', currentTrip, which); }
+  else { offlineDetail(which); }
 }
 
-// ══════════ 历史行程 ══════════
-var LS_HIST = 'tripCompass.history';
-function history() { try { return JSON.parse(localStorage.getItem(LS_HIST)) || []; } catch(e) { return []; } }
-function saveHistory(v) { localStorage.setItem(LS_HIST, JSON.stringify(v)); }
-function saveTripToHistory() {
-  if (!state || !state.plan || !state.plan.length) { toast('还没有行程,先在对话里聊出一个 🧭'); return; }
-  var arr = history();
-  var lib = state.lib || {keys:['行程']};
-  arr.unshift({
-    name: (state.chosenV ? state.chosenV.name : lib.keys[0]) ,
-    days: state.days, people: state.people,
-    date: new Date().toLocaleDateString(),
-    plan: state.plan, ready: checks().filter(function(c){return c.status==='done';}).length + '/' + checks().length
-  });
-  saveHistory(arr);
-  renderHistory(); switchTab('trips');
-  toast('已存入历史行程 🗂️');
+// ── 离线引擎 ──
+var LIB = [
+  { keys:['关西','京都','大阪','日本','红叶'], name:'关西红叶',
+    variants:[
+      {n:'方案A · 京都深度',d:'京都3晚+大阪2晚',hl:'岚山+东福寺+永观堂+鞍马贵船',cost:'4500–6500',why:'红叶季的京都=目的地本身'},
+      {n:'方案B · 京都+奈良',d:'京都2.5+奈良0.5+大阪2',hl:'京都略减+小鹿+春日大社秋色',cost:'4500–6500',why:'有看鹿执念时选'},
+      {n:'方案C · 京都+神户',d:'京都2+神户1+大阪2',hl:'六甲山红叶+有马温泉',cost:'5000–7000',why:'想泡温泉,代价是多搬一次酒店'}],
+    days:[
+      {t:'抵达→京都东山',acts:'落地→HARUKA 75min→只园夜散步',hotel:'京都站南',trans:'HARUKA ¥2900'},
+      {t:'岚山一整天',acts:'竹林(8点前)+天龙寺+保津川小火车',hotel:'京都站南',trans:'JR 嵯峨野线'},
+      {t:'东福寺—伏见—永观堂',acts:'通天桥(开园即入)+千本鸟居+夜枫',hotel:'京都站南',trans:'JR+巴士'},
+      {t:'鞍马→贵船→大阪',acts:'叡电红叶隧道+徒步2h+川床午餐',hotel:'梅田',trans:'叡电+JR'},
+      {t:'大阪设计小店日',acts:'中崎町+堀江→南海 Rapi:t 赴 KIX',hotel:'—',trans:'南海 ¥1450'}] },
+  { keys:['巴厘岛','bali','火山','印尼','bromo'], name:'巴厘岛双火山',
+    variants:[
+      {n:'方案A · 双火山+佩妮达',d:'Safari+Sewu+Bromo 3天+巴厘岛6天',hl:'瀑布+火山日出+悬崖+体验潜',cost:'7000–10000',why:'打卡最全,体力要求高'},
+      {n:'方案B · 纯巴厘岛',d:'Sanur+图蓝本+Amed+乌布',hl:'纯海岛度假,不起夜',cost:'5000–7000',why:'节奏舒服'},
+      {n:'方案C · 双火山+科莫多',d:'火山2天+船宿2天',hl:'科莫多龙+Manta 浮潜',cost:'9000–13000',why:'有潜水证选;无证不划算'}],
+    days:[
+      {t:'Safari+进山',acts:'Prigen Safari Park→车程5h→山脚民宿',hotel:'山脚',trans:'包车'},
+      {t:'Sewu→Bromo',acts:'瀑布下峡谷2h→经Malang上山',hotel:'Bromo 火山村',trans:'包车'},
+      {t:'Bromo 日出→飞巴厘岛',acts:'02:00起·日出+火山口→午后赴机场',hotel:'库塔',trans:'包车+航班'},
+      {t:'佩妮达西线',acts:'Kelingking+Broken Beach 日落',hotel:'岛上',trans:'快船+皮卡'},
+      {t:'佩妮达东线+浮潜',acts:'Diamond Beach+浮潜 Manta',hotel:'Sanur',trans:'快船'},
+      {t:'体验潜→乌布',acts:'DSD 沉船岸潜→水宫梯田',hotel:'Amed→乌布',trans:'包车'},
+      {t:'南部+水明漾',acts:'海神庙+Uluwatu+Kecak+海鲜',hotel:'Seminyak',trans:'包车'}] },
+  { keys:['草原','坝上','张北','承德','北京周边','自驾','雾灵山'], name:'北京周边草原/山岳',
+    variants:[
+      {n:'方案A · 张北草原天路',d:'中途住+天路+返程',hl:'全程高速,单次驾驶≤2h',cost:'1000–1500',why:'单人驾驶友好'},
+      {n:'方案B · 承德+坝上环线',d:'承德+坝上蒙古包',hl:'避暑山庄+京北草原',cost:'1200–1800',why:'天气不稳时的稳妥选择'},
+      {n:'方案C · 雾灵山红叶',d:'主峰+民宿过夜+晨雾日出',hl:'华北秋色天花板(10月中)',cost:'800–1500',why:'秋季专属;11月中后封山'}],
+    days:[
+      {t:'出发日',acts:'高速→中途镇晚餐休整',hotel:'中途镇',trans:'自驾1.5-2h'},
+      {t:'主景区日',acts:'核心景观(早到避人流)→日落',hotel:'景区附近',trans:'自驾+索道'},
+      {t:'返程日',acts:'晨雾/日出(可选)→返程',hotel:'—',trans:'自驾2-4h'}] }
+];
+function matchLib(text) {
+  for (var i=0;i<LIB.length;i++) if (LIB[i].keys.some(function(k){return text.indexOf(k)>-1;})) return LIB[i];
+  return null;
 }
-function delHistory(i) { if(!confirm('删除这条历史?'))return; var arr=history(); arr.splice(i,1); saveHistory(arr); renderHistory(); }
-function viewHistory(i) {
-  var h = history()[i];
-  addMsg('ai', '<p>📂 载入历史行程:<b>'+esc(h.name)+'</b>('+h.days+' 天·'+h.people+' 人·'+h.date+')</p>' + planHtmlFrom(h.plan));
-  state = { lib: {keys:[h.name]}, days: h.days, people: h.people, raw:'', phase:'refined', plan: h.plan, chosenV: {name:h.name} };
-  switchTab('chat');
-}
-function planHtmlFrom(plan) {
-  var colors = {nature:'#5b8c5a',activity:'#2c5f6f',relax:'#d4a76a',transit:'#8a9ba8',flight:'#b0578d'};
-  return (plan||[]).map(function(d, i){
-    var segs = (d.acts||[]).map(function(x){ return '<span class="seg" style="background:'+colors[x[0]]+';">'+esc(x[1])+'</span>'; }).join(' ');
-    return '<div class="day-h">D'+(i+1)+' · '+esc(d.t||'')+'</div><div>'+segs+'</div>'+(d.hotel?'<div style="font-size:12px;color:#6b7280;">🏨 '+esc(d.hotel)+'</div>':'');
-  }).join('');
-}
-function renderHistory() {
-  var arr = history();
-  var el = document.getElementById('historyList');
-  el.innerHTML = arr.length ? arr.map(function(h,i){
-    return '<div class="trip-h"><div class="t">'+esc(h.name)+'</div>' +
-      '<div class="m">'+h.days+' 天 · '+h.people+' 人 · '+h.date+' · 就绪度 '+h.ready+'</div>' +
-      '<div class="ops"><a onclick="viewHistory('+i+')">载入到对话</a><a onclick="delHistory('+i+')">删除</a></div></div>';
-  }).join('') : '<div class="empty">对话里聊出方案后点「💾 存入历史」,这里就能看到所有行程 🗂️</div>';
-}
-function exportHistoryJSON() {
-  var data = { history: history(), checklist: checks() };
-  var blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'trip-compass-backup.json'; a.click(); URL.revokeObjectURL(a.href);
-  toast('数据已导出 💾');
-}
-function importHistoryJSON(input) {
-  var f = input.files[0]; if (!f) return;
-  var r = new FileReader();
-  r.onload = function() {
-    try {
-      var data = JSON.parse(r.result);
-      if (data.history) saveHistory(data.history);
-      if (data.checklist) saveChecks(data.checklist);
-      renderHistory(); renderCheck(); toast('导入成功 ✅');
-    } catch(e) { toast('导入失败:'+e.message); }
-  };
-  r.readAsText(f); input.value='';
-}
-
-// ══════════ 行程单预览 ══════════
-var PV_COLORS = { nature:'#8B7355', activity:'#6B5637', relax:'#C4A882', transit:'#A8A29E', flight:'#7C6D5F' };
-var PV_LABELS = { nature:'自然', activity:'体验', relax:'休闲', transit:'在途', flight:'飞行' };
-function renderPreview() {
-  var el = document.getElementById('previewBody');
-  if (!el) return;
-  if (!state || !state.plan || !state.plan.length) {
-    el.innerHTML = '<div class="pv-sheet"><div class="pv-empty">还没有行程——先在「规划对话」里聊出一个,或去「历史/案例」打开一个案例 📄</div></div>';
+function offlineCompare(f) {
+  var lib = matchLib(f.dest + ' ' + f.prefs);
+  if (!lib) {
+    $('compareBody').innerHTML = '<div class="card"><div class="loading">' +
+      '<div style="font-size:34px;margin-bottom:10px;">🌱</div>' +
+      '<p style="margin-bottom:14px;">离线模式还没学过这个目的地</p>' +
+      '<button class="btn" onclick="openSettings()">⚙️ 切到 AI 模式(填 Key,任意目的地)</button> ' +
+      '<button class="btn outline" onclick="go(\'home\')">看内置案例</button></div></div>';
     return;
   }
-  var t = state;
-  var segs = function(d) {
-    return (d.acts||[]).map(function(x){
-      return '<span class="pv-seg" style="background:'+PV_COLORS[x[0]]+';">'+esc(x[1])+'</span>';
-    }).join(' ');
-  };
-  var days = t.plan.map(function(d, i){
-    return '<div class="pv-day"><div class="dh">D'+(i+1)+(d.t?' · '+esc(d.t):'')+'</div>' +
-      '<div>'+segs(d)+'</div>' +
-      (d.hotel?'<div class="pv-meta">🏨 '+esc(d.hotel)+'</div>':'') +
-      (d.trans?'<div class="pv-meta">🚃 '+esc(d.trans)+'</div>':'') +
-    '</div>';
+  currentTrip.lib = lib;
+  var rows = lib.variants.map(function(v){
+    return '| '+v.n+' | '+v.d+' | '+v.hl+' | ¥'+v.cost+' |';
+  }).join('\n');
+  var md = '## 方案对比\n| 方案 | 路线 | 亮点 | 人均 |\n|---|---|---|---|\n'+rows+'\n\n## 推荐\n推荐'+lib.variants[0].n+'——'+lib.variants[0].why+'。在下方选一版继续细化。';
+  $('compareBody').innerHTML = '<div class="tip">💡 这只是选个<b>大方向</b>,不用纠结~后续还能调整细节、换景点、加减天数。</div><div class="card md">'+mdToHtml(md)+'</div>';
+}
+function offlineDetail(which) {
+  var lib = currentTrip && currentTrip.lib;
+  if (!lib) { toast('先出方案'); plBack('input'); return; }
+  var days = lib.days;
+  var md = '## 每日行程表\n| D+ | 路线 | 安排 | 住宿 |\n|---|---|---|---|\n' +
+    days.map(function(d,i){ return '| D'+(i+1)+' | '+d.t+' | '+d.acts+' | '+d.hotel+' |'; }).join('\n') +
+    '\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 国际机票 | 尽快订 | T-30 |\n| 酒店 | 建议预订 | T-14 |\n| 保险 | 建议预订 | T-7 |';
+  currentTrip.detailMd = md;
+  currentTrip.planExtracted = days.map(function(d,i){ return {n:'D'+(i+1), t:d.t, acts:[['activity',d.acts]], hotel:d.hotel, trans:d.trans}; });
+  $('detailBody').innerHTML='<div class="card md">'+mdToHtml(md)+'</div>';
+  toast('离线引擎已生成(内置模板);AI 模式下按你的需求定制');
+}
+
+// ── AI 引擎 ──
+function aiPlan(stage, f, which) {
+  var target = stage==='compare' ? $('compareBody') : $('detailBody');
+  target.innerHTML = '<div class="card"><div class="loading"><div class="spin"></div>' +
+    (stage==='compare'?'正在出方案…<br><span style="font-size:11.5px;">对比强度/在途时间/成本/风险</span>':'排行程中…<br><span style="font-size:11.5px;">五件套生成中</span>') + '</div></div>';
+  var prompt;
+  if (stage==='compare') {
+    prompt = '用户旅行需求,请给2-3版方案量化对比表。维度至少含:强度(⭐数级+单日在途峰值)、累计在途时间、体验覆盖(核心打卡点清单)、成本(人均区间,不含国际机票)、风险(天气/旺季/封闭/交通衔接)。给出推荐及一句理由。在途时间是第一决策指标,单日>6h预警。\n\n时间:'+f.dates+'\n目的地:'+f.dest+'\n人数/构成:'+(f.people||'未定')+'\n预算:'+(f.budget||'未定')+'\n硬约束:'+(f.constraints||'无')+'\n偏好:'+(f.prefs||'未定')+'\n签证:'+(f.visa||'未定');
+  } else {
+    prompt = '用户选了'+which+',请细化成逐日行程,输出五件套。\n\n原始需求:'+JSON.stringify(f)+'\n\n五个部分:①每日行程表(D+|路线|时间轴到小时|交通方式|住宿,季节性加指数列)②交通汇总③住宿清单④必订清单+状态⑤人均预算+装备证件清单。有备选分支写成"什么条件下选它"。';
+  }
+  var isA = provider==='anthropic';
+  var url, headers, body, msgs;
+  if (stage==='compare') { msgs = [{role:'user',content:prompt}]; }
+  else { msgs = [{role:'user',content:'需求:'+JSON.stringify(f)+' 请给方案对比'},{role:'assistant',content:'(已给出对比表)'},{role:'user',content:prompt}]; }
+  if (isA) {
+    url='https://api.anthropic.com/v1/messages';
+    headers={'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+    body=JSON.stringify({model:curModel(),max_tokens:3500,system:SYS_PROMPT,messages:msgs});
+  } else {
+    var base = baseUrl || PROVIDERS[provider].url;
+    if (!base) { target.innerHTML='<div class="card"><div class="empty">自定义渠道需要填 Base URL</div></div>'; return; }
+    url=base.replace(/\/$/,'')+'/chat/completions';
+    headers={'content-type':'application/json','authorization':'Bearer '+apiKey};
+    body=JSON.stringify({model:curModel(),max_tokens:3500,messages:[{role:'system',content:SYS_PROMPT}].concat(msgs)});
+  }
+  fetch(url,{method:'POST',headers:headers,body:body})
+  .then(function(r){ if(!r.ok) return r.text().then(function(tx){throw new Error('HTTP '+r.status+(tx?' · '+tx.slice(0,100):''));}); return r.json(); })
+  .then(function(data){
+    var raw = isA ? ((data.content&&data.content[0]&&data.content[0].text)||'') : ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'');
+    if (stage==='compare') {
+      currentTrip.compareMd = raw;
+      target.innerHTML = '<div class="tip">💡 这只是选个<b>大方向</b>,不用纠结~后续还能调整细节、换景点、加减天数。</div><div class="card md">'+mdToHtml(raw)+'</div>';
+    } else {
+      currentTrip.detailMd = raw;
+      currentTrip.planExtracted = extractPlan(raw);
+      target.innerHTML = '<div class="card md">'+mdToHtml(raw)+'</div>';
+    }
+  })
+  .catch(function(e){
+    var hint='';
+    if (/HTTP 402/.test(e.message)) hint='账户余额不足——去渠道平台充值(DeepSeek 10元够很久)';
+    else if (/HTTP 401|403/.test(e.message)) hint='Key 无效或没权限——检查 Key';
+    else if (/HTTP 404/.test(e.message)) hint='模型名或 Base URL 可能不对';
+    else if (/Failed to fetch/i.test(e.message)) hint='网络不通——国内渠道无需国际网络;Anthropic 需要';
+    target.innerHTML = '<div class="card"><div style="color:#c2410c;font-size:14px;margin-bottom:8px;">AI 调用失败:'+esc(e.message)+'</div>'+
+      (hint?'<div style="font-size:12.5px;color:#8c8478;margin-bottom:10px;">'+hint+'</div>':'')+
+      '<button class="btn outline" onclick="openSettings()">打开设置</button> <button class="btn outline" onclick="plBack(\'input\')">返回修改</button></div>';
+  });
+}
+
+// ── Markdown 渲染 ──
+function mdToHtml(md) {
+  var lines = String(md||'').split('\n');
+  var html=[], tableBuf=[];
+  function flush() {
+    if (!tableBuf.length) return;
+    var real = tableBuf.filter(function(r){ return !/^\|?\s*:?-{2,}/.test(r); });
+    var out='<table>';
+    real.forEach(function(r,ri){
+      var cells=r.replace(/^\||\|$/g,'').split('|').map(function(c){return c.trim();});
+      var tag=ri===0?'th':'td';
+      out+='<tr>'+cells.map(function(c){return '<'+tag+'>'+inlineMd(c)+'</'+tag+'>';}).join('')+'</tr>';
+    });
+    html.push(out+'</table>'); tableBuf=[];
+  }
+  function inlineMd(t) {
+    return esc(t).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+      .replace(/^✓/,'<span style="color:#15803d;font-weight:700;">✓</span>')
+      .replace(/(尽快订|待退)/g,'<span style="color:#c2410c;font-weight:600;">$1</span>')
+      .replace(/(建议预订)/g,'<span style="color:#b45309;font-weight:600;">$1</span>');
+  }
+  lines.forEach(function(line){
+    if (/^\s*\|/.test(line)) { tableBuf.push(line); return; }
+    flush();
+    if (/^##\s+/.test(line)) html.push('<div class="h2">'+inlineMd(line.replace(/^##\s+/,''))+'</div>');
+    else if (/^#\s+/.test(line)) html.push('<div class="h2" style="font-size:16.5px;">'+inlineMd(line.replace(/^#\s+/,''))+'</div>');
+    else if (/^[-*]\s+/.test(line)) html.push('<li>'+inlineMd(line.replace(/^[-*]\s+/,''))+'</li>');
+    else if (line.trim()==='') html.push('');
+    else html.push('<p>'+inlineMd(line)+'</p>');
+  });
+  flush();
+  return html.join('\n');
+}
+function extractPlan(md) {
+  var out=[], inTable=false;
+  String(md||'').split('\n').forEach(function(line){
+    if (/^\s*\|/.test(line)) {
+      inTable=true;
+      if (line.indexOf('| D')===0 || /^\|\s*D\d/i.test(line)) {
+        var cells=line.replace(/^\||\|$/g,'').split('|').map(function(c){return c.trim();});
+        if (cells.length>=3 && /^D/i.test(cells[0])) {
+          out.push({n:cells[0], t:cells[1]||'', acts:[['activity',cells[2]||'']], trans:cells[3]||'', hotel:cells[4]||''});
+        }
+      }
+    } else if (inTable) { inTable=false; }
+  });
+  return out;
+}
+
+// ══════════ 就绪检查 ══════════
+var LS_CK='tc.checklist', LS_HIST='tc.history';
+function checks() { try { return JSON.parse(localStorage.getItem(LS_CK))||[]; } catch(e){ return []; } }
+function saveChecks(v){ localStorage.setItem(LS_CK,JSON.stringify(v)); }
+function addCheck() {
+  var n=$('ckName').value.trim();
+  if (!n) { toast('事项要填哦'); return; }
+  var arr=checks(); arr.unshift({name:n,lead:$('ckLead').value,status:'todo'});
+  saveChecks(arr); $('ckName').value=''; renderReadiness(); toast('已加入 ✅');
+}
+function toggleCheck(i){ var a=checks(); a[i].status=a[i].status==='done'?'todo':'done'; saveChecks(a); renderReadiness(); }
+function delCheck(i){ var a=checks(); a.splice(i,1); saveChecks(a); renderReadiness(); }
+var T_MINUS=[{d:'T-30',l:'国际机票',s:'核对时刻与口岸'},{d:'T-21',l:'签证提交',s:'预留审批容错'},{d:'T-14',l:'酒店与船票',s:'旺季提前锁定'},{d:'T-7',l:'包车与体验',s:'确认向导和保险'},{d:'T-3',l:'最终确认',s:'天气与凭证终检'},{d:'T-1',l:'出发就绪',s:'入境卡现金装备'}];
+function renderReadiness() {
+  $('tmLine').innerHTML = T_MINUS.map(function(t){
+    return '<div><div class="d">'+t.d+'</div><div class="l">'+t.l+'</div><div class="s">'+t.s+'</div></div>';
   }).join('');
-  var checksHtml = '';
-  var ck = checks();
-  if (ck.length) {
-    checksHtml = '<div class="pv-head" style="border-bottom-color:#c9a87c;margin-top:20px;"><h2 style="font-size:16px;">📋 必订清单</h2></div>' +
-      ck.map(function(c){
-        return '<div style="font-size:13px;margin:5px 0;">'+(c.status==='done'?'✅':'🟡')+' '+esc(c.name)+(c.lead?' <span style="color:#8c6a4f;font-size:12px;">('+esc(c.lead)+')</span>':'')+'</div>';
-      }).join('');
+  var arr=checks(), done=arr.filter(function(c){return c.status==='done';}).length;
+  var pct=arr.length?Math.round(done/arr.length*100):0;
+  $('readyFill').style.width=Math.max(pct,10)+'%';
+  $('readyFill').textContent='就绪度 '+pct+'%('+done+'/'+arr.length+')';
+  $('ckList').innerHTML = arr.length ? arr.map(function(c,i){
+    return '<div class="ck-item"><span style="font-weight:600;font-size:13.5px;">'+esc(c.name)+'</span>'+
+      (c.lead?' <span style="font-size:11.5px;color:#8c6a4f;">· '+esc(c.lead)+'</span>':'')+
+      ' <span class="status '+c.status+'" style="float:right;" onclick="toggleCheck('+i+')">'+(c.status==='done'?'✅ 完成':'🟡 待办')+'</span>'+
+      ' <a onclick="delCheck('+i+')" style="float:right;margin:4px 10px 0 0;color:#c2410c;font-size:11.5px;cursor:pointer;">删</a></div>';
+  }).join('') : '<div class="empty">清单还空着——签证、机票、酒店、船票都加进来,出发前一项项点掉 🛫</div>';
+  renderRisks();
+}
+function renderRisks() {
+  var risks=[];
+  var t = currentTrip;
+  if (t) {
+    var raw = (t.dest||'')+(t.prefs||'')+(t.constraints||'')+(t.detailMd||'');
+    if (/潜水|浮潜/i.test(raw)) risks.push('含潜水/浮潜:<b>潜后 24h 不能坐飞机</b>;感冒/鼻炎/孕期不可下水');
+    if (/火山|Bromo|Ijen/i.test(raw)) risks.push('含火山:出发前 5–10 天确认开放状态;凌晨山顶 5–10°C 带保暖层');
+    if (/红叶|樱/i.test(raw)) risks.push('季节限定:出发前一周查红叶/樱花前沿预报,峰期漂移时点位可平移');
+    if (/自驾|开车/.test(raw)) risks.push('自驾:单人驾驶建议单次 ≤2h;出发前查胎压/雨刮;雨夜不上山路');
   }
-  var title = (t.chosenV && t.chosenV.name) ? t.chosenV.name : (t.lib ? t.lib.keys[0] : '行程');
-  el.innerHTML = '<div class="pv-sheet">' +
-    '<div class="pv-head"><h2>'+esc(title)+'</h2><div class="m">'+t.days+' 天 · '+t.people+' 人'+(t.raw?' · 按你的需求定制':'')+'</div></div>' +
-    days + checksHtml +
-    '<div style="text-align:center;color:#b8a89a;font-size:11px;margin-top:16px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</div>' +
-  '</div>';
+  if (!risks.length) risks.push('通用项:护照有效期 6 个月+ · 旅行保险(含活动项目) · 出发前 3 天查目的地天气');
+  $('riskList').innerHTML = risks.map(function(r){ return '<div class="risk">'+r+'</div>'; }).join('');
 }
 
-// ══════════ T-minus 时间线 ══════════
-var T_MINUS = [
-  { day:'T-30', label:'国际机票', desc:'核对时刻与口岸' },
-  { day:'T-21', label:'签证提交', desc:'预留审批容错' },
-  { day:'T-14', label:'酒店与船票', desc:'旺季提前锁定' },
-  { day:'T-7',  label:'包车与体验', desc:'确认向导和保险' },
-  { day:'T-3',  label:'最终确认', desc:'天气与凭证终检' },
-  { day:'T-1',  label:'出发就绪', desc:'入境卡、现金与装备' },
-];
-function renderTminus() {
-  var el = document.getElementById('tminus');
-  if (!el) return;
-  el.innerHTML = '<div class="bar" style="padding:10px 12px;">' + T_MINUS.map(function(t){
-    return '<div style="display:inline-block;width:15%;min-width:92px;vertical-align:top;padding-right:6px;">' +
-      '<div style="font-weight:700;color:#2c5f6f;font-size:12.5px;">'+t.day+'</div>' +
-      '<div style="font-size:11.5px;color:#5a4a3a;">'+t.label+'</div>' +
-      '<div style="font-size:10.5px;color:#b8a89a;">'+t.desc+'</div></div>';
-  }).join('') + '</div>';
+// ══════════ 历史 ══════════
+function history(){ try{ return JSON.parse(localStorage.getItem(LS_HIST))||[]; }catch(e){ return []; } }
+function saveHistory(v){ localStorage.setItem(LS_HIST,JSON.stringify(v)); }
+function saveCurrent() {
+  if (!currentTrip || !currentTrip.detailMd) { toast('还没有行程,先出方案并细化'); return; }
+  var arr=history();
+  arr.unshift({ title:(currentTrip.dest||'行程')+' · '+(currentTrip.dates||''), dest:currentTrip.dest, dates:currentTrip.dates,
+    detailMd:currentTrip.detailMd, ready:checks().filter(function(c){return c.status==='done';}).length+'/'+checks().length,
+    date:new Date().toLocaleDateString() });
+  saveHistory(arr); renderPlHist(); toast('已存入历史 💾');
+}
+function loadHist(i) {
+  var h=history()[i]; if (!h) return;
+  currentTrip = { dates:h.dates, dest:h.dest, detailMd:h.detailMd, planExtracted:extractPlan(h.detailMd) };
+  plBack('detail'); $('detailBody').innerHTML='<div class="card md">'+mdToHtml(h.detailMd)+'</div>';
+}
+function delHist(i){ if(!confirm('删除这条?'))return; var a=history(); a.splice(i,1); saveHistory(a); renderPlHist(); }
+function renderPlHist() {
+  var arr=history();
+  $('plHist').innerHTML = arr.length ? arr.map(function(h,i){
+    return '<div class="hist"><div class="t">'+esc(h.title)+'</div><div class="m">'+h.date+' · 就绪度 '+h.ready+'</div>'+
+      '<div class="ops"><a onclick="loadHist('+i+')">载入</a><a onclick="delHist('+i+')">删除</a></div></div>';
+  }).join('') : '<div class="empty">还没有历史——出方案细化后点「💾 存入历史」</div>';
 }
 
-// ══════════ 案例库(三个真实案例的完整五件套) ══════════
-var CASES = [
-  {
-    title: '巴厘岛 12 天', dest: '巴厘岛 · 佩妮达 · 河内中转', meta: '12 天 11 晚 · 双人出行', tag: '28 轮迭代',
-    desc: '双火山、佩妮达与巴厘岛慢游,包含航变和火山关闭后的局部重排。',
-    md: '## 每日行程表\n| D+ | 路线 | 时间轴 | 交通 | 住宿 |\n|---|---|---|---|---|\n| D1 | 入境→Safari→进山 | 10:00 集合→Safari 3h→傍晚到山脚 | 包车 | 火山村 |\n| D2 | Sewu 瀑布→Bromo 村 | 09:00 下峡谷 2h→13:00 上山 | 包车 | Bromo 火山村 |\n| D3 | Bromo 日出→飞巴厘岛 | 02:00 起→04:00 日出→午后赴机场 | 包车+航班 | 库塔 |\n| D4–D6 | 佩妮达东西线 | 悬崖海景+浮潜 Manta | 快船+岛内包车 | 岛上/Sanur |\n| D7–D8 | 体验潜→乌布 | DSD 沉船岸潜→水宫梯田 | 包车 | Amed/乌布 |\n| D9–D10 | 南部+水明漾 | 海神庙+Kecak+海鲜+beach club | 包车 | Seminyak 连住 |\n| D11–D12 | 河内中转→回国 | 老城一日游→晚班机 | 飞行 | 河内 |\n\n## 交通汇总\n| 路段 | 方式 | 预订要点 |\n|---|---|---|\n| 爪哇段 3 天 | 包车 | 已订;含司机食宿 |\n| 快船往返佩妮达 | 客运快船 | 提前 7–14 天,买可退改 |\n| 巴厘岛段 | 包车+Grab | 沿途停点/等候必包车;镇内 Grab |\n\n## 住宿清单\n火山村/山脚/库塔/佩妮达各 1 晚,Sanur 2 晚,Amed/乌布各 1 晚,Seminyak 连住 2 晚,河内 1 晚\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 国际机票 | ✓ 已订 | T-30 |\n| 快船 | 建议预订 | T-14 |\n| 旅行保险(含潜水) | 尽快订 | T-7 |\n\n## 人均预算\n| 住宿 11 晚 | ¥3,000–4,800 |\n| 包车+船+境内机票 | ¥1,000–1,500 |\n| 潜水 DSD | ¥600–900 |\n| 餐饮 | ¥1,900–3,000 |'
-  },
-  {
-    title: '草原自驾 2 天', dest: '北京周边草原', meta: '2 天 1 晚 · 单人驾驶', tag: '5 轮搞定',
-    desc: '把单人驾驶转成每日驾驶时长上限,并按同一指标横向比较四个方向的天气。',
-    md: '## 每日行程表\n| D+ | 路线 | 时间轴 | 交通 | 住宿 |\n|---|---|---|---|---|\n| D0 | 出发夜 | 19:00 出发→20:30 中途镇(单程仅 1.5h,雨夜不硬开) | 自驾 | 中途镇 |\n| D1 | 草原核心线 | 08:00 出发→核心景区(早到避团客)→17:00 下山 | 自驾 | 景区附近 |\n| D2 | 晨景+返程 | 晨雾/日出(可选)→午后返程 | 自驾 | — |\n\n## 交通汇总\n| 路段 | 方式 | 要点 |\n|---|---|---|\n| 全程 | 自驾 | 单次驾驶 ≤2h(单人驾驶约束);出发前查雨刮/胎压 |\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 住宿 | 建议预订 | T-3 |\n| 车辆检查 | 待确认 | T-1 |\n\n## 人均预算\n| 住宿 1 晚 | ¥300–600 |\n| 油费+过路 | ¥300–400 |\n| 餐饮 | ¥200–300 |\n\n## 方法论亮点\n- 单一约束(单人驾驶)变成全行程结构参数:每日 ≤2h、中途住宿拆解\n- 四方向天气横向对比 → 雨夜少开、晴天才走山路(风险时序化)'
-  },
-  {
-    title: '关西红叶 5 天', dest: '京都+大阪', meta: '5 天 4 晚 · 双人 · 红叶前中期', tag: 'skill 首测',
-    desc: '红叶窗口优先于路线;奈良取舍的账摊开;鞍马→贵船徒步补排。',
-    md: '## 每日行程表\n| D+ | 路线 | 时间轴 | 交通 | 住宿 | 红叶 |\n|---|---|---|---|---|---|\n| D1 | 抵达→京都东山 | 14:00 落地→HARUKA 75min→只园夜散步 | HARUKA ¥2900 | 京都站南 | ⭐⭐ |\n| D2 | 岚山一整天 | 08:00 竹林(避团客)→天龙寺→小火车 | JR ¥240 | 京都站南 | ⭐⭐⭐⭐ |\n| D3 | 东福寺—伏见—永观堂 | 09:00 通天桥(开园即入)→午后回血→夜枫 | JR+巴士 | 京都站南 | ⭐⭐⭐⭐⭐ |\n| D4 | 鞍马→贵船→大阪 | 叡电红叶隧道→徒步 2h→川床午餐→JR 赴大阪 | 叡电+JR | 梅田 | ⭐⭐⭐⭐ |\n| D5 | 大阪设计小店日 | 中崎町→堀江→南海 Rapi:t 赴 KIX | 南海 ¥1450 | — | ⭐⭐ |\n\n## 交通汇总\n人均 ~¥8000(≈400 RMB),无需 JR Pass:HARUKA/巴士一日券/JR/南海按需购买\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 机票 | 尽快订 | T-30 |\n| 嵯峨野小火车 | 建议预订 | 官网提前 10 天 |\n| 川床午餐 | 建议预订 | T-7 |\n\n## 人均预算\n| 住宿 4 晚 | ¥1,500–2,500 |\n| 市内交通 | ¥400 |\n| 餐饮(含川床) | ¥1,200–2,000 |\n\n## 备选分支\n- 奈良半日:仅当「想看鹿」执念存在时——代价是永观堂让出+12h 暴走日'
+// ══════════ 行程单 ══════════
+var PV_COLORS={nature:'#8B7355',activity:'#6B5637',relax:'#C4A882',transit:'#A8A29E',flight:'#7C6D5F'};
+function renderPreview() {
+  var el=$('pvBody');
+  var plan = currentTrip && currentTrip.planExtracted;
+  if (!plan || !plan.length) {
+    el.innerHTML='<div class="pv-sheet"><div class="empty">还没有行程——去「旅行规划」生成,或载入历史/案例 📄</div></div>';
+    return;
   }
+  var days=plan.map(function(d,i){
+    var segs=(d.acts||[]).map(function(x){ return '<span class="pv-seg" style="background:'+PV_COLORS[x[0]]+';">'+esc(x[1])+'</span>'; }).join(' ');
+    return '<div class="pv-day"><div class="dh">'+esc(d.n||('D'+(i+1)))+' · '+esc(d.t||'')+'</div><div>'+segs+'</div>'+
+      (d.hotel?'<div class="pv-meta">🏨 '+esc(d.hotel)+'</div>':'')+
+      (d.trans?'<div class="pv-meta">🚃 '+esc(d.trans)+'</div>':'')+'</div>';
+  }).join('');
+  el.innerHTML='<div class="pv-sheet"><div class="pv-head"><h2>'+esc(currentTrip.dest||'行程')+'</h2>'+
+    '<div class="m">'+esc(currentTrip.dates||'')+'</div></div>'+days+
+    '<div style="text-align:center;color:#b8b2a8;font-size:10.5px;margin-top:14px;">由 Trip Compass 生成 · github.com/SharonYi/travel-planner</div></div>';
+}
+function exportHTML() {
+  var plan = currentTrip && currentTrip.planExtracted;
+  if (!plan || !plan.length) { toast('还没有行程'); return; }
+  var rows=plan.map(function(d,i){
+    var segs=(d.acts||[]).map(function(x){ return '<span style="display:inline-block;padding:2px 7px;border-radius:4px;margin:1px 3px 1px 0;font-size:10.5px;color:#fff;background:'+PV_COLORS[x[0]]+';">'+esc(x[1])+'</span>'; }).join('');
+    return '<tr><td><b>'+esc(d.n||('D'+(i+1)))+'</b></td><td>'+esc(d.t||'')+'</td><td>'+segs+'</td><td style="font-size:11.5px;">'+esc(d.trans||'')+'</td><td style="font-size:11.5px;">'+esc(d.hotel||'')+'</td></tr>';
+  }).join('');
+  var html='<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>行程单</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC",sans-serif;background:#faf9f7;color:#1c1917;line-height:1.7;padding:12px;max-width:960px;margin:0 auto}header{text-align:center;padding:22px 16px;background:#2c5f6f;color:#fff;border-radius:12px;margin-bottom:14px}h2{font-size:15px;color:#2c5f6f;margin:12px 0 8px}table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px}th{background:#2c5f6f;color:#fff;padding:7px 9px;text-align:left}td{padding:7px 9px;border-bottom:1px solid #e8e2d8;vertical-align:top}@media print{body{padding:0}}</style></head><body>'+
+    '<header><h1 style="font-size:18px;">'+esc(currentTrip.dest||'行程')+'</h1><div style="font-size:12px;opacity:.9;margin-top:4px;">'+esc(currentTrip.dates||'')+'</div></header>'+
+    '<h2>📅 逐日行程</h2><table><tr><th>日</th><th>主题</th><th>安排</th><th>交通</th><th>住宿</th></tr>'+rows+'</table>'+
+    '<p style="text-align:center;color:#b8b2a8;font-size:10px;margin-top:12px;">由 Trip Compass 生成</p></body></html>';
+  var blob=new Blob([html],{type:'text/html'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='行程单.html'; a.click(); URL.revokeObjectURL(a.href);
+  toast('行程单已导出 📤');
+}
+
+// ══════════ 案例库 ══════════
+var CASES=[
+  {ic:'🏔️',title:'巴厘岛 12 天',dest:'巴厘岛 · 佩妮达 · 河内中转',meta:'12 天 11 晚 · 双人出行',tag:'28 轮迭代',hls:['航变重规划','火山关闭应对','预订状态机'],
+   desc:'双火山、佩妮达与巴厘岛慢游,包含航变和火山关闭后的局部重排。',
+   md:'## 每日行程表\n| D+ | 路线 | 安排 | 交通 | 住宿 |\n|---|---|---|---|---|\n| D1 | 入境→Safari→进山 | 10:00 集合→Safari 3h→傍晚山脚 | 包车 | 火山村 |\n| D2 | Sewu 瀑布→Bromo | 09:00 下峡谷 2h→13:00 上山 | 包车 | Bromo 村 |\n| D3 | Bromo 日出→飞巴厘岛 | 02:00 起→04:00 日出→午后赴机场 | 包车+航班 | 库塔 |\n| D4–D6 | 佩妮达东西线 | 悬崖海景+浮潜 Manta | 快船+皮卡 | 岛上/Sanur |\n| D7–D8 | 体验潜→乌布 | DSD 沉船岸潜→水宫梯田 | 包车 | Amed/乌布 |\n| D9–D10 | 南部+水明漾 | 海神庙+Kecak+海鲜+beach club | 包车 | Seminyak |\n| D11–D12 | 河内中转→回国 | 老城一日游→晚班机 | 飞行 | 河内 |\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 国际机票 | ✓ 已订 | T-30 |\n| 快船 | 建议预订 | T-14 |\n| 保险(含潜水) | 尽快订 | T-7 |\n\n## 人均预算\n| 住宿 11 晚 | ¥3,000–4,800 |\n| 包车+船+境内机票 | ¥1,000–1,500 |\n| 餐饮 | ¥1,900–3,000 |'},
+  {ic:'🚗',title:'草原自驾 2 天',dest:'北京周边草原',meta:'2 天 1 晚 · 单人驾驶',tag:'5 轮搞定',hls:['天气驱动换向','单人驾驶约束','实时决策'],
+   desc:'把单人驾驶转成每日驾驶时长上限,并按同一指标横向比较四个方向的天气。',
+   md:'## 每日行程表\n| D+ | 路线 | 安排 | 交通 | 住宿 |\n|---|---|---|---|---|\n| D0 | 出发夜 | 19:00 出发→中途镇(单程仅 1.5h,雨夜不硬开) | 自驾 | 中途镇 |\n| D1 | 草原核心线 | 早到避团客→17:00 下山 | 自驾 | 景区附近 |\n| D2 | 晨景+返程 | 晨雾日出(可选)→午后返程 | 自驾 | — |\n\n## 方法论亮点\n- 单一约束(单人驾驶)变成结构参数:每日 ≤2h、中途住宿拆解\n- 四方向天气横向对比 → 雨夜少开、晴天走山路'},
+  {ic:'🍁',title:'关西红叶 5 天',dest:'京都+大阪',meta:'5 天 4 晚 · 双人 · 红叶前中期',tag:'skill 首测',hls:['红叶窗口决策','取舍摊开算账','备选分支'],
+   desc:'红叶窗口优先于路线;奈良取舍的账摊开;鞍马→贵船徒步补排。',
+   md:'## 每日行程表\n| D+ | 路线 | 安排 | 交通 | 住宿 | 红叶 |\n|---|---|---|---|---|---|\n| D1 | 抵达→京都东山 | 落地→HARUKA 75min→只园夜散步 | HARUKA | 京都站南 | ⭐⭐ |\n| D2 | 岚山一整天 | 竹林(8点前)+天龙寺+小火车 | JR | 京都站南 | ⭐⭐⭐⭐ |\n| D3 | 东福寺—伏见—永观堂 | 通天桥(开园即入)+夜枫 | JR+巴士 | 京都站南 | ⭐⭐⭐⭐⭐ |\n| D4 | 鞍马→贵船→大阪 | 叡电红叶隧道+徒步+川床午餐 | 叡电+JR | 梅田 | ⭐⭐⭐⭐ |\n| D5 | 大阪设计小店日 | 中崎町+堀江→南海赴 KIX | 南海 | — | ⭐⭐ |\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 机票 | 尽快订 | T-30 |\n| 嵯峨野小火车 | 建议预订 | 提前 10 天 |\n| 川床午餐 | 建议预订 | T-7 |\n\n## 备选分支\n- 奈良半日:仅当想看鹿执念存在——代价是永观堂让出+12h 暴走'}
 ];
-function renderCases() {
-  var el = document.getElementById('caseList');
-  el.innerHTML = CASES.map(function(c, i){
-    return '<div class="trip-h"><div class="t">'+esc(c.title)+' <span style="font-size:11px;background:#f0e6d6;color:#8c6a4f;border-radius:4px;padding:1px 7px;margin-left:6px;">'+esc(c.tag)+'</span></div>' +
-      '<div class="m">'+esc(c.dest)+' · '+esc(c.meta)+'</div>' +
-      '<div class="m" style="color:#5a4a3a;">'+esc(c.desc)+'</div>' +
-      '<div class="ops"><a onclick="openCase('+i+')">查看完整行程</a></div></div>';
+function renderHomeCases() {
+  $('homeCases').innerHTML = CASES.map(function(c,i){
+    return '<div class="case-card"><div class="tag">'+esc(c.tag)+'</div>'+
+      '<h3>'+c.ic+' '+esc(c.title)+'</h3><div class="m">'+esc(c.dest)+' · '+esc(c.meta)+'</div>'+
+      '<div class="d">'+esc(c.desc)+'</div>'+
+      '<div>'+c.hls.map(function(h){return '<span class="hl">'+esc(h)+'</span>';}).join('')+'</div>'+
+      '<div style="height:10px;"></div><button class="btn outline sm" onclick="openCase('+i+')">查看完整行程</button></div>';
   }).join('');
 }
 function openCase(i) {
-  var c = CASES[i];
-  addMsg('ai', '<p>📖 <b>'+esc(c.title)+'</b>('+esc(c.meta)+' · '+esc(c.tag)+')</p>' + mdToHtml(c.md));
-  // 案例也填充 state,让行程单/风险提示等基于它工作
-  state = {
-    lib: {keys:[c.title]}, days: parseInt(c.meta)||5, people: 2, raw: c.dest,
-    phase: 'refined', plan: [], chosenV: {name: c.title}, isCase: true
-  };
-  // 从案例 md 提取逐日行(供行程单渲染)
-  var rows = (c.md.split(String.fromCharCode(10)).filter(function(l){ return l.indexOf("| D") === 0; }));
-  rows.forEach(function(r){
-    var cells = r.split('|').map(function(x){return x.trim();}).filter(Boolean);
-    if (cells.length >= 3 && /^D\d+/.test(cells[0])) {
-      state.plan.push({ t: cells[1]||'', acts: [['activity', cells[2]||'']],
-        trans: cells[3]||'', hotel: cells[4]||'' });
-    }
-  });
-  switchTab('chat');
+  var c=CASES[i];
+  currentTrip = { dates:c.meta, dest:c.dest, detailMd:c.md, planExtracted:extractPlan(c.md) };
+  plBack('detail');
+  $('detailBody').innerHTML='<div class="tip">📖 <b>'+esc(c.title)+'</b>——真实案例('+esc(c.tag)+')的五件套。</div><div class="card md">'+mdToHtml(c.md)+'</div>';
+  go('planner');
 }
 
 // ══════════ 启动 ══════════
-document.getElementById('modeLabel').textContent = mode==='ai' && apiKey ? ('AI 模式 · ' + curLabel()) : '离线规划(内置目的地)';
-addMsg('ai', '<p>你好 👋 我是 Trip Compass。</p><p><b>告诉我目的地和大概时间</b>,我出方案候选给你选,选定后逐日细化——你随时反馈,我们逐轮把它磨到你满意。</p><p style="font-size:12px;color:#6b7280;">试一句:十一想去关西看红叶,5 天,2 人,想逛设计小店</p>');
-document.getElementById('userInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
-});
-renderCases(); renderTminus();
+$('modeLabel').textContent = mode==='ai' && apiKey ? ('AI · '+curLabel()) : '离线模式';
+renderHomeCases(); renderPlHist(); renderReadiness(); renderPreview();
 </script>
 
 </body>
