@@ -231,8 +231,16 @@
     <div class="pagehead"><button class="back" onclick="plBack('compare')">← 回对比</button><h2>行程出炉</h2></div>
     <div id="detailBody"></div>
     <div class="card" style="background:#f2f7f4;">
+      <h2>💬 继续调整行程</h2>
+      <p style="font-size:13px;color:#57534e;margin:6px 0 10px;">像聊天一样说改哪:「D2 太赶了」「想加一天」「换掉浮潜」——只重排受影响的部分。</p>
+      <textarea id="refineInput" rows="2" placeholder="例:第二天太赶了,放松一点 / 想加一天奈良 / 砍掉浮潜换成温泉"></textarea>
+      <div style="height:10px;"></div>
+      <button class="btn" onclick="refineTrip()">按我的反馈调整 ✍️</button>
+      <div id="refineResult" style="margin-top:12px;"></div>
+    </div>
+    <div class="card" style="background:#f2f7f4;">
       <h2>✨ 接下来</h2>
-      <p style="font-size:13.5px;color:#57534e;margin:8px 0 14px;">行程可以继续调整;满意了去做就绪检查,或看行程单。</p>
+      <p style="font-size:13.5px;color:#57534e;margin:8px 0 14px;">满意了去做就绪检查,或看行程单。</p>
       <button class="btn" onclick="go('readiness')">⏰ 就绪检查</button>
       <button class="btn outline" onclick="go('preview')">📄 预览行程单</button>
       <button class="btn outline" onclick="saveCurrent()">💾 存入历史</button>
@@ -459,6 +467,7 @@ function offlineDetail(which) {
     '\n\n## 必订清单 + 状态\n| 项目 | 状态 | 提前量 |\n|---|---|---|\n| 国际机票 | 尽快订 | T-30 |\n| 酒店 | 建议预订 | T-14 |\n| 保险 | 建议预订 | T-7 |';
   currentTrip.detailMd = md;
   currentTrip.planExtracted = days.map(function(d,i){ return {n:'D'+(i+1), t:d.t, acts:[['activity',d.acts]], hotel:d.hotel, trans:d.trans}; });
+  autoPopulateChecks();
   $('detailBody').innerHTML='<div class="card md">'+mdToHtml(md)+'</div>';
   toast('离线引擎已生成(内置模板);AI 模式下按你的需求定制');
 }
@@ -500,6 +509,7 @@ function aiPlan(stage, f, which) {
       currentTrip.detailMd = raw;
       currentTrip.planExtracted = extractPlan(raw);
       target.innerHTML = '<div class="card md">'+mdToHtml(raw)+'</div>';
+      autoPopulateChecks();
     }
   })
   .catch(function(e){
@@ -564,6 +574,105 @@ function extractPlan(md) {
 }
 
 // ══════════ 就绪检查 ══════════
+// ══════════ 继续调整(AI 局部重排 / 离线轻量规则) ══════════
+function refineTrip() {
+  var text = document.getElementById('refineInput').value.trim();
+  var out = document.getElementById('refineResult');
+  if (!text) { out.innerHTML = '<div class="tip">先写一句想怎么改~</div>'; return; }
+  if (!currentTrip || !currentTrip.detailMd) { out.innerHTML = '<div class="tip">还没有行程可调</div>'; return; }
+  if (mode === 'ai' && apiKey) { aiRefine(text, out); return; }
+  // —— 离线轻量规则 ——
+  var notes = [];
+  var plan = currentTrip.planExtracted || [];
+  if (/太赶|太累|松一点|放松/.test(text)) {
+    var last = plan[plan.length-1];
+    if (last && (last.acts||[]).length > 2) { last.acts = last.acts.slice(0,2); notes.push('已给最后一天减负'); }
+    else notes.push('行程本身不密;建议砍一个点或把行程后移半天');
+  }
+  if (/加一天|多一天/.test(text) && plan.length < 15) {
+    plan.push({n:'D'+(plan.length+1), t:'机动日', acts:[['relax','自由安排/补漏']], hotel:'', trans:''});
+    notes.push('已加一天机动日');
+  }
+  if (/砍掉|去掉|删除|换掉/.test(text)) notes.push('「'+text+'」——离线模式请手动看五件套调整;AI 模式下我能直接重排');
+  if (/预算|多少钱/.test(text)) notes.push('预算见五件套人均项');
+  var msg = notes.length ? '✍️ '+notes.join(';') : '收到:「'+esc(text)+'」。离线引擎对这条改不动——切到 AI 模式(设置里填 Key)我可以直接重排整份行程。';
+  out.innerHTML = '<div class="tip">'+msg+'</div>' + renderPlanCards(plan);
+  currentTrip.planExtracted = plan;
+  autoPopulateChecks();
+}
+function renderPlanCards(plan) {
+  var colors={nature:'#8B7355',activity:'#6B5637',relax:'#C4A882',transit:'#A8A29E',flight:'#7C6D5F'};
+  return '<div style="background:#fff;border:1px solid #eee9e2;border-radius:12px;padding:14px;">' + (plan||[]).map(function(d){
+    var segs=(d.acts||[]).map(function(x){ return '<span class="pv-seg" style="background:'+colors[x[0]]+';">'+esc(x[1])+'</span>'; }).join(' ');
+    return '<div class="pv-day" style="margin-bottom:8px;"><div class="dh">'+esc(d.n)+' · '+esc(d.t||'')+'</div><div>'+segs+'</div>'+
+      (d.hotel?'<div class="pv-meta">🏨 '+esc(d.hotel)+'</div>':'')+'</div>';
+  }).join('') + '</div>';
+}
+function aiRefine(text, out) {
+  out.innerHTML = '<div class="card"><div class="loading"><div class="spin"></div>按你的反馈重排中…</div></div>';
+  var REFINE_PROMPT = '你是旅行规划 Agent。根据用户的新要求,直接修改现有行程并输出完整的最新版本五件套(不是只解释改了什么)。必须保留五件套结构:①每日行程表②交通汇总③住宿清单④必订清单+状态⑤人均预算+装备证件。优先保留未被新要求影响的安排,避免推倒重来。用规范 Markdown,标题和表格前后换行。';
+  var isA = provider==='anthropic';
+  var msgs = [
+    {role:'user', content:'需求:'+JSON.stringify(currentTrip)+' 请给方案对比'},
+    {role:'assistant', content:'(已给对比)'},
+    {role:'user', content:'请细化五件套'},
+    {role:'assistant', content: currentTrip.detailMd},
+    {role:'user', content:'我的新要求:'+text+'\n\n请输出调整后的完整五件套。'}
+  ];
+  var url, headers, body;
+  if (isA) {
+    url='https://api.anthropic.com/v1/messages';
+    headers={'content-type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+    body=JSON.stringify({model:curModel(),max_tokens:3500,system:REFINE_PROMPT,messages:msgs});
+  } else {
+    var base = baseUrl || PROVIDERS[provider].url;
+    url=base.replace(/\/$/,'')+'/chat/completions';
+    headers={'content-type':'application/json','authorization':'Bearer '+apiKey};
+    body=JSON.stringify({model:curModel(),max_tokens:3500,messages:[{role:'system',content:REFINE_PROMPT}].concat(msgs)});
+  }
+  fetch(url,{method:'POST',headers:headers,body:body})
+  .then(function(r){ if(!r.ok) return r.text().then(function(tx){throw new Error('HTTP '+r.status+(tx?' · '+tx.slice(0,100):''));}); return r.json(); })
+  .then(function(data){
+    var raw = isA ? ((data.content&&data.content[0]&&data.content[0].text)||'') : ((data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'');
+    currentTrip.detailMd = raw;
+    currentTrip.planExtracted = extractPlan(raw);
+    document.getElementById('detailBody').innerHTML = '<div class="card md">'+mdToHtml(raw)+'</div>';
+    out.innerHTML = '<div class="tip">✍️ 已按「'+esc(text)+'」重排——上方是更新后的五件套,行程单/就绪检查同步生效。</div>';
+    autoPopulateChecks();
+  })
+  .catch(function(e){
+    var hint = /HTTP 402/.test(e.message) ? '余额不足,去渠道平台充值' : /HTTP 401|403/.test(e.message) ? 'Key 无效' : '网络问题';
+    out.innerHTML = '<div class="card"><div style="color:#c2410c;font-size:13.5px;">AI 调用失败:'+esc(e.message)+'</div><div style="font-size:12px;color:#8c8478;margin:6px 0;">'+hint+'</div><button class="btn outline sm" onclick="openSettings()">打开设置</button></div>';
+  });
+}
+
+// —— 自动预置:从行程内容提取待办,合并进用户清单(不覆盖用户手加的/已完成的)——
+function autoPopulateChecks() {
+  if (!currentTrip) return;
+  var raw = JSON.stringify(currentTrip).slice(0, 4000);
+  var pool = [];
+  function need(re, name, lead) { if (re.test(raw) && !pool.some(function(x){return x.name===name;})) pool.push({name:name, lead:lead, status:'todo'}); }
+  need(/国际机票|航班|✈|飞行|KIX|机场/, '国际机票(核对时刻/往返)', 'T-30 核对机票时刻');
+  need(/签证|e-?visa|VOA|护照/, '签证/入境证件', 'T-21 签证提交(3-5工作日)');
+  need(/酒店|住宿|民宿|villa|旅馆/, '住宿预订(全程)', 'T-14 酒店/船票(旺季)');
+  need(/快船|船票|船宿|渡轮/, '船票(快船/船宿)', 'T-14 酒店/船票(旺季)');
+  need(/包车|司机|safari/, '包车/向导确认', 'T-7 包车/体验/保险');
+  need(/潜水|DSD|浮潜/, '潜水/浮潜预约+保险(含潜水条款)', 'T-7 包车/体验/保险');
+  need(/小火车|嵯峨野|门票|门票|入园/, '热门门票/体验预约', 'T-7 包车/体验/保险');
+  need(/火车|高铁|JR|新干线/, '火车票/JR 券种', 'T-14 酒店/船票(旺季)');
+  need(/自驾|租车|开车/, '租车/车辆检查(胎压雨刮)', 'T-3 打印证件/查天气');
+  pool.push({name:'打印证件/行程单/保险单', lead:'T-3 打印证件/查天气', status:'todo'});
+  pool.push({name:'现金/支付方式就绪', lead:'T-1 入境卡/现金/装备', status:'todo'});
+  var arr = checks();
+  var added = 0;
+  pool.forEach(function(it){
+    // 同名项跳过(用户已有);不同名但含义近似的也靠 name 精确匹配兜住
+    if (!arr.some(function(x){ return x.name === it.name; })) { arr.push(it); added++; }
+  });
+  if (added) { saveChecks(arr); if (typeof renderReadiness === 'function') renderReadiness(); }
+}
+
+// ══════════ 就绪检查(原) ══════════
 var LS_CK='tc.checklist', LS_HIST='tc.history';
 function checks() { try { return JSON.parse(localStorage.getItem(LS_CK))||[]; } catch(e){ return []; } }
 function saveChecks(v){ localStorage.setItem(LS_CK,JSON.stringify(v)); }
@@ -603,7 +712,31 @@ function renderRisks() {
     if (/自驾|开车/.test(raw)) risks.push('自驾:单人驾驶建议单次 ≤2h;出发前查胎压/雨刮;雨夜不上山路');
   }
   if (!risks.length) risks.push('通用项:护照有效期 6 个月+ · 旅行保险(含活动项目) · 出发前 3 天查目的地天气');
-  $('riskList').innerHTML = risks.map(function(r){ return '<div class="risk">'+r+'</div>'; }).join('');
+  $('riskList').innerHTML = risks.map(function(r){ return '<div class="risk">'+r+'</div>'; }).join('') +
+    '<div id="dynRiskBox"></div>';
+  fetchLiveRisks();
+}
+
+// —— 动态风险:免费天气 API(wttr.in,无 key)+ AI 模式下新闻/实况摘要 ——
+var WTTR_MAP = { '京都':'Kyoto','大阪':'Osaka','东京':'Tokyo','北京':'Beijing','巴厘岛':'Bali','新加坡':'Singapore','曼谷':'Bangkok','首尔':'Seoul','巴黎':'Paris','伦敦':'London' };
+function fetchLiveRisks() {
+  var box = document.getElementById('dynRiskBox');
+  if (!box || !currentTrip) return;
+  var dest = currentTrip.dest || '';
+  var city = null;
+  for (var k in WTTR_MAP) { if (dest.indexOf(k) > -1) { city = WTTR_MAP[k]; break; } }
+  if (!city) return;
+  fetch('https://wttr.in/'+city+'?format=%C|%(tempC)°C|(雨天:%p,湿度:%h)&lang=zh')
+    .then(function(r){ return r.text(); })
+    .then(function(tx){
+      var parts = tx.split('|');
+      if (parts.length >= 2) {
+        var line = '🌤️ <b>'+dest.split(/[,\/、 ]/)[0]+'实况</b>: '+parts[0]+' '+parts[1];
+        if (/雨|rain|shower|drizzle/i.test(tx)) line += ' —— <b>近期有雨,户外点位留意备选</b>';
+        box.innerHTML = '<div class="risk" style="border-left-color:#5b8c5a;background:#f0f7f2;">'+line+'<div style="font-size:10.5px;color:#a8a29e;margin-top:2px;">来源 wttr.in,刷新页面更新</div></div>';
+      }
+    })
+    .catch(function(){ /* 天气拉不到就静默,不打扰 */ });
 }
 
 // ══════════ 历史 ══════════
@@ -620,6 +753,7 @@ function saveCurrent() {
 function loadHist(i) {
   var h=history()[i]; if (!h) return;
   currentTrip = { dates:h.dates, dest:h.dest, detailMd:h.detailMd, planExtracted:extractPlan(h.detailMd) };
+  autoPopulateChecks();
   plBack('detail'); $('detailBody').innerHTML='<div class="card md">'+mdToHtml(h.detailMd)+'</div>';
 }
 function delHist(i){ if(!confirm('删除这条?'))return; var a=history(); a.splice(i,1); saveHistory(a); renderPlHist(); }
@@ -690,6 +824,7 @@ function renderHomeCases() {
 function openCase(i) {
   var c=CASES[i];
   currentTrip = { dates:c.meta, dest:c.dest, detailMd:c.md, planExtracted:extractPlan(c.md) };
+  autoPopulateChecks();
   plBack('detail');
   $('detailBody').innerHTML='<div class="tip">📖 <b>'+esc(c.title)+'</b>——真实案例('+esc(c.tag)+')的五件套。</div><div class="card md">'+mdToHtml(c.md)+'</div>';
   go('planner');
