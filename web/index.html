@@ -3786,23 +3786,28 @@ function mdToHtml(md) {
   return html.join('\n');
 }
 function extractPlan(md) {
-  var out=[], inTable=false;
+  var out = [], inTable = false;
   String(md||'').split('\n').forEach(function(line){
     if (/^\s*\|/.test(line)) {
-      inTable=true;
-      if (line.indexOf('| D')===0 || /^\|\s*D\d/i.test(line)) {
-        var cells=line.replace(/^\||\|$/g,'').split('|').map(function(c){return c.trim();});
-        if (cells.length>=3 && /^D/i.test(cells[0])) {
-          out.push({n:cells[0], t:cells[1]||'', acts:[['activity',cells[2]||'']], trans:cells[3]||'', hotel:cells[4]||''});
-        }
+      inTable = true;
+      // 宽容解析:去掉单元格内 ** 加粗再匹配天数
+      var clean = line.replace(/\*\*/g, '');
+      var cells = clean.replace(/^\||\|$/g, '').split('|').map(function(c){ return c.trim(); });
+      var first = cells[0] || '';
+      // 匹配多种天数写法:D1/D 1/D+1/Day 1/第1天/第1天/**D1**
+      var m = first.match(/^(?:D\s*\+?\s*(\d+)|Day\s*(\d+)|第\s*(\d+)\s*天)/i);
+      // 排除表头行(D+/D#/Day/日 等无数字)
+      if (m) {
+        var n = m[1] || m[2] || m[3];
+        // 保留原文本(可能带**)作为天数标签
+        out.push({n: first, t: cells[1]||'', acts:[['activity', cells[2]||'']], trans: cells[3]||'', hotel: cells[4]||''});
       }
-    } else if (inTable) { inTable=false; }
+    } else if (inTable && line.trim() !== '') { inTable = false; }
   });
   return out;
 }
 
-// ══════════ 就绪检查 ══════════
-// ══════════ 继续调整(AI 局部重排 / 离线轻量规则) ══════════
+// ══════════ 继续调整// ══════════ 继续调整(AI 局部重排 / 离线轻量规则) ══════════
 function refineTrip() {
   var text = document.getElementById('refineInput').value.trim();
   var out = document.getElementById('refineResult');
