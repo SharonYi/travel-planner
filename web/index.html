@@ -427,7 +427,7 @@ var LIB = [
       {t:'佩妮达东线+浮潜',acts:'Diamond Beach+浮潜 Manta',hotel:'Sanur',trans:'快船'},
       {t:'体验潜→乌布',acts:'DSD 沉船岸潜→水宫梯田',hotel:'Amed→乌布',trans:'包车'},
       {t:'南部+水明漾',acts:'海神庙+Uluwatu+Kecak+海鲜',hotel:'Seminyak',trans:'包车'}] },
-  { keys:['草原','坝上','张北','承德','北京周边','自驾','雾灵山'], name:'北京周边草原/山岳',
+  { keys:['草原','坝上','张北','承德','北京周边','自驾','雾灵山','长白山','东北','滑雪','吉林'], name:'北京周边草原/山岳',
     variants:[
       {n:'方案A · 张北草原天路',d:'中途住+天路+返程',hl:'全程高速,单次驾驶≤2h',cost:'1000–1500',why:'单人驾驶友好'},
       {n:'方案B · 承德+坝上环线',d:'承德+坝上蒙古包',hl:'避暑山庄+京北草原',cost:'1200–1800',why:'天气不稳时的稳妥选择'},
@@ -444,14 +444,25 @@ function matchLib(text) {
 function offlineCompare(f) {
   var lib = matchLib(f.dest + ' ' + f.prefs);
   if (!lib) {
-    $('compareBody').innerHTML = '<div class="card"><div class="loading">' +
-      '<div style="font-size:34px;margin-bottom:10px;">🌱</div>' +
-      '<p style="margin-bottom:14px;">离线模式还没学过这个目的地</p>' +
-      '<button class="btn" onclick="openSettings()">⚙️ 切到 AI 模式(填 Key,任意目的地)</button> ' +
-      '<button class="btn outline" onclick="go(\'home\')">看内置案例</button></div></div>';
+    // 通用骨架:国内目的地给三版通用节奏,保证流程可走通
+    var generic = {
+      variants:[
+        {n:'方案A · 经典紧凑',d:'D1 抵达+市区,D2 核心景区,D3 返程',hl:'打卡主线,节奏标准',cost:'1500–3000',why:'第一次去,先走主线'},
+        {n:'方案B · 深度慢游',d:'核心景区拆两天,加周边联游',hl:'少赶路,体验深',cost:'2000–3500',why:'不想赶路选这个'},
+        {n:'方案C · 松弛度假',d:'一地驻扎,周边轻量走',hl:'酒店即目的地',cost:'1800–4000',why:'纯放松'}],
+      days:[
+        {t:'抵达+安顿',acts:'抵达→入住→周边熟悉+晚餐',hotel:'核心区域',trans:'按实际'},
+        {t:'核心景区日',acts:'主景区全天(早到避人流)',hotel:'核心区域',trans:'按实际'},
+        {t:'周边/返程',acts:'周边轻量游→返程',hotel:'—',trans:'按实际'}]
+    };
+    lib = generic;
+    currentTrip.lib = generic; currentTrip.compareMd = 'offline-generic';
+    $('compareBody').innerHTML = '<div class="tip">💡 离线模式还没学过「'+esc(f.dest)+'」,先给你通用节奏骨架;切 AI 模式可得针对 '+esc(f.dest)+' 的定制方案。</div><div class="card md">' + mdToHtml(
+      '## 方案对比(通用骨架)\n| 方案 | 路线 | 亮点 | 人均 |\n|---|---|---|---|\n' + generic.variants.map(function(v){return '| '+v.n+' | '+v.d+' | '+v.hl+' | ¥'+v.cost+' |';}).join('\n') + '\n\n## 推荐\n推荐'+generic.variants[0].n+'——'+generic.variants[0].why
+    ) + '</div>';
     return;
   }
-  currentTrip.lib = lib;
+  currentTrip.lib = lib; currentTrip.compareMd = 'offline';
   var rows = lib.variants.map(function(v){
     return '| '+v.n+' | '+v.d+' | '+v.hl+' | ¥'+v.cost+' |';
   }).join('\n');
@@ -652,8 +663,17 @@ function autoPopulateChecks() {
   var raw = JSON.stringify(currentTrip).slice(0, 4000);
   var pool = [];
   function need(re, name, lead) { if (re.test(raw) && !pool.some(function(x){return x.name===name;})) pool.push({name:name, lead:lead, status:'todo'}); }
-  need(/国际机票|航班|✈|飞行|KIX|机场/, '国际机票(核对时刻/往返)', 'T-30 核对机票时刻');
-  need(/签证|e-?visa|VOA|护照/, '签证/入境证件', 'T-21 签证提交(3-5工作日)');
+  // 国内/国际判定:国内目的地集合命中 → 不预置国际项
+  var DOMESTIC = ['长白山','北京','上海','广州','深圳','成都','重庆','西安','云南','大理','丽江','杭州','苏州','南京','厦门','青岛','三亚','海南','新疆','西藏','青海','甘肃','贵州','湖南','湖北','四川','东北','吉林','黑龙江','内蒙古','草原','坝上','张北','承德','雾灵山','阿那亚'];
+  var isDomestic = DOMESTIC.some(function(k){ return (currentTrip.dest||'').indexOf(k) > -1; });
+  if (isDomestic) {
+    need(/火车|高铁|动车/, '火车票/高铁票', 'T-14 酒店/船票(旺季)');
+    need(/自驾|租车/, '租车/车辆检查(胎压雨刮)', 'T-3 打印证件/查天气');
+    pool.push({name:'国内交通票(去程/返程)', lead:'T-14 酒店/船票(旺季)', status:'todo'});
+  } else {
+    need(/国际机票|国际航班|✈️? ?国际|入境|出境/, '国际机票(核对时刻/往返)', 'T-30 核对机票时刻');
+    need(/签证|e-?visa|VOA|护照/, '签证/入境证件', 'T-21 签证提交(3-5工作日)');
+  }
   need(/酒店|住宿|民宿|villa|旅馆/, '住宿预订(全程)', 'T-14 酒店/船票(旺季)');
   need(/快船|船票|船宿|渡轮/, '船票(快船/船宿)', 'T-14 酒店/船票(旺季)');
   need(/包车|司机|safari/, '包车/向导确认', 'T-7 包车/体验/保险');
@@ -770,8 +790,18 @@ var PV_COLORS={nature:'#8B7355',activity:'#6B5637',relax:'#C4A882',transit:'#A8A
 function renderPreview() {
   var el=$('pvBody');
   var plan = currentTrip && currentTrip.planExtracted;
-  if (!plan || !plan.length) {
+  if (!currentTrip) {
     el.innerHTML='<div class="pv-sheet"><div class="empty">还没有行程——去「旅行规划」生成,或载入历史/案例 📄</div></div>';
+    return;
+  }
+  // 有行程但未细化(还在对比阶段):给状态卡+引导,不空白
+  if (!plan || !plan.length) {
+    var f = currentTrip;
+    el.innerHTML='<div class="pv-sheet">'+
+      '<div class="pv-head"><h2>'+esc(f.dest||'行程')+'</h2><div class="m">'+esc(f.dates||'')+(f.people?' · '+esc(f.people):'')+'</div></div>'+
+      '<div class="pv-day"><div class="dh">📍 当前状态</div><div style="font-size:13.5px;color:#57534e;">方案对比已生成,还没选定细化。</div>'+
+      (f.compareMd?'<div style="font-size:12.5px;color:#8c8478;margin-top:4px;">对比方案见「旅行规划」页,选定 A/B/C 后这里出现完整行程单。</div>':'<div style="font-size:12.5px;color:#8c8478;margin-top:4px;">去「旅行规划」出方案并选定后,这里出现完整行程单。</div>')+
+      '<div style="height:10px;"></div><button class="btn sm" onclick="go(&quot;planner&quot;)">去选定方案 →</button> →</button></div></div>';
     return;
   }
   var days=plan.map(function(d,i){
