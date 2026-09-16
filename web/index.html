@@ -155,16 +155,23 @@
   <label>规划模式</label>
   <select id="setMode">
     <option value="offline">离线模式——内置目的地知识库(关西/巴厘岛/北京周边),无需任何配置</option>
-    <option value="ai">AI 模式——填入你自己的 Claude API Key,任意目的地实时规划</option>
+    <option value="ai">AI 模式——填入你自己的 API Key,任意目的地实时规划</option>
   </select>
-  <label>Claude API Key(仅 AI 模式需要)</label>
-  <input id="setKey" type="password" placeholder="sk-ant-...">
-  <label>模型</label>
-  <select id="setModel">
-    <option value="claude-sonnet-4-6">claude-sonnet-4-6(推荐,快且便宜)</option>
-    <option value="claude-opus-4-8">claude-opus-4-8(最强)</option>
+  <label>AI 渠道</label>
+  <select id="setProvider">
+    <option value="anthropic">Anthropic Claude(platform.claude.com,需国际网络)</option>
+    <option value="deepseek">DeepSeek(国内直连,注册送额度,推荐)</option>
+    <option value="zhipu">智谱 GLM(国内直连)</option>
+    <option value="moonshot">Kimi 月之暗面(国内直连)</option>
+    <option value="custom">自定义 OpenAI 兼容端点</option>
   </select>
-  <div class="note">· Key 只存在<b>你自己的浏览器</b>里(localStorage),不上传任何服务器<br>· 在 console.anthropic.com 申请<br>· AI 模式直连 Anthropic API,页面保持纯静态</div>
+  <label>API Key</label>
+  <input id="setKey" type="password" placeholder="渠道对应的 Key(sk-... / 通用)">
+  <label>模型名(自定义渠道必填,其他渠道有默认)</label>
+  <input id="setModelInput" placeholder="例:deepseek-chat / glm-4.6 / kimi-latest / 你渠道的模型名">
+  <label>Base URL(仅自定义渠道需要)</label>
+  <input id="setBase" placeholder="例:https://api.example.com/v1">
+  <div class="note">· Key 只存在<b>你自己的浏览器</b>里(localStorage),不上传任何服务器<br>· 国内渠道(DeepSeek/智谱/Kimi)注册即送额度,<b>无需国际网络</b><br>· AI 模式下页面仍保持纯静态,消息直发对应 API</div>
   <div style="margin-top:14px;">
     <button class="btn" onclick="saveSettings()">保存</button>
     <button class="btn ghost" onclick="closeModal()">取消</button>
@@ -177,11 +184,23 @@
 <script>
 // ══════════ 状态 ══════════
 var LS_MODE = 'tripCompass.mode', LS_KEY = 'tripCompass.key', LS_MODEL = 'tripCompass.model';
-var LS_TRIP = 'tripCompass.currentTrip';
+var LS_PROVIDER = 'tripCompass.provider', LS_BASE = 'tripCompass.base';
 function lsGet(k, d) { try { return localStorage.getItem(k) || d; } catch(e) { return d; } }
 var mode = lsGet(LS_MODE, 'offline');
 var apiKey = lsGet(LS_KEY, '');
-var model = lsGet(LS_MODEL, 'claude-sonnet-4-6');
+var model = lsGet(LS_MODEL, '');
+var provider = lsGet(LS_PROVIDER, 'anthropic');
+var baseUrl = lsGet(LS_BASE, '');
+// 各渠道默认 base-url 与模型名
+var PROVIDERS = {
+  anthropic: { url: 'https://api.anthropic.com', model: 'claude-sonnet-4-6', label: 'Anthropic Claude', anthropic: true },
+  deepseek:  { url: 'https://api.deepseek.com/v1', model: 'deepseek-chat', label: 'DeepSeek' },
+  zhipu:     { url: 'https://open.bigmodel.cn/api/paas/v4', model: 'glm-4.6', label: '智谱 GLM' },
+  moonshot:  { url: 'https://api.moonshot.cn/v1', model: 'kimi-latest', label: 'Kimi' },
+  custom:    { url: '', model: '', label: '自定义' }
+};
+function curModel() { return model || (PROVIDERS[provider] ? PROVIDERS[provider].model : ''); }
+function curLabel() { var pr = PROVIDERS[provider] || PROVIDERS.anthropic; return pr.label; }
 var state = null;          // {dest, days, people, prefs, phase: candidates|chosen|refined, plan[], chosenV, history[]}
 var busy = false;
 
@@ -456,36 +475,43 @@ var SYS_PROMPT = '你是个人旅行规划 Agent(Trip Compass)。用户给出时
 
 function aiSend(text) {
   var t = addTyping();
-  t.querySelector('.typing').textContent = '正在规划…(AI 模式)';
+  t.querySelector('.typing').textContent = '正在规划…(AI 模式 · ' + curLabel() + ')';
   var history = JSON.parse(lsGet('tripCompass.chatHistory', '[]'));
   history.push({role:'user', content:text});
-  var body = JSON.stringify({
-    model: model,
-    max_tokens: 3000,
-    system: SYS_PROMPT,
-    messages: history.slice(-12)
-  });
-  fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: body
-  }).then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
+  var isAnthropic = provider === 'anthropic';
+  var url, headers, body;
+  if (isAnthropic) {
+    url = 'https://api.anthropic.com/v1/messages';
+    headers = { 'content-type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' };
+    body = JSON.stringify({ model: curModel(), max_tokens: 3000, system: SYS_PROMPT, messages: history.slice(-12) });
+  } else {
+    var base = baseUrl || PROVIDERS[provider].url;
+    if (!base) { t.remove(); addMsg('ai', '<p>自定义渠道需要填 Base URL(设置里)</p>'); busy=false; return; }
+    url = base.replace(/\/$/, '') + '/chat/completions';
+    headers = { 'content-type': 'application/json', 'authorization': 'Bearer ' + apiKey };
+    body = JSON.stringify({ model: curModel(), max_tokens: 3000,
+      messages: [{role:'system', content: SYS_PROMPT}].concat(history.slice(-12).map(function(m){
+        return { role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content };
+      })) });
+  }
+  fetch(url, { method:'POST', headers: headers, body: body })
+  .then(function(r) {
+    if (!r.ok) return r.text().then(function(tx){ throw new Error('HTTP ' + r.status + (tx ? ' · ' + tx.slice(0,120) : '')); });
     return r.json();
   }).then(function(data) {
     t.remove();
-    var raw = (data.content && data.content[0] && data.content[0].text) || '(空回复)';
+    var raw;
+    if (isAnthropic) {
+      raw = (data.content && data.content[0] && data.content[0].text) || '(空回复)';
+    } else {
+      raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(空回复)';
+    }
     var html = mdToHtml(raw);
-    // 提取可能的行程结构(简单约定:AI 若输出 <plan> JSON 就解析)
-    var m = html.match(/<plan>([\s\S]*?)<\/plan>/);
+    var m = raw.match(/<plan>([\s\S]*?)<\/plan>/);
     if (m) {
       try { state = { phase:'refined', plan: JSON.parse(m[1]) }; } catch(e) {}
-      html = html.replace(/<plan>[\s\S]*?<\/plan>/, '');
+      raw = raw.replace(/<plan>[\s\S]*?<\/plan>/, '');
+      html = mdToHtml(raw);
     }
     addMsg('ai', html);
     history.push({role:'assistant', content: raw});
@@ -493,7 +519,11 @@ function aiSend(text) {
     busy = false;
   }).catch(function(e) {
     t.remove();
-    addMsg('ai', '<p>AI 调用失败:'+esc(e.message)+'</p><p style="font-size:12.5px;color:#6b7280;">检查 API Key 是否有效/有余额;或切回离线模式先用着。设置里可以切换。</p>');
+    var hint = '';
+    if (/HTTP 401|403/.test(e.message)) hint = 'Key 无效或没权限——检查渠道对应的 Key 是否填对';
+    else if (/HTTP 404/.test(e.message)) hint = '模型名或 Base URL 可能不对——DeepSeek 填 deepseek-chat,智谱填 glm-4.6';
+    else if (/Failed to fetch|NetworkError/i.test(e.message)) hint = '网络不通——国内渠道(DeepSeek/智谱/Kimi)无需国际网络;Anthropic 需要能访问国际站点';
+    addMsg('ai', '<p>AI 调用失败:'+esc(e.message)+'</p>' + (hint?'<p style="font-size:12.5px;color:#6b7280;">'+hint+'</p>':'') + '<p style="font-size:12.5px;color:#6b7280;">可在设置里换渠道,或先用离线模式。</p>');
     history.pop();
     busy = false;
   });
@@ -522,20 +552,26 @@ function exportHTML() {
 // ══════════ 设置 ══════════
 function openSettings() {
   document.getElementById('setMode').value = mode;
+  document.getElementById('setProvider').value = provider;
   document.getElementById('setKey').value = apiKey;
-  document.getElementById('setModel').value = model;
+  document.getElementById('setModelInput').value = model;
+  document.getElementById('setBase').value = baseUrl;
   document.getElementById('modalBg').className='modal-bg on';
   document.getElementById('modal').className='modal on';
 }
 function closeModal() { document.getElementById('modalBg').className='modal-bg'; document.getElementById('modal').className='modal'; }
 function saveSettings() {
   mode = document.getElementById('setMode').value;
+  provider = document.getElementById('setProvider').value;
   apiKey = document.getElementById('setKey').value.trim();
-  model = document.getElementById('setModel').value;
+  model = document.getElementById('setModelInput').value.trim();
+  baseUrl = document.getElementById('setBase').value.trim();
   localStorage.setItem(LS_MODE, mode);
+  localStorage.setItem(LS_PROVIDER, provider);
   localStorage.setItem(LS_KEY, apiKey);
   localStorage.setItem(LS_MODEL, model);
-  document.getElementById('modeLabel').textContent = mode==='ai' ? 'AI 模式(你的 Claude Key)' : '离线规划(内置目的地)';
+  localStorage.setItem(LS_BASE, baseUrl);
+  document.getElementById('modeLabel').textContent = mode==='ai' ? ('AI 模式 · ' + curLabel()) : '离线规划(内置目的地)';
   closeModal(); toast('设置已保存 ⚙️');
 }
 
@@ -718,7 +754,7 @@ function openCase(i) {
 }
 
 // ══════════ 启动 ══════════
-document.getElementById('modeLabel').textContent = mode==='ai' && apiKey ? 'AI 模式(你的 Claude Key)' : '离线规划(内置目的地)';
+document.getElementById('modeLabel').textContent = mode==='ai' && apiKey ? ('AI 模式 · ' + curLabel()) : '离线规划(内置目的地)';
 addMsg('ai', '<p>你好 👋 我是 Trip Compass。</p><p><b>告诉我目的地和大概时间</b>,我出方案候选给你选,选定后逐日细化——你随时反馈,我们逐轮把它磨到你满意。</p><p style="font-size:12px;color:#6b7280;">试一句:十一想去关西看红叶,5 天,2 人,想逛设计小店</p>');
 document.getElementById('userInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
